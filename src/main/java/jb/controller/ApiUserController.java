@@ -91,7 +91,7 @@ public class ApiUserController extends BaseController {
 	
 	@ResponseBody
 	@RequestMapping("/register")
-	public Json register(User user,@RequestParam MultipartFile headImageFile, HttpServletRequest request) {
+	public Json register(User user,@RequestParam(required=false) MultipartFile headImageFile, HttpServletRequest request) {
 		Json j = new Json();
 		try {
 			user.setMemberV(null);
