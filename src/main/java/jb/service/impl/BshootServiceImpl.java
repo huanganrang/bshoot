@@ -269,12 +269,14 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 			userIds[i++] = (String)bshoot.get("user_id");
 		}
 		List<Tuser> listUsers = userDao.getTusers(userIds);
-		Map<String,String> map = new HashMap<String,String>();
+		Map<String,Tuser> map = new HashMap<String,Tuser>();
 		for(Tuser t : listUsers){
-			map.put(t.getId(), t.getHeadImage());
+			map.put(t.getId(), t);
 		}
 		for(Map<String,Object> b :list){
-			b.put("userHeadImage",PathUtil.getHeadImagePath(map.get((String)b.get("user_id"))));
+			Tuser t = map.get((String)b.get("user_id"));
+			b.put("userHeadImage",PathUtil.getHeadImagePath(t.getHeadImage()));
+			b.put("nickname",t.getNickname());
 		}
 		dataGrid.setRows(list);
 		
