@@ -211,6 +211,8 @@ public class ApiUserController extends BaseController {
 			j.setSuccess(false);
 			j.setMsg("不存在该用户");
 		}else{
+			User user = userService.get(userId);
+			map.put("user", user);
 			j.setSuccess(true);
 			j.setObj(map);
 		}
