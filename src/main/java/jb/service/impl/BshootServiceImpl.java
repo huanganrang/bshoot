@@ -277,6 +277,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 			Tuser t = map.get((String)b.get("user_id"));
 			b.put("userHeadImage",PathUtil.getHeadImagePath(t.getHeadImage()));
 			b.put("nickname",t.getNickname());
+			b.put("memberV", t.getMemberV());
 		}
 		dataGrid.setRows(list);
 		

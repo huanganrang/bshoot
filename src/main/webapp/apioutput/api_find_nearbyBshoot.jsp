@@ -82,6 +82,8 @@
 					bs_comment		评论数	       <br/>
 					user_id	用户ID	             <br/>
 					userHeadImage	用户头像	             <br/>
+					nickname		昵称             <br/>
+					memberV			星级             <br/>
 					bs_description		描述	     <br/>
 					bs_remark		备注	           <br/>
 					create_datetime		创建时间	 <br/>
