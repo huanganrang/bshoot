@@ -31,6 +31,8 @@
 				style="padding: 1px"></div>		
 			<div title="视频投稿到广场" data-options="href:'api_user_bshootToSquare.jsp'"
 				style="padding: 1px"></div>						
+			<div title="删除美拍/转发" data-options="href:'api_user_delBshoot.jsp'"
+				style="padding: 1px"></div>						
 		</div>
 
 </body>

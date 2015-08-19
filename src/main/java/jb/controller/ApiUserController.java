@@ -2,7 +2,6 @@ package jb.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -292,7 +291,6 @@ public class ApiUserController extends BaseController {
 	 * @param user
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("/user_mybshoots")
 	@ResponseBody
 	public DataGrid dataGridMyBs(Bshoot bshoot, PageHelper ph,HttpServletRequest request) {
@@ -301,7 +299,6 @@ public class ApiUserController extends BaseController {
 			bshoot.setUserId(s.getId());
 		}
 		DataGrid dg = bshootService.dataGrid(bshoot, ph,1);
-		List<Bshoot> bshoots = dg.getRows();
 		
 		return dg;
 	}
@@ -314,7 +311,6 @@ public class ApiUserController extends BaseController {
 	 * @param request
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("/user_mytranspond")
 	@ResponseBody
 	public DataGrid dataGridMytranspond(Bshoot bshoot, PageHelper ph,HttpServletRequest request) {
@@ -323,9 +319,36 @@ public class ApiUserController extends BaseController {
 			bshoot.setUserId(s.getId());
 		}
 		DataGrid dg = bshootService.dataGrid(bshoot, ph,2);
-		List<Bshoot> bshoots = dg.getRows();
 		
 		return dg;
+	}
+	
+	/**
+	 * 删除美拍/转发
+	 * @param bshootId
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/delBshoot")
+	public Json delBshoot(String bshootId, HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			Bshoot bshoot = bshootService.get(bshootId);
+			if(s.getId().equals(bshoot.getUserId())) {
+				bshoot.setStatus("-1");
+				bshootService.edit(bshoot);
+				j.setSuccess(true);
+				j.setMsg("删除成功");
+			} else {
+				j.setSuccess(false);
+				j.setMsg("无权删除他人视频");
+			}
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}
 	
 	/**
@@ -371,7 +394,6 @@ public class ApiUserController extends BaseController {
 	@ResponseBody
 	public Json bshootToSquare(BshootToSquare bshootToSquare, HttpServletRequest request) {
 		Json j = new Json();		
-		SessionInfo s = getSessionInfo(request);
 		int i = bshootToSquareService.addFromUser(bshootToSquare);
 		if(i==1){
 			j.setSuccess(true);

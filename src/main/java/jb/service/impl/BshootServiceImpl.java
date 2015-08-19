@@ -17,6 +17,7 @@ import jb.pageModel.Bshoot;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.service.BshootServiceI;
+import jb.util.MyBeanUtils;
 import jb.util.PathUtil;
 import jb.util.RoundTool;
 
@@ -74,7 +75,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	private DataGrid dataGridByType(String hql,PageHelper ph,Bshoot t,BaseDaoI dao,int qtype){
 		DataGrid dg = new DataGrid();
 		Map<String, Object> params = new HashMap<String, Object>();
-		String where = " where t.userId = :userId";
+		String where = " where t.status = 1 and t.userId = :userId";
 		params.put("userId", t.getUserId());
 		//我的美拍
 		if(qtype==1){
@@ -92,9 +93,8 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	
 	
 	protected String whereHql(Bshoot bshoot, Map<String, Object> params) {
-		String whereHql = "";	
+		String whereHql = " where status=1 ";	
 		if (bshoot != null) {
-			whereHql += " where 1=1 ";
 			if (!F.empty(bshoot.getBsTitle())) {
 				whereHql += " and t.bsTitle = :bsTitle";
 				params.put("bsTitle", bshoot.getBsTitle());
@@ -158,6 +158,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		if(F.empty(t.getId()))
 		t.setId(UUID.randomUUID().toString());
 		//t.setCreatedatetime(new Date());
+		t.setStatus("1");
 		bshootDao.save(t);
 		updateLocation(t);
 	}
@@ -196,7 +197,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	public void edit(Bshoot bshoot) {
 		Tbshoot t = bshootDao.get(Tbshoot.class, bshoot.getId());
 		if (t != null) {
-			BeanUtils.copyProperties(bshoot, t, new String[] { "id" , "createdatetime", "lgX", "lgY" });
+			MyBeanUtils.copyProperties(bshoot, t, new String[] { "id" , "createdatetime", "lgX", "lgY" }, true);
 			//t.setModifydatetime(new Date());
 			updateLocation(t);
 		}
@@ -277,6 +278,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 			Tuser t = map.get((String)b.get("user_id"));
 			b.put("userHeadImage",PathUtil.getHeadImagePath(t.getHeadImage()));
 			b.put("nickname",t.getNickname());
+			b.put("memberV", t.getMemberV());
 		}
 		dataGrid.setRows(list);
 		
@@ -286,7 +288,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	public DataGrid dataGridByFriend(PageHelper ph, String userId) {
 		DataGrid dg = new DataGrid();
 		List<Bshoot> ol = new ArrayList<Bshoot>();
-		String hql = "select t from Tbshoot t , TuserAttention ua where t.userId = ua.attUserId and ua.userId = :userId";
+		String hql = "select t from Tbshoot t , TuserAttention ua where t.userId = ua.attUserId and ua.userId = :userId and t.status=1";
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
 		

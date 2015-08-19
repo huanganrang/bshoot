@@ -203,11 +203,6 @@
 							<td>
 									<input type="text" name="attUserId" maxlength="36" class="span2"/>
 							</td>
-							<th><%=TuserAttention.ALIAS_ATTENTION_DATETIME%></th>	
-							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=UserAttention.FORMAT_ATTENTION_DATETIME%>'})" id="attentionDatetimeBegin" name="attentionDatetimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=UserAttention.FORMAT_ATTENTION_DATETIME%>'})" id="attentionDatetimeEnd" name="attentionDatetimeEnd"/>
-							</td>
 						</tr>	
 				</table>
 			</form>
