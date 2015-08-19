@@ -18,12 +18,14 @@
 			<div title="取消用户关注" data-options="href:'api_user_disattr.jsp'"
 				style="padding: 1px"></div>
 			<div title="我首页" data-options="href:'api_user_index.jsp'"
-				style="padding: 1px"></div>					
+				style="padding: 1px"></div>			
+			<div title="我的信息" data-options="href:'api_user_info.jsp'"
+				style="padding: 1px"></div>			
+			<div title="我的信息(改)" data-options="href:'api_user_edit.jsp'"
+				style="padding: 1px"></div>			
 			<div title="我的美拍" data-options="href:'api_user_mybshoots.jsp'"
 				style="padding: 1px"></div>
 			<div title="我的转发" data-options="href:'api_user_mytranspond.jsp'"
-				style="padding: 1px"></div>	
-			<div title="我的信息" data-options="href:'api_user_info.jsp'"
 				style="padding: 1px"></div>	
 			<div title="我的关注" data-options="href:'api_user_myattruser.jsp'"
 				style="padding: 1px"></div>	

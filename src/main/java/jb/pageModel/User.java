@@ -2,13 +2,12 @@ package jb.pageModel;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-
 import jb.util.PathUtil;
 
-@SuppressWarnings("serial")
+@SuppressWarnings("unused")
 public class User implements java.io.Serializable {
 
+	private static final long serialVersionUID = -3278884807711490319L;
 	private String id;
 	private String name;
 	private String pwd;
@@ -27,10 +26,13 @@ public class User implements java.io.Serializable {
 	private java.lang.String thirdUser;	
 	private java.lang.String headImage;	
 	private java.lang.String nickname;	
-	private java.lang.String areaCode;	
-	private java.lang.String birthday;	
+	private java.lang.String area;	
+	private java.lang.String birthday;
+	private java.lang.String sex;
 	private java.lang.String bardian;	
 	private java.lang.String memberV;	
+	private java.lang.String email;	
+	private java.lang.String recommend;	
 	
 	private String attred; //是否被关注过
 	
@@ -159,12 +161,12 @@ public class User implements java.io.Serializable {
 		this.nickname = nickname;
 	}
 
-	public java.lang.String getAreaCode() {
-		return areaCode;
+	public java.lang.String getArea() {
+		return area;
 	}
 
-	public void setAreaCode(java.lang.String areaCode) {
-		this.areaCode = areaCode;
+	public void setArea(java.lang.String area) {
+		this.area = area;
 	}
 
 	public java.lang.String getBirthday() {
@@ -173,6 +175,14 @@ public class User implements java.io.Serializable {
 
 	public void setBirthday(java.lang.String birthday) {
 		this.birthday = birthday;
+	}
+	
+	public java.lang.String getSex() {
+		return sex;
+	}
+
+	public void setSex(java.lang.String sex) {
+		this.sex = sex;
 	}
 
 	public java.lang.String getBardian() {
@@ -189,6 +199,22 @@ public class User implements java.io.Serializable {
 
 	public void setMemberV(java.lang.String memberV) {
 		this.memberV = memberV;
+	}
+	
+	public java.lang.String getEmail() {
+		return email;
+	}
+
+	public void setEmail(java.lang.String email) {
+		this.email = email;
+	}
+
+	public java.lang.String getRecommend() {
+		return recommend;
+	}
+
+	public void setRecommend(java.lang.String recommend) {
+		this.recommend = recommend;
 	}
 
 	public String getAttred() {

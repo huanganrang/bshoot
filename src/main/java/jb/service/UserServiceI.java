@@ -94,6 +94,8 @@ public interface UserServiceI {
 	 * @param id
 	 */
 	public void delete(String id);
+	
+	public boolean emailExists(User user);
 
 	/**
 	 * 用户授权

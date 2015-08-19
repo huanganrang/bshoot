@@ -3,7 +3,6 @@ package jb.controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -75,19 +74,23 @@ public class ApiUserController extends BaseController {
 		Json j = new Json();
 		User u = userService.login(user);
 		if (u != null) {
-			j.setSuccess(true);
-			j.setMsg("登陆成功！");
-
-			/*SessionInfo sessionInfo = new SessionInfo();
-			BeanUtils.copyProperties(u, sessionInfo);*/
 			String tid = tokenManage.buildToken(user.getId(),user.getName());
 			j.setObj(tid);
+			j.setSuccess(true);
+			j.setMsg("登陆成功！");
 		} else {
 			j.setMsg("用户名或密码错误！");
 		}
 		return j;
 	}
 	
+	/**
+	 * 用户注册
+	 * @param user
+	 * @param headImageFile
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("/register")
 	public Json register(User user,@RequestParam(required=false) MultipartFile headImageFile, HttpServletRequest request) {
@@ -97,10 +100,10 @@ public class ApiUserController extends BaseController {
 			user.setUtype(null);
 			user.setThirdUser(null);
 			uploadFile(request, user, headImageFile);
-			userService.reg(user);			
+			userService.reg(user);	
+			j.setObj(tokenManage.buildToken(user.getId(),user.getName()));
 			j.setSuccess(true);
 			j.setMsg("注册成功");
-			j.setObj(user);
 		} catch (Exception e) {
 			// e.printStackTrace();
 			j.setMsg(e.getMessage());
@@ -108,6 +111,12 @@ public class ApiUserController extends BaseController {
 		return j;
 	}
 	
+	/**
+	 * 头像上传
+	 * @param request
+	 * @param user
+	 * @param headImageFile
+	 */
 	private void uploadFile(HttpServletRequest request,User user,MultipartFile headImageFile){
 		if(headImageFile==null||headImageFile.isEmpty())
 			return;
@@ -241,47 +250,29 @@ public class ApiUserController extends BaseController {
 	}
 	
 	/**
-	 * 添加Bshoot
-	 * 
+	 * 个人信息修改
+	 * @param lvAccount
+	 * @param request
 	 * @return
 	 */
-	@RequestMapping("/upload")
 	@ResponseBody
-	public Json uploadBshoot(Bshoot bshoot,@RequestParam MultipartFile[] movies,@RequestParam MultipartFile[] icons, HttpServletRequest request) {
-		Json j = new Json();		
-		SessionInfo s = getSessionInfo(request);
-		String realPath = request.getSession().getServletContext().getRealPath("/"+Constants.UPLOADFILE+"/"+s.getName());  
-		File file = new File(realPath);
-		bshoot.setId(UUID.randomUUID().toString());
-		bshoot.setUserId(s.getId());
-		if(!file.exists())
-			file.mkdir();
-		
-		for(MultipartFile f : movies){
-			String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
-			String fileName = bshoot.getId()+suffix;
-			bshoot.setBsStream(s.getName()+"/"+fileName);
-			 try {
-				FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
+	@RequestMapping("/edit")
+	public Json edit(User user, @RequestParam(required=false) MultipartFile headImageFile, HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			user.setId(s.getId());
+			if(!userService.emailExists(user)) {
+				uploadFile(request, user, headImageFile);
+				userService.edit(user);			
+				j.setSuccess(true);
+				j.setMsg("个人信息修改成功");
+			} else {
+				j.setMsg("邮箱已被使用！");
 			}
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
 		}
-		
-		for(MultipartFile f : icons){
-			String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
-			String fileName = bshoot.getId()+suffix;
-			bshoot.setBsIcon(s.getName()+"/"+fileName);
-			 try {
-				FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		
-		bshootService.add(bshoot);	
-		j.setSuccess(true);
-		j.setMsg("添加成功！");		
 		return j;
 	}
 	
@@ -352,7 +343,7 @@ public class ApiUserController extends BaseController {
 	}
 	
 	/**
-	 * 我关注好友
+	 * 我关注的好友
 	 * @param bshoot
 	 * @param ph
 	 * @param request
@@ -390,6 +381,12 @@ public class ApiUserController extends BaseController {
 		return dg;
 	}
 	
+	/**
+	 * 视频投稿到广场
+	 * @param bshootToSquare
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping("/user_bshootToSquare")
 	@ResponseBody
 	public Json bshootToSquare(BshootToSquare bshootToSquare, HttpServletRequest request) {

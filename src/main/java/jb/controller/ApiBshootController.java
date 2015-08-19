@@ -3,12 +3,10 @@ package jb.controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import jb.interceptors.TokenManage;
 import jb.model.TbshootComment;
@@ -67,63 +65,12 @@ public class ApiBshootController extends BaseController {
 	@Autowired
 	private BshootCommentServiceI bshootCommentService;
 	
-	
-	
-	
 	/**
-	 * 用户登录
-	 * 
-	 * @param user
-	 *            用户对象
-	 * @param session
+	 * 美拍收藏
+	 * @param bshoot
 	 * @param request
 	 * @return
 	 */
-	@ResponseBody
-	@RequestMapping("/login")
-	public Json login(User user, HttpSession session, HttpServletRequest request) {
-		Json j = new Json();
-		User u = userService.login(user);
-		if (u != null) {
-			j.setSuccess(true);
-			j.setMsg("登陆成功！");
-
-			/*SessionInfo sessionInfo = new SessionInfo();
-			BeanUtils.copyProperties(u, sessionInfo);*/
-			String tid = tokenManage.buildToken(user.getId(),user.getName());
-			j.setObj(tid);
-		} else {
-			j.setMsg("用户名或密码错误！");
-		}
-		return j;
-	}
-	
-	@ResponseBody
-	@RequestMapping("/register")
-	public Json register(User user, HttpServletRequest request) {
-		Json j = new Json();
-		try {
-			user.setMemberV(null);
-			user.setUtype(null);
-			user.setThirdUser(null);
-			userService.reg(user);
-			j.setSuccess(true);
-			j.setMsg("注册成功");
-			j.setObj(user);
-		} catch (Exception e) {
-			// e.printStackTrace();
-			j.setMsg(e.getMessage());
-		}
-		return j;
-	}
-	
-	
-	private SessionInfo getSessionInfo(HttpServletRequest request){
-		SessionInfo s = tokenManage.getSessionInfo(request);
-		return s;
-		
-	}
-	
 	@ResponseBody
 	@RequestMapping("/bshoot_collect")
 	public Json bshootCollect(BshootCollect bshoot,HttpServletRequest request) {
@@ -144,6 +91,12 @@ public class ApiBshootController extends BaseController {
 		return j;
 	}
 	
+	/**
+	 * 美拍收藏取消
+	 * @param bshoot
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("/bshoot_discollect")
 	public Json bshootCollectCancle(BshootCollect bshoot,HttpServletRequest request) {
@@ -164,7 +117,12 @@ public class ApiBshootController extends BaseController {
 		return j;
 	}
 	
-	
+	/**
+	 * 美拍点赞
+	 * @param bshootPraise
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("/bshoot_praise")
 	public Json bshootPraise(BshootPraise bshootPraise,HttpServletRequest request) {
@@ -184,6 +142,12 @@ public class ApiBshootController extends BaseController {
 		return j;
 	}
 	
+	/**
+	 * 美拍取消点赞
+	 * @param bshootPraise
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("/bshoot_dispraise")
 	public Json bshootPraiseCancle(BshootPraise bshootPraise,HttpServletRequest request) {
@@ -202,6 +166,12 @@ public class ApiBshootController extends BaseController {
 		return j;
 	}
 	
+	/**
+	 * 美拍详情
+	 * @param b
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("/bshoot_detail")
 	public Json bshootDetail(Bshoot b,HttpServletRequest request) {
@@ -252,7 +222,7 @@ public class ApiBshootController extends BaseController {
 	}
 	
 	/**
-	 * 添加Bshoot
+	 * 上传美拍
 	 * 
 	 * @return
 	 */
@@ -298,7 +268,7 @@ public class ApiBshootController extends BaseController {
 	
 	
 	/**
-	 * 添加Bshoot
+	 * 转发美拍
 	 * 
 	 * @return
 	 */
@@ -327,12 +297,10 @@ public class ApiBshootController extends BaseController {
 	 * @param user
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph,HttpServletRequest request) {
 		DataGrid dg = bshootService.dataGrid(bshoot, ph);
-		List<Bshoot> bshoots = dg.getRows();
 		
 		return dg;
 	}
@@ -367,6 +335,12 @@ public class ApiBshootController extends BaseController {
 		j.setMsg("添加成功！");		
 		addMessage("MT03",tbc.getId());
 		return j;
+	}
+	
+	private SessionInfo getSessionInfo(HttpServletRequest request){
+		SessionInfo s = tokenManage.getSessionInfo(request);
+		return s;
+		
 	}
 	
 }

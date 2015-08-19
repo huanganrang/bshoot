@@ -47,10 +47,8 @@ public class ApiFriendController extends BaseController {
 		return s;		
 	}
 	
-	
-	
 	/**
-	 * 好友视频列表
+	 * 关注好友视频列表
 	 * 
 	 * @param user
 	 * @return
@@ -116,7 +114,7 @@ public class ApiFriendController extends BaseController {
 	}	
 	
 	/**
-	 * id or nickname查询
+	 * 可能感兴趣
 	 * 
 	 * @param user
 	 * @return

@@ -42,8 +42,12 @@
 					</tr>
 					
 					<tr>
+						<td align="right" style="width: 180px;"><label>headImageFile(头像)：</label></td>
+						<td><input name="headImageFile" type="file" class="span2" value=""/></td>
+					</tr>
+					<tr>
 						<td align="right" style="width: 180px;"><label>name(账号)：</label></td>
-						<td><input name="name" type="text" class="span2" value="测试美拍"/></td>
+						<td><input name="name" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>pwd(密码)：</label></td>
@@ -54,6 +58,14 @@
 						<td><input name="nickname" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
+						<td align="right" style="width: 180px;"><label>email(邮箱)：</label></td>
+						<td><input name="email" type="text" class="span2" value=""/></td>
+					</tr>
+					<tr>
+						<td align="right" style="width: 180px;"><label>recommend(推荐人账号)：</label></td>
+						<td><input name="recommend" type="text" class="span2" value=""/></td>
+					</tr>
+					<!-- <tr>
 						<td align="right" style="width: 180px;"><label>usex(性别：SX01|SX02,男女)：</label></td>
 						<td><input name="usex" type="text" class="span2" value=""/></td>
 					</tr>
@@ -62,17 +74,13 @@
 						<td><input name="areaCode" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
-						<td align="right" style="width: 180px;"><label>headImageFile(头像)：</label></td>
-						<td><input name="headImageFile" type="file" class="span2" value=""/></td>
-					</tr>
-					<tr>
 						<td align="right" style="width: 180px;"><label>birthday(生日)：</label></td>
 						<td><input name="birthday" type="text" class="span2" value=""/></td>
-					</tr>
+					</tr> 
 					<tr>
 						<td align="right" style="width: 180px;"><label>bardian(个性签名)：</label></td>
 						<td><input name="bardian" type="text" class="span2" value=""/></td>
-					</tr>
+					</tr>-->
 					<tr>
 						<td colspan="2" align="center">
 						<input type="button"

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import jb.absx.F;
 import jb.dao.ResourceDaoI;
 import jb.dao.RoleDaoI;
 import jb.dao.UserDaoI;
@@ -21,6 +22,7 @@ import jb.pageModel.SessionInfo;
 import jb.pageModel.User;
 import jb.service.UserServiceI;
 import jb.util.MD5Util;
+import jb.util.MyBeanUtils;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,15 +59,31 @@ public class UserServiceImpl implements UserServiceI {
 		params.put("name", user.getName());
 		if (userDao.count("select count(*) from Tuser t where t.name = :name", params) > 0) {
 			throw new Exception("登录名已存在！");
-		} else {
-			Tuser u = new Tuser();
-			BeanUtils.copyProperties(user, u);
-			u.setId(UUID.randomUUID().toString());
-			u.setName(user.getName());
-			u.setPwd(MD5Util.md5(user.getPwd()));
-			u.setCreatedatetime(new Date());
-			userDao.save(u);
+		} 
+		params = new HashMap<String, Object>();
+		params.put("email", user.getEmail());
+		if(!F.empty(user.getEmail())
+				&& userDao.count("select count(*) from Tuser t where t.email = :email", params) > 0) {
+			throw new Exception("邮箱已被使用！");
 		}
+		params = new HashMap<String, Object>();
+		params.put("recommend", user.getRecommend());
+		if(!F.empty(user.getRecommend())) {
+			Tuser ta = userDao.get("from Tuser t where t.name = :recommend", params);
+			if(ta != null) {
+				user.setRecommend(ta.getId());
+			} else {
+				user.setRecommend(null);
+			}
+		}
+		
+		Tuser u = new Tuser();
+		user.setId(UUID.randomUUID().toString());
+		user.setName(user.getName());
+		user.setPwd(MD5Util.md5(user.getPwd()));
+		user.setCreatedatetime(new Date());
+		BeanUtils.copyProperties(user, u);
+		userDao.save(u);
 	}
 
 	@Override
@@ -192,7 +210,7 @@ public class UserServiceImpl implements UserServiceI {
 			throw new Exception("登录名已存在！");
 		} else {
 			Tuser u = userDao.get(Tuser.class, user.getId());
-			BeanUtils.copyProperties(user, u, new String[] { "pwd", "createdatetime" });
+			MyBeanUtils.copyProperties(user, u, new String[] { "pwd", "createdatetime" }, true);
 			u.setModifydatetime(new Date());
 		}
 	}
@@ -200,6 +218,21 @@ public class UserServiceImpl implements UserServiceI {
 	@Override
 	public void delete(String id) {
 		userDao.delete(userDao.get(Tuser.class, id));
+	}
+	
+	/**
+	 * 检查邮箱是否存在
+	 */
+	public boolean emailExists(User user) {
+		if(F.empty(user.getEmail())) return false;
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("email", user.getEmail());
+		Tuser t = userDao.get("from Tuser t where t.email = :email", params);
+		if(t != null && t.getId() != user.getId()) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override

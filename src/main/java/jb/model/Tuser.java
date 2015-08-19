@@ -49,14 +49,20 @@ public class Tuser implements java.io.Serializable {
 	private java.lang.String headImage;
 	//@Length(max=36)
 	private java.lang.String nickname;
-	//@Length(max=36)
-	private java.lang.String areaCode;
+	//@Length(max=128)
+	private java.lang.String area;
 	//@Length(max=18)
 	private java.lang.String birthday;
+	//@Length(max=4)
+	private java.lang.String sex;
 	//@Length(max=128)
 	private java.lang.String bardian;
 	//@Length(max=4)
 	private java.lang.String memberV;
+	//@Length(max=128)
+	private java.lang.String email;
+	//@Length(max=36)
+	private java.lang.String recommend;
 
 	@Column(name = "is_star")
 	@org.hibernate.annotations.Type(type="yes_no")
@@ -167,13 +173,13 @@ public class Tuser implements java.io.Serializable {
 		this.nickname = nickname;
 	}
 	
-	@Column(name = "areaCode", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
-	public java.lang.String getAreaCode() {
-		return this.areaCode;
+	@Column(name = "area", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
+	public java.lang.String getArea() {
+		return this.area;
 	}
 	
-	public void setAreaCode(java.lang.String areaCode) {
-		this.areaCode = areaCode;
+	public void setArea(java.lang.String area) {
+		this.area = area;
 	}
 	
 	@Column(name = "birthday", unique = false, nullable = true, insertable = true, updatable = true, length = 18)
@@ -183,6 +189,15 @@ public class Tuser implements java.io.Serializable {
 	
 	public void setBirthday(java.lang.String birthday) {
 		this.birthday = birthday;
+	}
+	
+	@Column(name = "sex", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
+	public java.lang.String getSex() {
+		return this.sex;
+	}
+	
+	public void setSex(java.lang.String sex) {
+		this.sex = sex;
 	}
 	
 	@Column(name = "bardian", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
@@ -201,6 +216,24 @@ public class Tuser implements java.io.Serializable {
 	
 	public void setMemberV(java.lang.String memberV) {
 		this.memberV = memberV;
+	}
+	
+	@Column(name = "email", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
+	public java.lang.String getEmail() {
+		return email;
+	}
+
+	public void setEmail(java.lang.String email) {
+		this.email = email;
+	}
+
+	@Column(name = "recommend", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
+	public java.lang.String getRecommend() {
+		return recommend;
+	}
+
+	public void setRecommend(java.lang.String recommend) {
+		this.recommend = recommend;
 	}
 	
 	@ManyToMany(fetch = FetchType.LAZY)

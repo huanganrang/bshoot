@@ -35,10 +35,10 @@
 				style="padding: 1px"></div>		
 			<div title="评论分页查" data-options="href:'api_bshoot_comments.jsp'"
 				style="padding: 1px"></div>
-			<div title="收藏" data-options="href:'api_bshoot_collect.jsp'"
+			<!-- <div title="收藏" data-options="href:'api_bshoot_collect.jsp'"
 				style="padding: 1px"></div>	
 			<div title="收藏取消" data-options="href:'api_bshoot_discollect.jsp'"
-				style="padding: 1px"></div>		
+				style="padding: 1px"></div>	 -->	
 			<div title="转发" data-options="href:'api_bshoot_transupload.jsp'"
 				style="padding: 1px"></div>					
 		</div>

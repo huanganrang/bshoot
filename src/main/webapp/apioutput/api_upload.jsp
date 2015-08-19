@@ -42,20 +42,20 @@
 					</tr>
 					
 					<tr>
-						<td align="right" style="width: 180px;"><label>bsTitle(标题)：</label></td>
-						<td><input name="bsTitle" type="text" class="span2" value="测试美拍"/></td>
-					</tr>
-					<tr>
 						<td align="right" style="width: 180px;"><label>tokenId(token值，登录获取)：</label></td>
 						<td><input name="tokenId" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
-						<td align="right" style="width: 180px;"><label>bsTopic(关键字)：</label></td>
-						<td><input name="bsTopic" type="text" class="span2" value=""/></td>
+						<td align="right" style="width: 180px;"><label>squareIds(广场话题ID集合)：</label></td>
+						<td><input name="squareIds" type="text" class="span2" value=""/>（话题列表接口：首页->广场话题；多个已逗号隔开，如：id1,id2...id3）</td>
+					</tr>
+					<tr>
+						<td align="right" style="width: 180px;"><label>friendIds(@好友ID集合)：</label></td>
+						<td><input name="friendIds" type="text" class="span2" value=""/>（关注好友列表接口：用户->我的关注；多个已逗号隔开，如：id1,id2...id3）</td>
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>bsDescription(描述)：</label></td>
-						<td><textarea rows="2" cols="" name="bsDescription"  value="我的地盘我做主"/></td>
+						<td><textarea rows="2" cols="" name="bsDescription" >我的地盘我做主</textarea></td>
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>movies(视频文件)：</label></td>

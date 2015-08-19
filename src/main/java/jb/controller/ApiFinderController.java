@@ -49,7 +49,7 @@ public class ApiFinderController extends BaseController {
 	
 	
 	/**
-	 * 热门视频
+	 * 首页热门视频
 	 * @param ph
 	 * @return
 	 */
@@ -88,6 +88,11 @@ public class ApiFinderController extends BaseController {
 		return dg;
 	}	
 	
+	/**
+	 * 获取广场详情
+	 * @param id
+	 * @return
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ResponseBody
 	@RequestMapping("/getBshootSquareDetail")

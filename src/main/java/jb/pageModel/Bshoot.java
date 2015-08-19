@@ -4,6 +4,7 @@ import java.util.Date;
 
 import jb.util.PathUtil;
 
+@SuppressWarnings("unused")
 public class Bshoot implements java.io.Serializable {
 
 	private static final long serialVersionUID = 5454155825314635342L;
@@ -37,6 +38,8 @@ public class Bshoot implements java.io.Serializable {
 	private java.lang.String status;
 	private double distance; //距离
 	private String praised; //是否赞过
+	private String squareIds;
+	private String friendIds;
 	
 
 	public void setId(java.lang.String value) {
@@ -226,7 +229,22 @@ public class Bshoot implements java.io.Serializable {
 		this.status = status;
 	}
 
-	
+	public String getSquareIds() {
+		return squareIds;
+	}
+
+	public void setSquareIds(String squareIds) {
+		this.squareIds = squareIds;
+	}
+
+	public String getFriendIds() {
+		return friendIds;
+	}
+
+	public void setFriendIds(String friendIds) {
+		this.friendIds = friendIds;
+	}
+
 	
 	
 }
