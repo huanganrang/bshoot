@@ -46,12 +46,6 @@
 					<input class="span2" name="bshootId" type="text" class="span2"  value="${bshootCollect.bshootId}"/>
 					</td>							
 			</tr>	
-				<tr>	
-					<th><%=TbshootCollect.ALIAS_COLLECT_DATETIME%></th>	
-					<td>
-					<input class="span2" name="collectDatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TbshootCollect.FORMAT_COLLECT_DATETIME%>'})"   maxlength="0" value="${bshootCollect.collectDatetime}"/>
-					</td>							
-			</tr>	
 			</table>				
 		</form>
 	</div>

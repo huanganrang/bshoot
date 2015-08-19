@@ -6,14 +6,14 @@
 
 package jb.model;
 
-import javax.persistence.*;
-
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "bshoot")
 @DynamicInsert(true)
@@ -92,6 +92,9 @@ public class Tbshoot implements java.io.Serializable{
 	private java.lang.String lgName;
 	//@Length(max=36)
 	private java.lang.String parentId;
+	
+	//@Length(max=4)
+	private java.lang.String status;
 
 		public Tbshoot(){
 		}
@@ -281,6 +284,15 @@ public class Tbshoot implements java.io.Serializable{
 	
 	public void setParentId(java.lang.String parentId) {
 		this.parentId = parentId;
+	}
+	
+	@Column(name = "status", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
+	public java.lang.String getStatus() {
+		return this.status;
+	}
+	
+	public void setStatus(java.lang.String status) {
+		this.status = status;
 	}
 	/*
 	public String toString() {

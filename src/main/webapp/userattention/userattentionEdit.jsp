@@ -46,12 +46,6 @@
 					<input class="span2" name="attUserId" type="text" class="span2"  value="${userAttention.attUserId}"/>
 					</td>							
 			</tr>	
-				<tr>	
-					<th><%=TuserAttention.ALIAS_ATTENTION_DATETIME%></th>	
-					<td>
-					<input class="span2" name="attentionDatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TuserAttention.FORMAT_ATTENTION_DATETIME%>'})"   maxlength="0" value="${userAttention.attentionDatetime}"/>
-					</td>							
-			</tr>	
 			</table>				
 		</form>
 	</div>

@@ -34,6 +34,7 @@ public class Bshoot implements java.io.Serializable {
 	private java.lang.String lgY;	
 	private java.lang.String lgName;	
 	private java.lang.String parentId;
+	private java.lang.String status;
 	private double distance; //距离
 	private String praised; //是否赞过
 	
@@ -215,6 +216,14 @@ public class Bshoot implements java.io.Serializable {
 
 	public java.lang.String getBsStreamAbsolute() {
 		return PathUtil.getBshootPath(bsStream);
+	}
+
+	public java.lang.String getStatus() {
+		return status;
+	}
+
+	public void setStatus(java.lang.String status) {
+		this.status = status;
 	}
 
 	

@@ -46,12 +46,6 @@
 					<input class="span2" name="bshootId" type="text" class="span2"/>
 					</td>							
 				</tr>	
-				<tr>	
-					<th><%=TbshootPraise.ALIAS_PRAISE_DATETIME%></th>	
-					<td>
-					<input class="span2" name="praiseDatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TbshootPraise.FORMAT_PRAISE_DATETIME%>'})"  maxlength="0" class="" />
-					</td>							
-				</tr>	
 			</table>		
 		</form>
 	</div>

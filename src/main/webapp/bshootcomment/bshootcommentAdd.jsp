@@ -56,12 +56,6 @@
 					<input class="span2" name="bsCommentText" type="text" class="span2"/>
 					</td>							
 				</tr>	
-				<tr>	
-					<th><%=TbshootComment.ALIAS_COMMENT_DATETIME%></th>	
-					<td>
-					<input class="span2" name="commentDatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TbshootComment.FORMAT_COMMENT_DATETIME%>'})"  maxlength="0" class="" />
-					</td>							
-				</tr>	
 			</table>		
 		</form>
 	</div>

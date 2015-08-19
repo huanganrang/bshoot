@@ -57,16 +57,6 @@
 					</td>							
 				</tr>	
 				<tr>	
-					<th><%=TuserMessage.ALIAS_CREATE_DATETIME%></th>	
-					<td>
-					<input class="span2" name="createDatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TuserMessage.FORMAT_CREATE_DATETIME%>'})"  maxlength="0" class="" />
-					</td>							
-					<th><%=TuserMessage.ALIAS_UPDATE_DATETIME%></th>	
-					<td>
-					<input class="span2" name="updateDatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TuserMessage.FORMAT_UPDATE_DATETIME%>'})"  maxlength="0" class="" />
-					</td>							
-				</tr>	
-				<tr>	
 					<th><%=TuserMessage.ALIAS_CREATE_PERSON%></th>	
 					<td>
 					<input class="span2" name="createPerson" type="text" class="span2"/>
