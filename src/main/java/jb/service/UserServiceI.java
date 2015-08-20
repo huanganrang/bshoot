@@ -80,6 +80,8 @@ public interface UserServiceI {
 	 * @return
 	 */
 	public User get(String id);
+	
+	public User get(User user);
 
 	/**
 	 * 编辑用户

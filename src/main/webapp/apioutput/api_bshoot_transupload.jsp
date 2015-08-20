@@ -34,17 +34,13 @@
 	<div class="easyui-layout" data-options="fit:true">
 		
 		<div data-options="region:'center'">
-			<form id="bshoot_transupload_Form" method="post"  enctype="multipart/form-data">
+			<form id="bshoot_transupload_Form" method="post">
 				<table align="center" width="90%" class="tablex">
 					<tr>
 						<td align="right" style="width: 80px;"><label>url：</label></td>
 						<td>${pageContext.request.contextPath}/api/bshootController/bshoot_transupload</td>
 					</tr>
 					
-					<tr>
-						<td align="right" style="width: 180px;"><label>bsTitle(标题)：</label></td>
-						<td><input name="bsTitle" type="text" class="span2" value="测试美拍"/></td>
-					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>tokenId(token值，登录获取)：</label></td>
 						<td><input name="tokenId" type="text" class="span2" value=""/></td>
@@ -54,25 +50,9 @@
 						<td><input name="parentId" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
-						<td align="right" style="width: 180px;"><label>bsTopic(关键字)：</label></td>
-						<td><input name="bsTopic" type="text" class="span2" value=""/></td>
-					</tr>
-					<tr>
 						<td align="right" style="width: 180px;"><label>bsDescription(描述)：</label></td>
-						<td><textarea rows="2" cols="" name="bsDescription"  value="我的地盘我做主"/></td>
+						<td><textarea rows="2" cols="" name="bsDescription" >#话题# @用户 我的地盘我做主</textarea>（话题用##，用户以@开头空格结尾,话题列表接口：首页-广场话题，@好友接口：用户-我的关注）</td>
 					</tr>					
-					<tr>
-						<td align="right" style="width: 180px;"><label>lgX(坐标经度)：</label></td>
-						<td><input name="lgX" type="text" class="span2" value=""/></td>
-					</tr>
-					<tr>
-						<td align="right" style="width: 180px;"><label>lgY(坐标纬度)：</label></td>
-						<td><input name="lgY" type="text" class="span2" value=""/></td>
-					</tr>
-					<tr>
-						<td align="right" style="width: 180px;"><label>lgName(地点名称)：</label></td>
-						<td><input name="lgName" type="text" class="span2" value=""/></td>
-					</tr>
 					<tr>
 						<td colspan="2" align="center">
 						<input type="button"

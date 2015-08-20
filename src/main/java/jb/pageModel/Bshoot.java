@@ -39,9 +39,8 @@ public class Bshoot implements java.io.Serializable {
 	private java.lang.String status;
 	private double distance; //距离
 	private String praised; //是否赞过
-	private String squareIds;
-	private String friendIds;
 	
+	private Bshoot parentBshoot; // 转发的美拍
 
 	public void setId(java.lang.String value) {
 		this.id = value;
@@ -239,22 +238,11 @@ public class Bshoot implements java.io.Serializable {
 		this.status = status;
 	}
 
-	public String getSquareIds() {
-		return squareIds;
+	public Bshoot getParentBshoot() {
+		return parentBshoot;
 	}
 
-	public void setSquareIds(String squareIds) {
-		this.squareIds = squareIds;
+	public void setParentBshoot(Bshoot parentBshoot) {
+		this.parentBshoot = parentBshoot;
 	}
-
-	public String getFriendIds() {
-		return friendIds;
-	}
-
-	public void setFriendIds(String friendIds) {
-		this.friendIds = friendIds;
-	}
-
-	
-	
 }

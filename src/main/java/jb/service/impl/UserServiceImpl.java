@@ -217,6 +217,18 @@ public class UserServiceImpl implements UserServiceI {
 		}
 		return u;
 	}
+	
+	public User get(User user) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		String whereHql = whereHql(user, params);
+		Tuser t = userDao.get("from Tuser t " + whereHql, params);
+		if(t != null) {
+			BeanUtils.copyProperties(t, user);
+			return user;
+		}
+		
+		return null;
+	}
 
 	@Override
 	synchronized public void edit(User user) throws Exception {

@@ -14,6 +14,7 @@ import jb.dao.BshootDaoI;
 import jb.model.Tbshoot;
 import jb.util.PathUtil;
 
+import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -21,6 +22,7 @@ import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+@SuppressWarnings("unchecked")
 @Repository
 public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 	@Autowired
@@ -61,6 +63,16 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 		            return result;// 获取输出参数的值   
 		        } } );
 		return result;
+	}
+	
+	
+	public List<Tbshoot> getTbshoots(String[] bshootIds) {
+		if(bshootIds==null||bshootIds.length==0)return null;
+		String hql="FROM Tbshoot t WHERE t.id in (:alist)";  
+		Query query = getCurrentSession().createQuery(hql);  
+		query.setParameterList("alist", bshootIds); 
+		List<Tbshoot> l = query.list();
+		return l;
 	}
 
 }

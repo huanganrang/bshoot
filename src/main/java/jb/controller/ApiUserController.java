@@ -11,7 +11,6 @@ import jb.absx.F;
 import jb.interceptors.TokenManage;
 import jb.pageModel.Bshoot;
 import jb.pageModel.BshootToSquare;
-import jb.pageModel.DataGrid;
 import jb.pageModel.Json;
 import jb.pageModel.PageHelper;
 import jb.pageModel.SessionInfo;
@@ -201,9 +200,23 @@ public class ApiUserController extends BaseController {
 	public Json userIndex(HttpServletRequest request) {
 		Json j = new Json();
 		String userId = request.getParameter("userId");
+		String nickname = request.getParameter("nickname");
 		SessionInfo s = getSessionInfo(request);
 		if(F.empty(userId)){
 			userId = s.getId();
+		}
+		if(!F.empty(nickname)) {
+			nickname = nickname.startsWith("@") ? nickname.substring(1) : nickname;
+			User u = new User();
+			u.setNickname(nickname);
+			u = userService.get(u);
+			if(u == null) {
+				j.setSuccess(false);
+				j.setMsg("不存在该用户");
+				return j;
+			} else {
+				userId = u.getId();
+			}
 		}
 		Map map = userService.userIndex(userId);
 		if(s!=null){
@@ -300,14 +313,20 @@ public class ApiUserController extends BaseController {
 	 */
 	@RequestMapping("/user_mybshoots")
 	@ResponseBody
-	public DataGrid dataGridMyBs(Bshoot bshoot, PageHelper ph,HttpServletRequest request) {
-		if(F.empty(bshoot.getUserId())){
-			SessionInfo s = getSessionInfo(request);
-			bshoot.setUserId(s.getId());
-		}
-		DataGrid dg = bshootService.dataGrid(bshoot, ph,1);
+	public Json dataGridMyBs(Bshoot bshoot, PageHelper ph,HttpServletRequest request) {
 		
-		return dg;
+		Json j = new Json();
+		try {
+			if(F.empty(bshoot.getUserId())){
+				SessionInfo s = getSessionInfo(request);
+				bshoot.setUserId(s.getId());
+			}
+			j.setObj(bshootService.dataGrid(bshoot, ph,1));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}
 	
 
@@ -320,14 +339,19 @@ public class ApiUserController extends BaseController {
 	 */
 	@RequestMapping("/user_mytranspond")
 	@ResponseBody
-	public DataGrid dataGridMytranspond(Bshoot bshoot, PageHelper ph,HttpServletRequest request) {
-		if(F.empty(bshoot.getUserId())){
-			SessionInfo s = getSessionInfo(request);
-			bshoot.setUserId(s.getId());
+	public Json dataGridMytranspond(Bshoot bshoot, PageHelper ph,HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			if(F.empty(bshoot.getUserId())){
+				SessionInfo s = getSessionInfo(request);
+				bshoot.setUserId(s.getId());
+			}
+			j.setObj(bshootService.dataGrid(bshoot, ph,2));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
 		}
-		DataGrid dg = bshootService.dataGrid(bshoot, ph,2);
-		
-		return dg;
+		return j;
 	}
 	
 	/**
@@ -367,13 +391,19 @@ public class ApiUserController extends BaseController {
 	 */
 	@RequestMapping("/user_myattruser")
 	@ResponseBody
-	public DataGrid dataGridMyattruser(UserAttention userAttention, PageHelper ph,HttpServletRequest request) {
-		if(F.empty(userAttention.getUserId())){
-			SessionInfo s = getSessionInfo(request);
-			userAttention.setUserId(s.getId());
+	public Json dataGridMyattruser(UserAttention userAttention, PageHelper ph,HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			if(F.empty(userAttention.getUserId())){
+				SessionInfo s = getSessionInfo(request);
+				userAttention.setUserId(s.getId());
+			}
+			j.setObj(userAttentionService.dataGridUser(userAttention, ph));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
 		}
-		DataGrid dg = userAttentionService.dataGridUser(userAttention, ph);
-		return dg;
+		return j;
 	}
 	
 	/**
@@ -385,16 +415,22 @@ public class ApiUserController extends BaseController {
 	 */
 	@RequestMapping("/user_myattreduser")
 	@ResponseBody
-	public DataGrid dataGridMyattreduser(UserAttention userAttention, PageHelper ph,HttpServletRequest request) {
-		if(F.empty(userAttention.getUserId())){
-			SessionInfo s = getSessionInfo(request);
-			userAttention.setAttUserId(s.getId());
-		}else{
-			userAttention.setAttUserId(userAttention.getUserId());
+	public Json dataGridMyattreduser(UserAttention userAttention, PageHelper ph,HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			if(F.empty(userAttention.getUserId())){
+				SessionInfo s = getSessionInfo(request);
+				userAttention.setAttUserId(s.getId());
+			}else{
+				userAttention.setAttUserId(userAttention.getUserId());
+			}
+			userAttention.setUserId(null);
+			j.setObj(userAttentionService.dataGridUser(userAttention, ph));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
 		}
-		userAttention.setUserId(null);
-		DataGrid dg = userAttentionService.dataGridUser(userAttention, ph);
-		return dg;
+		return j;
 	}
 	
 	/**

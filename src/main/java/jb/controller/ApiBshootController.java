@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import jb.absx.F;
 import jb.interceptors.TokenManage;
 import jb.model.TbshootComment;
 import jb.pageModel.Bshoot;
@@ -278,11 +279,14 @@ public class ApiBshootController extends BaseController {
 		Json j = new Json();		
 		SessionInfo s = getSessionInfo(request);
 		Bshoot parent = bshootService.get(bshoot.getParentId());
+		if(!F.empty(parent.getParentId())) {
+			bshoot.setParentId(parent.getParentId());
+		}
 		bshoot.setId(UUID.randomUUID().toString());
 		bshoot.setUserId(s.getId());		
-		bshoot.setBsStream(parent.getBsStream());
-		bshoot.setBsIcon(parent.getBsIcon());
-		bshootService.add(bshoot);	
+//		bshoot.setBsStream(parent.getBsStream());
+//		bshoot.setBsIcon(parent.getBsIcon());
+		bshootService.addBshoot(bshoot);	
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
 		return j;

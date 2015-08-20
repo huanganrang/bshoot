@@ -75,10 +75,29 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		DataGrid dg = dataGridByType(hql, ph, bshoot, bshootDao,qtype);
 		@SuppressWarnings("unchecked")
 		List<Tbshoot> l = dg.getRows();
+		Map<String, Bshoot> map = new HashMap<String,Bshoot>();
+		if(qtype == 2) {
+			String[] bshootIds = new String[l.size()];
+			int i = 0;
+			for(Tbshoot b : l){
+				bshootIds[i++] = b.getParentId();
+			}
+			List<Tbshoot> list = bshootDao.getTbshoots(bshootIds);
+			if(list != null) {
+				for(Tbshoot t : list){
+					Bshoot b = new Bshoot();
+					BeanUtils.copyProperties(t, b);
+					map.put(t.getId(), b);
+				}
+			}
+		}
 		if (l != null && l.size() > 0) {
 			for (Tbshoot t : l) {
 				Bshoot o = new Bshoot();
 				BeanUtils.copyProperties(t, o);
+				if(!F.empty(t.getParentId()) && map.containsKey(t.getParentId())) {
+					o.setParentBshoot(map.get(t.getParentId()));
+				}
 				ol.add(o);
 			}
 		}

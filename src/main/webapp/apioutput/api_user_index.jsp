@@ -50,6 +50,10 @@
 						<td align="right" style="width: 180px;"><label>userId(用户ID，空值时为当前用户)：</label></td>
 						<td><input name="userId" type="text" class="span2" value=""/></td>
 					</tr>
+					<tr>
+						<td align="right" style="width: 180px;"><label>nickname(用户昵称)：</label></td>
+						<td><input name="nickname" type="text" class="span2" value=""/>（视频介绍点击@用户进去，传过来请去掉@）</td>
+					</tr>
 					
 					<tr>
 						<td colspan="2" align="center">
