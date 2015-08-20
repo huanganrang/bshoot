@@ -115,7 +115,7 @@ public class Tbshoot implements java.io.Serializable{
 		return this.id;
 	}
 	
-	@Column(name = "bs_title", unique = false, nullable = false, insertable = true, updatable = true, length = 256)
+	@Column(name = "bs_title", unique = false, nullable = true, insertable = true, updatable = true, length = 256)
 	public java.lang.String getBsTitle() {
 		return this.bsTitle;
 	}

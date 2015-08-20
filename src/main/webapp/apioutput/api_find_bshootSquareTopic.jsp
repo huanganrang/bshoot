@@ -34,7 +34,7 @@
 	<div class="easyui-layout" data-options="fit:true">
 		
 		<div data-options="region:'center'">
-			<form id="find_bshootSquareTopic_Form" action="">
+			<form id="find_bshootSquareTopic_Form" action="" method="post">
 				<table align="center" width="90%" class="tablex">
 					<tr>
 						<td align="right" style="width: 80px;"><label>url：</label></td>

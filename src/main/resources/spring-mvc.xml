@@ -77,7 +77,7 @@
 						<value>/api/apiFinderController/bshootSquare</value><!-- 广场页 -->	
 						<value>/api/apiFinderController/bshootSquareTopic</value><!-- 广场话题页 -->	
 						<value>/api/apiFinderController/getBshootSquareDetail</value><!-- 广场详情 -->	
-						<value>/api/apiFinderController/getBshootByCode</value><!-- 广场视频列表 -->											
+						<value>/api/apiFinderController/getBshootBySquare</value><!-- 广场视频列表 -->											
 						<value>/api/bshootController/bshoot_detail</value><!-- 详情 -->
 						<value>/api/bshootController/bshoot_comments</value><!-- 评论 -->	
 						<value>/api/apiUserController/user_index</value><!--个人首页接口 -->	
