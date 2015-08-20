@@ -6,16 +6,16 @@
 
 package jb.model;
 
-import javax.persistence.*;
-
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import jb.util.Constants;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "bshoot_square")
 @DynamicInsert(true)
@@ -43,7 +43,7 @@ public class TbshootSquare implements java.io.Serializable{
 
 	//可以直接使用: @Length(max=50,message="用户名长度不能大于50")显示错误消息
 	//columns START
-	//@Length(max=4)
+	//@Length(max=36)
 	private java.lang.String id;
 	//@NotBlank @Length(max=64)
 	private java.lang.String bssName;
@@ -78,7 +78,7 @@ public class TbshootSquare implements java.io.Serializable{
 	}
 	
 	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 4)
+	@Column(name = "id", unique = true, nullable = false, length = 36)
 	public java.lang.String getId() {
 		return this.id;
 	}

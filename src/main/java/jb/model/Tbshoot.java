@@ -194,7 +194,7 @@ public class Tbshoot implements java.io.Serializable{
 		this.userId = userId;
 	}
 	
-	@Column(name = "bs_description", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
+	@Column(name = "bs_description", unique = false, nullable = true, insertable = true, updatable = true, length = 65535)
 	public java.lang.String getBsDescription() {
 		return this.bsDescription;
 	}

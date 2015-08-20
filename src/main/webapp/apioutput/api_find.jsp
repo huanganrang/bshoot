@@ -15,9 +15,9 @@
 				style="padding: 1px"></div>
 			<div title="广场（话题）" data-options="href:'api_find_bshootSquareTopic.jsp'"
 				style="padding: 1px"></div>	
-			<div title="广场详情页主" data-options="href:'api_find_bshootSquareDetail.jsp'"
+			<div title="广场详情(基本信息)" data-options="href:'api_find_bshootSquareDetail.jsp'"
 				style="padding: 1px"></div>
-			<div title="广场详情页从页" data-options="href:'api_find_getBshootByCode.jsp'"
+			<div title="广场详情（美拍列表）" data-options="href:'api_find_getBshootBySquare.jsp'"
 				style="padding: 1px"></div>	
 			<div title="附近" data-options="href:'api_find_nearbyBshoot.jsp'"
 				style="padding: 1px"></div>				
@@ -40,6 +40,12 @@
 			<div title="收藏取消" data-options="href:'api_bshoot_discollect.jsp'"
 				style="padding: 1px"></div>	 -->	
 			<div title="转发" data-options="href:'api_bshoot_transupload.jsp'"
+				style="padding: 1px"></div>					
+			<div title="播放次数+1" data-options="href:'api_bshoot_addPlay.jsp'"
+				style="padding: 1px"></div>					
+			<div title="首页搜索(美拍列表)" data-options="href:'api_bshoot_bshootSearch.jsp'"
+				style="padding: 1px"></div>					
+			<div title="首页搜索(相关用户)" data-options="href:'api_bshoot_userSearch.jsp'"
 				style="padding: 1px"></div>					
 		</div>
 

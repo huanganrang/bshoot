@@ -10,8 +10,8 @@
 <script type="text/javascript">
 	$(function() {
 	 	parent.$.messager.progress('close');
-		$('#find_bshootSquareTopic_Form').form({
-			url : '${pageContext.request.contextPath}/api/apiFinderController/bshootSquareTopic',
+		$('#bshoot_bshootSearch_Form').form({
+			url : '${pageContext.request.contextPath}/api/bshootController/bshootSearch',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
@@ -25,7 +25,7 @@
 			},
 			success : function(result) {
 				parent.$.messager.progress('close');
-				$("#find_bshootSquareTopic_result").text(result);
+				$("#bshoot_bshootSearch_result").text(result);
 			}
 		});
 	});
@@ -34,15 +34,19 @@
 	<div class="easyui-layout" data-options="fit:true">
 		
 		<div data-options="region:'center'">
-			<form id="find_bshootSquareTopic_Form" action="">
+			<form id="bshoot_bshootSearch_Form" action="">
 				<table align="center" width="90%" class="tablex">
 					<tr>
 						<td align="right" style="width: 80px;"><label>url：</label></td>
-						<td>${pageContext.request.contextPath}/api/apiFinderController/bshootSquareTopic</td>
+						<td>${pageContext.request.contextPath}/api/bshootController/bshoot_bshootSearch</td>
 					</tr>
 					<tr>
-						<td align="right" style="width: 180px;"><label>bssName(话题名称)：</label></td>
-						<td><input name="bssName" type="text" class="span2" value=""/>（模糊搜索）</td>
+						<td align="right" style="width: 180px;"><label>tokenId(token值，登录获取)：</label></td>
+						<td><input name="tokenId" type="text" class="span2" value=""/></td>
+					</tr>
+					<tr>
+						<td align="right" style="width: 180px;"><label>keyword(搜索关键字)：</label></td>
+						<td><input name="keyword" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>page(第几页)：</label></td>
@@ -56,29 +60,16 @@
 					<tr>
 						<td colspan="2" align="center">
 						<input type="button"
-							value="提交" onclick="javascript:$('#find_bshootSquareTopic_Form').submit();" /></td>
+							value="提交" onclick="javascript:$('#bshoot_bshootSearch_Form').submit();" /></td>
 					</tr>
 				</table>
 			</form>
 			<label>结果：</label>
-				<div id="find_bshootSquareTopic_result">
+				<div id="bshoot_bshootSearch_result">
 				</div>
 			<div>
 				结果说明：1、json格式<br/>
 					2、success:true 成功<br/>
-					3、obj:数组格式<br/>
-					id                         主键        <br/> 
-bss_name                   标题        <br/>
-bss_description            描述        <br/>
-bss_icon                   icon图标路径<br/>
-bss_userId                 广场所有者  <br/>
-create_datetime            创建时间    <br/>
-update_datetime            修改时间    <br/>
-create_person              创建人      <br/>
-update_person              修改人      <br/>
-
-
-					  
 			</div>
 		</div>
 	</div>

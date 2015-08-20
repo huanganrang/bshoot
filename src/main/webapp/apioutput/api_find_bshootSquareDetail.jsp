@@ -41,7 +41,7 @@
 						<td>${pageContext.request.contextPath}/api/apiFinderController/getBshootSquareDetail</td>
 					</tr>
 					<tr>
-						<td align="right" style="width: 180px;"><label>id(广场类型id)*：</label></td>
+						<td align="right" style="width: 180px;"><label>id(广场id)*：</label></td>
 						<td><input name="id" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>

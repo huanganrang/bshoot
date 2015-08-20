@@ -21,6 +21,8 @@
 				style="padding: 1px"></div> -->
 			<div title="上传美拍" data-options="href:'api_upload.jsp'"
 				style="padding: 1px"></div>
+			<div title="行政区域查询" data-options="href:'api_region_query.jsp'"
+				style="padding: 1px"></div>
 		</div>
 	</div>	
 </body>

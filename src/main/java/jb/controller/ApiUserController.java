@@ -262,14 +262,30 @@ public class ApiUserController extends BaseController {
 		try {
 			SessionInfo s = getSessionInfo(request);
 			user.setId(s.getId());
-			if(!userService.emailExists(user)) {
-				uploadFile(request, user, headImageFile);
-				userService.edit(user);			
-				j.setSuccess(true);
-				j.setMsg("个人信息修改成功");
-			} else {
-				j.setMsg("邮箱已被使用！");
+			if(!F.empty(user.getEmail())) {
+				User u = new User();
+				u.setEmail(user.getEmail());
+				if(userService.exists(u)) {
+					j.setSuccess(false);
+					j.setMsg("邮箱已被使用！");
+					return j;
+				}
 			}
+			if(!F.empty(user.getNickname())) {
+				User u = new User();
+				u.setNickname(user.getNickname());
+				if(userService.exists(u)) {
+					j.setSuccess(false);
+					j.setMsg("昵称已被使用！");
+					return j;
+				}
+			}
+			
+			uploadFile(request, user, headImageFile);
+			userService.edit(user);			
+			j.setSuccess(true);
+			j.setMsg("个人信息修改成功");
+			
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());
 		}
@@ -404,4 +420,5 @@ public class ApiUserController extends BaseController {
 		}
 		return j;
 	}
+	
 }

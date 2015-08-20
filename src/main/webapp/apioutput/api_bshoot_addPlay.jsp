@@ -10,8 +10,8 @@
 <script type="text/javascript">
 	$(function() {
 	 	parent.$.messager.progress('close');
-		$('#user_info_Form').form({
-			url : '${pageContext.request.contextPath}/api/apiUserController/user_info',
+		$('#bshoot_addPlay_Form').form({
+			url : '${pageContext.request.contextPath}/api/bshootController/bshoot_addPlay',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
@@ -25,7 +25,7 @@
 			},
 			success : function(result) {
 				parent.$.messager.progress('close');
-				$("#user_info_result").text(result);
+				$("#bshoot_addPlay_result").text(result);
 			}
 		});
 	});
@@ -34,41 +34,30 @@
 	<div class="easyui-layout" data-options="fit:true">
 		
 		<div data-options="region:'center'">
-			<form id="user_info_Form" action="">
+			<form id="bshoot_addPlay_Form" action="">
 				<table align="center" width="90%" class="tablex">
 					<tr>
 						<td align="right" style="width: 80px;"><label>url：</label></td>
-						<td>${pageContext.request.contextPath}/api/apiUserController/user_info</td>
-					</tr>					
+						<td>${pageContext.request.contextPath}/api/bshootController/bshoot_addPlay</td>
+					</tr>
 					
 					<tr>
-						<td align="right" style="width: 180px;"><label>tokenId(token值)：</label></td>
-						<td><input name="tokenId" type="text" class="span2" value=""/></td>
+						<td align="right" style="width: 180px;"><label>bshootId(视频ID)：</label></td>
+						<td><input name="bshootId" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
 						<td colspan="2" align="center">
 						<input type="button"
-							value="提交" onclick="javascript:$('#user_info_Form').submit();" /></td>
+							value="提交" onclick="javascript:$('#bshoot_addPlay_Form').submit();" /></td>
 					</tr>
 				</table>
 			</form>
 			<label>结果：</label>
-				<div id="user_info_result">
+				<div id="bshoot_addPlay_result">
 				</div>
 			<div>
 				结果说明：1、json格式<br/>
 					2、success:true 成功<br/>
-					3、name	   登录名         <br/>
-						utype	    账号类型      <br/>
-						third_user	第三方账号  <br/>
-						head_image	头像地址    <br/>
-						nickname	昵称          <br/>
-						sex			性别          <br/>
-						area	地区          <br/>
-						birthday	生日          <br/>
-						bardian		个性签名      <br/>
-						member_v	会员级别      <br/>
-
 			</div>
 		</div>
 	</div>

@@ -5,9 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jb.pageModel.SessionInfo;
-import jb.util.ConfigUtil;
-
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -74,7 +71,11 @@ public class TokenInterceptor implements HandlerInterceptor {
 		if (url.indexOf("/baseController/") > -1 || excludeUrls.contains(url)) {// 如果要访问的资源是不需要验证的
 			return true;
 		}
-		String tokenId = request.getParameter(TokenManage.TOKEN_FIELD);			
+		String tokenId = request.getParameter(TokenManage.TOKEN_FIELD);		
+		if(!tokenManage.validToken(tokenId)) {
+			request.getRequestDispatcher("/api/apiCommon/error").forward(request, response);
+			return false;
+		}		
 		return tokenManage.validToken(tokenId);
 	}
 

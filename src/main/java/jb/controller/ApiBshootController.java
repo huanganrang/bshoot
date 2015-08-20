@@ -260,7 +260,7 @@ public class ApiBshootController extends BaseController {
 			}
 		}
 		
-		bshootService.add(bshoot);	
+		bshootService.addBshoot(bshoot);	
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
 		return j;
@@ -343,4 +343,17 @@ public class ApiBshootController extends BaseController {
 		
 	}
 	
+	/**
+	 * 美拍播放次数+1
+	 * @param bshootPraise
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/bshoot_addPlay")
+	public Json bshootAddPlay(String bshootId) {
+		Json j = new Json();
+		bshootService.updatePlayNum(bshootId);
+		return j;
+	}
 }

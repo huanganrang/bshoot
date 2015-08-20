@@ -3,11 +3,14 @@ package jb.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import jb.interceptors.TokenManage;
 import jb.pageModel.BshootSquare;
 import jb.pageModel.DataGrid;
 import jb.pageModel.Json;
 import jb.pageModel.PageHelper;
+import jb.pageModel.SessionInfo;
 import jb.pageModel.User;
 import jb.service.BshootCollectServiceI;
 import jb.service.BshootServiceI;
@@ -75,16 +78,16 @@ public class ApiFinderController extends BaseController {
 	}	
 	
 	/**
-	 * 根据广场code获取视频信息
+	 * 根据广场ID获取视频信息
 	 * @param ph
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping("/getBshootByCode")
-	public DataGrid getBshootByCode(PageHelper ph,String id) {
+	@RequestMapping("/getBshootBySquare")
+	public DataGrid getBshootBySquare(PageHelper ph,String id) {
 		ph.setOrder("desc");
 		ph.setSort("bsPraise");
-		DataGrid dg = bshootService.dataGridByCode(ph, id);
+		DataGrid dg = bshootService.dataGridBySquare(ph, id);
 		return dg;
 	}	
 	
@@ -135,5 +138,35 @@ public class ApiFinderController extends BaseController {
 		bshootSquare.setBssType("BT01");
 		DataGrid dg = bshootSquareService.dataGrid(bshootSquare, ph);
 		return dg;
+	}
+	
+	/**
+	 * 广场话题自定义
+	 * @param bshootSquare
+	 * @param ph
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/customSquareTopic")
+	public Json customSquareTopic(BshootSquare bshootSquare, HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			bshootSquare.setBssUserId(s.getId());
+			bshootSquare.setBssType("BT01");
+			bshootSquareService.custom(bshootSquare);
+			j.setObj(bshootSquare.getId());
+			j.setSuccess(true);
+			j.setMsg("添加话题成功");
+		} catch (Exception e) {
+			// e.printStackTrace();
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	private SessionInfo getSessionInfo(HttpServletRequest request){
+		SessionInfo s = tokenManage.getSessionInfo(request);
+		return s;
 	}
 }

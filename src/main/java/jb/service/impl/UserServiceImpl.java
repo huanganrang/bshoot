@@ -67,6 +67,12 @@ public class UserServiceImpl implements UserServiceI {
 			throw new Exception("邮箱已被使用！");
 		}
 		params = new HashMap<String, Object>();
+		params.put("nickname", user.getNickname());
+		if(!F.empty(user.getNickname())
+				&& userDao.count("select count(*) from Tuser t where t.nickname = :nickname", params) > 0) {
+			throw new Exception("昵称已被使用！");
+		}
+		params = new HashMap<String, Object>();
 		params.put("recommend", user.getRecommend());
 		if(!F.empty(user.getRecommend())) {
 			Tuser ta = userDao.get("from Tuser t where t.name = :recommend", params);
@@ -77,9 +83,12 @@ public class UserServiceImpl implements UserServiceI {
 			}
 		}
 		
+		if(F.empty(user.getNickname())) {
+			user.setNickname(user.getName());
+		}
+		
 		Tuser u = new Tuser();
 		user.setId(UUID.randomUUID().toString());
-		user.setName(user.getName());
 		user.setPwd(MD5Util.md5(user.getPwd()));
 		user.setCreatedatetime(new Date());
 		BeanUtils.copyProperties(user, u);
@@ -146,6 +155,14 @@ public class UserServiceImpl implements UserServiceI {
 			if (user.getModifydatetimeEnd() != null) {
 				hql += " and t.modifydatetime <= :modifydatetimeEnd";
 				params.put("modifydatetimeEnd", user.getModifydatetimeEnd());
+			}
+			if (!F.empty(user.getEmail())) {
+				hql += " and t.email = :email";
+				params.put("email", user.getEmail());
+			}
+			if (!F.empty(user.getNickname())) {
+				hql += " and t.nickname = :nickname";
+				params.put("nickname", user.getNickname());
 			}
 		}
 		return hql;
@@ -221,20 +238,18 @@ public class UserServiceImpl implements UserServiceI {
 	}
 	
 	/**
-	 * 检查邮箱是否存在
+	 * 修改时检测属性是否存在
 	 */
-	public boolean emailExists(User user) {
-		if(F.empty(user.getEmail())) return false;
-		
+	public boolean exists(User user) {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("email", user.getEmail());
-		Tuser t = userDao.get("from Tuser t where t.email = :email", params);
+		String whereHql = whereHql(user, params);
+		Tuser t = userDao.get("from Tuser t " + whereHql, params);
 		if(t != null && t.getId() != user.getId()) {
 			return true;
 		}
 		return false;
 	}
-
+	
 	@Override
 	public void grant(String ids, User user) {
 		if (ids != null && ids.length() > 0) {

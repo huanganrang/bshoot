@@ -6,16 +6,16 @@
 
 package jb.model;
 
-import javax.persistence.*;
-
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import jb.util.Constants;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "bshoot_to_square")
 @DynamicInsert(true)
@@ -43,7 +43,7 @@ public class TbshootToSquare implements java.io.Serializable{
 	private java.lang.String id;
 	//@Length(max=36)
 	private java.lang.String bshootId;
-	//@Length(max=4)
+	//@Length(max=36)
 	private java.lang.String squareId;
 	//@Length(max=36)
 	private java.lang.String auditorId;
@@ -82,7 +82,7 @@ public class TbshootToSquare implements java.io.Serializable{
 		this.bshootId = bshootId;
 	}
 	
-	@Column(name = "square_id", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
+	@Column(name = "square_id", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
 	public java.lang.String getSquareId() {
 		return this.squareId;
 	}

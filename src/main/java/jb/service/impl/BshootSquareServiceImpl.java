@@ -49,12 +49,12 @@ public class BshootSquareServiceImpl extends BaseServiceImpl<BshootSquare> imple
 		if (bshootSquare != null) {
 			whereHql += " where 1=1 ";
 			if (!F.empty(bshootSquare.getBssName())) {
-				whereHql += " and t.bssName = :bssName";
-				params.put("bssName", bshootSquare.getBssName());
+				whereHql += " and t.bssName like :bssName";
+				params.put("bssName", "%%" + bshootSquare.getBssName() + "%%");
 			}		
 			if (!F.empty(bshootSquare.getBssDescription())) {
-				whereHql += " and t.bssDescription = :bssDescription";
-				params.put("bssDescription", bshootSquare.getBssDescription());
+				whereHql += " and t.bssDescription like :bssDescription";
+				params.put("bssDescription", "%%" + bshootSquare.getBssDescription() + "%%");
 			}		
 			if (!F.empty(bshootSquare.getBssIcon())) {
 				whereHql += " and t.bssIcon = :bssIcon";
@@ -113,6 +113,21 @@ public class BshootSquareServiceImpl extends BaseServiceImpl<BshootSquare> imple
 		bshootSquareDao.delete(bshootSquareDao.get(TbshootSquare.class, id));
 	}
 
-
+	@Override
+	public void custom(BshootSquare bshootSquare) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("bssName", bshootSquare.getBssName());
+		params.put("bssType", bshootSquare.getBssType());
+		TbshootSquare t = bshootSquareDao.get("from TbshootSquare t where t.bssName = :bssName and t.bssType = :bssType", params);
+		if(t != null) {
+			bshootSquare.setId(t.getId());
+		} else {
+			bshootSquare.setId(UUID.randomUUID().toString());
+			t = new TbshootSquare();
+			BeanUtils.copyProperties(bshootSquare, t);
+			t.setCreateDatetime(new Date());
+			bshootSquareDao.save(t);
+		}
+	}
 
 }

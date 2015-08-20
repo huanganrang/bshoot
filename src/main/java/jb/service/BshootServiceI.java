@@ -51,7 +51,7 @@ public interface BshootServiceI {
 	 * @param code
 	 * @return
 	 */
-	public DataGrid dataGridByCode(PageHelper ph,String code);
+	public DataGrid dataGridBySquare(PageHelper ph,String squareId);
 	
 	/**
 	 * 获取Bshoot数据表格
@@ -73,6 +73,8 @@ public interface BshootServiceI {
 	 * @param bshoot
 	 */
 	public void add(Bshoot bshoot);
+	
+	public void addBshoot(Bshoot bshoot);
 
 	/**
 	 * 获得Bshoot对象
@@ -95,5 +97,9 @@ public interface BshootServiceI {
 	 * @param id
 	 */
 	public void delete(String id);
+
+
+	public void updatePlayNum(String id);
+
 
 }

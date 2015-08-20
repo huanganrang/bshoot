@@ -84,7 +84,8 @@
 						<value>/api/apiUserController/user_mybshoots</value><!--个人美拍 -->	
 						<value>/api/apiUserController/user_mytranspond</value><!--个人转发 -->			
 						<value>/api/apiUserController/user_myattruser</value><!--个人关注 -->			
-						<value>/api/apiUserController/user_myattreduser</value><!--个人粉丝 -->									
+						<value>/api/apiUserController/user_myattreduser</value><!--个人粉丝 -->	
+						<value>/api/apiCommon/error</value><!-- token过期错误返回 -->								
 					</list>
 				</property>
 				<property name="tokenManage" ref="tokenManage"/>

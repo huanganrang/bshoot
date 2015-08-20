@@ -17,7 +17,6 @@ import jb.pageModel.Json;
 import jb.pageModel.PageHelper;
 import jb.pageModel.User;
 import jb.service.BasedataServiceI;
-import jb.service.BasetypeServiceI;
 import jb.service.BshootSquareServiceI;
 import jb.service.RoleServiceI;
 import jb.service.UserServiceI;

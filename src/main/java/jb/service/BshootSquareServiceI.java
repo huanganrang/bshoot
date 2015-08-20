@@ -52,4 +52,6 @@ public interface BshootSquareServiceI {
 	 */
 	public void delete(String id);
 
+	public void custom(BshootSquare bshootSquare);
+
 }
