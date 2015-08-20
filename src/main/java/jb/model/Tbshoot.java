@@ -65,6 +65,8 @@ public class Tbshoot implements java.io.Serializable{
 	private java.lang.Integer bsCollect;
 	//
 	private java.lang.Integer bsPraise;
+	//
+	private java.lang.Integer bsPlay;
 	//@Length(max=4)
 	private java.lang.String bsType;
 	//@Length(max=10)
@@ -165,6 +167,15 @@ public class Tbshoot implements java.io.Serializable{
 	
 	public void setBsPraise(java.lang.Integer bsPraise) {
 		this.bsPraise = bsPraise;
+	}
+	
+	@Column(name = "bs_play", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public java.lang.Integer getBsPlay() {
+		return this.bsPlay;
+	}
+	
+	public void setBsPlay(java.lang.Integer bsPlay) {
+		this.bsPlay = bsPlay;
 	}
 	
 	@Column(name = "bs_type", unique = false, nullable = true, insertable = true, updatable = true, length = 4)

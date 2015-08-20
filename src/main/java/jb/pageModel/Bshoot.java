@@ -16,6 +16,7 @@ public class Bshoot implements java.io.Serializable {
 	private java.lang.String bsStream;	
 	private java.lang.Integer bsCollect;	
 	private java.lang.Integer bsPraise;	
+	private java.lang.Integer bsPlay;	
 	private java.lang.String bsType;	
 	private java.lang.String bsComment;	
 	private java.lang.String userId;	
@@ -92,6 +93,15 @@ public class Bshoot implements java.io.Serializable {
 	
 	public java.lang.Integer getBsPraise() {
 		return this.bsPraise;
+	}
+	
+
+	public java.lang.Integer getBsPlay() {
+		return bsPlay;
+	}
+
+	public void setBsPlay(java.lang.Integer bsPlay) {
+		this.bsPlay = bsPlay;
 	}
 	public void setBsType(java.lang.String bsType) {
 		this.bsType = bsType;
