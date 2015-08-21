@@ -193,27 +193,34 @@ public class UserServiceImpl implements UserServiceI {
 
 	@Override
 	public User get(String id) {
+		return get(id, false);
+	}
+	
+	@Override
+	public User get(String id, boolean isBshootUser) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		Tuser t = userDao.get("select distinct t from Tuser t left join fetch t.troles role where t.id = :id", params);
 		User u = new User();
 		BeanUtils.copyProperties(t, u);
-		if (t.getTroles() != null && !t.getTroles().isEmpty()) {
-			String roleIds = "";
-			String roleNames = "";
-			boolean b = false;
-			for (Trole role : t.getTroles()) {
-				if (b) {
-					roleIds += ",";
-					roleNames += ",";
-				} else {
-					b = true;
+		if(!isBshootUser) {
+			if (t.getTroles() != null && !t.getTroles().isEmpty()) {
+				String roleIds = "";
+				String roleNames = "";
+				boolean b = false;
+				for (Trole role : t.getTroles()) {
+					if (b) {
+						roleIds += ",";
+						roleNames += ",";
+					} else {
+						b = true;
+					}
+					roleIds += role.getId();
+					roleNames += role.getName();
 				}
-				roleIds += role.getId();
-				roleNames += role.getName();
+				u.setRoleIds(roleIds);
+				u.setRoleNames(roleNames);
 			}
-			u.setRoleIds(roleIds);
-			u.setRoleNames(roleNames);
 		}
 		return u;
 	}
@@ -478,4 +485,5 @@ public class UserServiceImpl implements UserServiceI {
 		dg.setTotal(userDao.count("select count(*) " + hql, params));
 		return dg;
 	}
+
 }

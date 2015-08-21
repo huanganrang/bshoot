@@ -69,8 +69,8 @@ public class Tbshoot implements java.io.Serializable{
 	private java.lang.Integer bsPlay;
 	//@Length(max=4)
 	private java.lang.String bsType;
-	//@Length(max=10)
-	private java.lang.String bsComment;
+	//
+	private java.lang.Integer bsComment;
 	//@Length(max=36)
 	private java.lang.String userId;
 	//@Length(max=512)
@@ -188,11 +188,11 @@ public class Tbshoot implements java.io.Serializable{
 	}
 	
 	@Column(name = "bs_comment", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
-	public java.lang.String getBsComment() {
+	public java.lang.Integer getBsComment() {
 		return this.bsComment;
 	}
 	
-	public void setBsComment(java.lang.String bsComment) {
+	public void setBsComment(java.lang.Integer bsComment) {
 		this.bsComment = bsComment;
 	}
 	

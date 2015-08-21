@@ -9,9 +9,7 @@ import java.util.UUID;
 
 import jb.absx.F;
 import jb.dao.CommentPraiseDaoI;
-import jb.model.TbshootPraise;
 import jb.model.TcommentPraise;
-import jb.pageModel.BshootPraise;
 import jb.pageModel.CommentPraise;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;

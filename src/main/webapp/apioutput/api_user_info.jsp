@@ -46,6 +46,10 @@
 						<td><input name="tokenId" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
+						<td align="right" style="width: 180px;"><label>userId(用户ID，空值时为当前用户)：</label></td>
+						<td><input name="userId" type="text" class="span2" value=""/></td>
+					</tr>
+					<tr>
 						<td colspan="2" align="center">
 						<input type="button"
 							value="提交" onclick="javascript:$('#user_info_Form').submit();" /></td>

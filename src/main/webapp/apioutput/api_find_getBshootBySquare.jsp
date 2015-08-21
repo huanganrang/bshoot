@@ -42,7 +42,7 @@
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>id(广场id)*：</label></td>
-						<td><input name="id" type="text" class="span2" value="0"/></td>
+						<td><input name="id" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>page(第几页)：</label></td>
@@ -68,6 +68,7 @@
 				结果说明：1、json格式<br/>
 					2、success:true 成功<br/>
 					3、obj:数组格式<br/>
+					id 			视频ID	 <br/>
 					   bs_title		标题	           <br/>
 					bs_topic		主题	           <br/>
 					bs_icon		icon图标路径	     <br/>

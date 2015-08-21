@@ -41,16 +41,20 @@ public class ApiCommentController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/commentPraise")
 	public Json commentPraise(CommentPraise commentPraise,HttpServletRequest request) {
-		Json j = new Json();		
-		SessionInfo s = tokenManage.getSessionInfo(request);
-		commentPraise.setUserId(s.getId());		
-		int r = commentPraiseService.add(commentPraise);
-		if(r==-1){
-			j.setSuccess(false);
-			j.setMsg("已经赞过！");
-		}else{
-			j.setSuccess(true);
-			j.setMsg("成功！");
+		Json j = new Json();	
+		try {
+			SessionInfo s = tokenManage.getSessionInfo(request);
+			commentPraise.setUserId(s.getId());		
+			int r = commentPraiseService.add(commentPraise);
+			if(r==-1){
+				j.setSuccess(false);
+				j.setMsg("已经赞过！");
+			}else{
+				j.setSuccess(true);
+				j.setMsg("成功！");
+			}
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
 		}
 		return j;
 	}
@@ -65,15 +69,19 @@ public class ApiCommentController extends BaseController {
 	@RequestMapping("/disCommentPraise")
 	public Json disCommentPraise(CommentPraise commentPraise,HttpServletRequest request) {
 		Json j = new Json();
-		SessionInfo s = tokenManage.getSessionInfo(request);
-		commentPraise.setUserId(s.getId());
-		int r = commentPraiseService.deleteCommentPraise(commentPraise);
-		if(r==-1){
-			j.setSuccess(false);
-			j.setMsg("已经取消！");
-		}else{
-			j.setSuccess(true);
-			j.setMsg("成功！");
+		try {
+			SessionInfo s = tokenManage.getSessionInfo(request);
+			commentPraise.setUserId(s.getId());
+			int r = commentPraiseService.deleteCommentPraise(commentPraise);
+			if(r==-1){
+				j.setSuccess(false);
+				j.setMsg("已经取消！");
+			}else{
+				j.setSuccess(true);
+				j.setMsg("成功！");
+			}
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
 		}
 		return j;
 	}

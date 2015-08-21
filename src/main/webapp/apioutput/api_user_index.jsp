@@ -52,7 +52,7 @@
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>nickname(用户昵称)：</label></td>
-						<td><input name="nickname" type="text" class="span2" value=""/>（视频介绍点击@用户进去，传过来请去掉@）</td>
+						<td><input name="nickname" type="text" class="span2" value=""/>（点击@用户 进去，传过来请去掉@）</td>
 					</tr>
 					
 					<tr>
@@ -67,8 +67,14 @@
 				</div>
 			<div>
 				结果说明：1、json格式<br/>
-					2、success:true 成功<br/>
-					3、bsNum美拍数,bszNum转发数,headImage头像文件地址,nickname昵称,uaNum关注数,uaedNum粉丝数
+					2、success:true 成功
+					3、bsNum美拍数<br/>
+					bszNum转发数<br/>
+					uaNum关注数<br/>
+					uaedNum粉丝数<br/>
+					headImage头像文件地址<br/>
+					nickname昵称<br/>
+					
 			</div>
 		</div>
 	</div>

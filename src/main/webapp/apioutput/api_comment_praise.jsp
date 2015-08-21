@@ -42,12 +42,12 @@
 					</tr>
 					
 					<tr>
-						<td align="right" style="width: 180px;"><label>commentId(评论ID)：</label></td>
-						<td><input name="commentId" type="text" class="span2" value=""/></td>
-					</tr>
-					<tr>
 						<td align="right" style="width: 180px;"><label>tokenId(token值)：</label></td>
 						<td><input name="tokenId" type="text" class="span2" value=""/></td>
+					</tr>
+					<tr>
+						<td align="right" style="width: 180px;"><label>commentId(评论ID)：</label></td>
+						<td><input name="commentId" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
 						<td colspan="2" align="center">

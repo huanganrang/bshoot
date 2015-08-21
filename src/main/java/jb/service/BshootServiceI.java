@@ -43,7 +43,7 @@ public interface BshootServiceI {
 	 * @param ph
 	 * @return
 	 */
-	public DataGrid dataGridNearby(PageHelper ph,String x,String y);
+	public DataGrid dataGridNearby(PageHelper ph,String x,String y,String userId);
 	
 	/**
 	 * 根据广场Code查询
@@ -64,7 +64,7 @@ public interface BshootServiceI {
 	 *            查询类别
 	 * @return
 	 */
-	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph,int qtype);
+	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph,int qtype, String userId);
 	
 
 	/**

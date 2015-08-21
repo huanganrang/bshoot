@@ -40,14 +40,13 @@
 						<td align="right" style="width: 80px;"><label>url：</label></td>
 						<td>${pageContext.request.contextPath}/api/bshootController/bshoot_detail</td>
 					</tr>
-					
-					<tr>
-						<td align="right" style="width: 180px;"><label>id(视频ID)：</label></td>
-						<td><input name="id" type="text" class="span2" value=""/></td>
-					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>tokenId(token值)：</label></td>
 						<td><input name="tokenId" type="text" class="span2" value=""/></td>
+					</tr>
+					<tr>
+						<td align="right" style="width: 180px;"><label>id(视频ID)：</label></td>
+						<td><input name="id" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
 						<td colspan="2" align="center">
@@ -62,7 +61,7 @@
 			<div>
 				结果说明：1、json格式<br/>
 					2、success:true 成功<br/>
-					praised  -1未登录|0未赞|1已赞
+					praised  -1未登录|0未赞|1已赞<br/>
 					attred  -1未登录|0未关注|1已关注
 			</div>
 		</div>

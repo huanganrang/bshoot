@@ -1,5 +1,7 @@
 ﻿package jb.dao;
 
+import java.util.List;
+
 import jb.model.TuserAttention;
 
 /**
@@ -9,5 +11,7 @@ import jb.model.TuserAttention;
  * 
  */
 public interface UserAttentionDaoI extends BaseDaoI<TuserAttention> {
+
+	public List<TuserAttention> getTuserAttentions(String userId, String[] attUserIds);
 
 }

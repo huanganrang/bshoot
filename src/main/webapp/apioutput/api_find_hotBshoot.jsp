@@ -65,6 +65,7 @@
 				结果说明：1、json格式<br/>
 					2、success:true 成功<br/>
 					3、obj:数组格式<br/>
+					id 			视频ID	 <br/>
 					   bs_title		标题	           <br/>
 					bs_topic		主题	           <br/>
 					bs_icon		icon图标路径	     <br/>

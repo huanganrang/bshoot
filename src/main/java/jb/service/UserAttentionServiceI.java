@@ -23,6 +23,9 @@ public interface UserAttentionServiceI {
 	public DataGrid dataGrid(UserAttention userAttention, PageHelper ph);
 	
 	public DataGrid dataGridUser(UserAttention userAttention, PageHelper ph);
+	
+	public DataGrid dataGridUser(UserAttention userAttention, PageHelper ph,
+			String id);
 
 	/**
 	 * 添加UserAttention

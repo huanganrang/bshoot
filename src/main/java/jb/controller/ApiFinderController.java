@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import jb.interceptors.TokenManage;
 import jb.pageModel.BshootSquare;
-import jb.pageModel.DataGrid;
 import jb.pageModel.Json;
 import jb.pageModel.PageHelper;
 import jb.pageModel.SessionInfo;
@@ -58,11 +57,18 @@ public class ApiFinderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping("/hotBshoot")
-	public DataGrid hotBshoot(PageHelper ph) {
-		ph.setOrder("desc");
-		ph.setSort("bsPraise");
-		DataGrid dg = bshootService.dataGridHot(ph);
-		return dg;
+	public Json hotBshoot(PageHelper ph) {
+		
+		Json j = new Json();
+		try {
+			ph.setOrder("desc");
+			ph.setSort("bsPraise");
+			j.setObj(bshootService.dataGridHot(ph));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}	
 	
 	/**
@@ -72,9 +78,20 @@ public class ApiFinderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping("/nearbyBshoot")
-	public DataGrid nearbyBshoot(PageHelper ph,String lg_x,String lg_y) {
-		DataGrid dg = bshootService.dataGridNearby(ph,lg_x,lg_y);
-		return dg;
+	public Json nearbyBshoot(PageHelper ph,String lg_x,String lg_y, HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			String userId = null;
+			SessionInfo s = getSessionInfo(request);
+			if(s != null) {
+				userId = s.getId();
+			}
+			j.setObj(bshootService.dataGridNearby(ph,lg_x,lg_y,userId));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}	
 	
 	/**
@@ -84,11 +101,17 @@ public class ApiFinderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping("/getBshootBySquare")
-	public DataGrid getBshootBySquare(PageHelper ph,String id) {
-		ph.setOrder("desc");
-		ph.setSort("bsPraise");
-		DataGrid dg = bshootService.dataGridBySquare(ph, id);
-		return dg;
+	public Json getBshootBySquare(PageHelper ph,String id) {
+		Json j = new Json();
+		try {
+			ph.setOrder("desc");
+			ph.setSort("bsPraise");
+			j.setObj(bshootService.dataGridBySquare(ph, id));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}	
 	
 	/**
@@ -101,13 +124,17 @@ public class ApiFinderController extends BaseController {
 	@RequestMapping("/getBshootSquareDetail")
 	public Json getBshootSquareDetail(String id) {
 		Json j = new Json();
-		Map map = new HashMap();
-		BshootSquare bs = bshootSquareService.get(id);
-		User user = userService.get(bs.getBssUserId());
-		map.put("square", bs);
-		map.put("user", user);
-		j.setObj(map);
-		j.success();
+		try {
+			Map map = new HashMap();
+			BshootSquare bs = bshootSquareService.get(id);
+			User user = userService.get(bs.getBssUserId(), true);
+			map.put("square", bs);
+			map.put("user", user);
+			j.setObj(map);
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
 		return j;
 	}	
 	
@@ -120,10 +147,16 @@ public class ApiFinderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping("/bshootSquare")
-	public DataGrid bshootSquare(BshootSquare bshootSquare,PageHelper ph) {
-		bshootSquare.setBssType("BT02");
-		DataGrid dg = bshootSquareService.dataGrid(bshootSquare, ph);
-		return dg;
+	public Json bshootSquare(BshootSquare bshootSquare,PageHelper ph) {
+		Json j = new Json();
+		try {
+			bshootSquare.setBssType("BT02");
+			j.setObj(bshootSquareService.dataGrid(bshootSquare, ph));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}
 	
 	/**
@@ -134,32 +167,14 @@ public class ApiFinderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping("/bshootSquareTopic")
-	public DataGrid bshootSquareTopic(BshootSquare bshootSquare,PageHelper ph) {
-		bshootSquare.setBssType("BT01");
-		DataGrid dg = bshootSquareService.dataGrid(bshootSquare, ph);
-		return dg;
-	}
-	
-	/**
-	 * 广场话题自定义
-	 * @param bshootSquare
-	 * @param ph
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping("/customSquareTopic")
-	public Json customSquareTopic(BshootSquare bshootSquare, HttpServletRequest request) {
+	public Json bshootSquareTopic(BshootSquare bshootSquare,PageHelper ph) {
+		
 		Json j = new Json();
 		try {
-			SessionInfo s = getSessionInfo(request);
-			bshootSquare.setBssUserId(s.getId());
 			bshootSquare.setBssType("BT01");
-			bshootSquareService.custom(bshootSquare);
-			j.setObj(bshootSquare.getId());
-			j.setSuccess(true);
-			j.setMsg("添加话题成功");
+			j.setObj(bshootSquareService.dataGrid(bshootSquare, ph));
+			j.success();
 		} catch (Exception e) {
-			// e.printStackTrace();
 			j.setMsg(e.getMessage());
 		}
 		return j;
@@ -168,5 +183,6 @@ public class ApiFinderController extends BaseController {
 	private SessionInfo getSessionInfo(HttpServletRequest request){
 		SessionInfo s = tokenManage.getSessionInfo(request);
 		return s;
+		
 	}
 }

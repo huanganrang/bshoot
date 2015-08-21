@@ -67,6 +67,308 @@ public class ApiBshootController extends BaseController {
 	private BshootCommentServiceI bshootCommentService;
 	
 	/**
+	 * 美拍点赞
+	 * @param bshootPraise
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/bshoot_praise")
+	public Json bshootPraise(BshootPraise bshootPraise,HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			bshootPraise.setUserId(s.getId());
+			int r = bshootPraiseService.add(bshootPraise);
+			if(r==-1){
+				j.setSuccess(false);
+				j.setMsg("已经赞过了！");
+			}else{
+				j.setSuccess(true);
+				j.setMsg("成功！");
+				Bshoot bshoot = bshootService.get(bshootPraise.getBshootId());
+				addMessage("MT04", bshoot.getUserId(), bshootPraise.getId());
+			}
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	/**
+	 * 美拍取消点赞
+	 * @param bshootPraise
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/bshoot_dispraise")
+	public Json bshootPraiseCancle(BshootPraise bshootPraise,HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			bshootPraise.setUserId(s.getId());
+			int r = bshootPraiseService.deleteBshootPraise(bshootPraise);
+			if(r==-1){
+				j.setSuccess(false);
+				j.setMsg("已经取消！");
+			}else{
+				j.setSuccess(true);
+				j.setMsg("成功！");
+				//addMessage("MT04",bshootPraise.getBshootId());
+			}
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	/**
+	 * 美拍详情
+	 * @param b
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/bshoot_detail")
+	public Json bshootDetail(Bshoot b,HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);		
+			Bshoot bshoot = bshootService.get(b.getId());
+			User user = userService.get(bshoot.getUserId(), true);
+			PageHelper ph = new PageHelper();
+			ph.setPage(1);
+			ph.setRows(20);
+			ph.setSort("commentDatetime");
+			BshootComment bc = new BshootComment();
+			bc.setBshootId(b.getId());
+			DataGrid dataGrid  = null;
+			// 登录情况下
+			if(s != null){
+				// 是否赞过
+				if(bshootPraiseService.get(b.getId(), s.getId()) != null){
+					bshoot.setPraised(Constants.GLOBAL_BOOLEAN_TRUE);
+				}else{
+					bshoot.setPraised(Constants.GLOBAL_BOOLEAN_FALSE);
+				}
+				
+				// 用户是否关注过
+				if(userAttentionService.get(s.getId(), user.getId()) != null){
+					user.setAttred(Constants.GLOBAL_BOOLEAN_TRUE);
+				}else{
+					user.setAttred(Constants.GLOBAL_BOOLEAN_FALSE);
+				}
+				
+				// 评论是否赞过	
+				dataGrid  = bshootCommentService.dataGrid(bc, ph,s.getId());
+				
+			}else{
+				user.setAttred(Constants.GLOBAL_NOT_LOGIN);
+				bshoot.setPraised(Constants.GLOBAL_NOT_LOGIN);
+				dataGrid  = bshootCommentService.dataGrid(bc, ph);
+			}
+			
+			Map<String,Object> obj = new HashMap<String,Object>();
+			obj.put("bshoot", bshoot);
+			obj.put("user", user);
+			obj.put("comments", dataGrid);
+			j.setObj(obj);		
+			j.setSuccess(true);
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	/**
+	 * 上传美拍
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/upload")
+	@ResponseBody
+	public Json uploadBshoot(Bshoot bshoot,@RequestParam MultipartFile[] movies,@RequestParam MultipartFile[] icons, HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			String realPath = request.getSession().getServletContext().getRealPath("/"+Constants.UPLOADFILE+"/"+s.getName());  
+			File file = new File(realPath);
+			bshoot.setId(UUID.randomUUID().toString());
+			bshoot.setUserId(s.getId());
+			if(!file.exists())
+				file.mkdir();
+			
+			for(MultipartFile f : movies){
+				String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
+				String fileName = bshoot.getId()+suffix;
+				bshoot.setBsStream(s.getName()+"/"+fileName);
+				 try {
+					FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			
+			for(MultipartFile f : icons){
+				String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
+				String fileName = bshoot.getId()+suffix;
+				bshoot.setBsIcon(s.getName()+"/"+fileName);
+				 try {
+					FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			
+			bshootService.addBshoot(bshoot);	
+			j.setSuccess(true);
+			j.setMsg("添加成功！");
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	
+	/**
+	 * 转发美拍
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/bshoot_transupload")
+	@ResponseBody
+	public Json uploadBshoot(Bshoot bshoot, HttpServletRequest request) {
+		Json j = new Json();	
+		try {
+			SessionInfo s = getSessionInfo(request);
+			Bshoot parent = bshootService.get(bshoot.getParentId());
+			if(!F.empty(parent.getParentId())) {
+				bshoot.setParentId(parent.getParentId());
+			}
+			bshoot.setId(UUID.randomUUID().toString());
+			bshoot.setUserId(s.getId());		
+	//		bshoot.setBsStream(parent.getBsStream());
+	//		bshoot.setBsIcon(parent.getBsIcon());
+			bshootService.addBshoot(bshoot);	
+			j.setSuccess(true);
+			j.setMsg("添加成功！");	
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+//	/**
+//	 * 获取Bshoot数据表格
+//	 * 
+//	 * @param user
+//	 * @return
+//	 */
+//	@RequestMapping("/dataGrid")
+//	@ResponseBody
+//	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph,HttpServletRequest request) {
+//		DataGrid dg = bshootService.dataGrid(bshoot, ph);
+//		
+//		return dg;
+//	}
+	
+	/**
+	 * 视频评论分页找
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("/bshoot_comments")
+	@ResponseBody
+	public Json dataGridBshoot(BshootComment bshootComment, PageHelper ph,HttpServletRequest request) {
+		
+		Json j = new Json();	
+		try {
+			SessionInfo s = tokenManage.getSessionInfo(request);
+			ph.setSort("commentDatetime");
+			j.setObj(bshootCommentService.dataGrid(bshootComment, ph, s.getId()));
+			j.setSuccess(true);
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	/**
+	 * 添加评论
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/bshoot_addcomment")
+	@ResponseBody
+	public Json addComment(BshootComment bshootComment, HttpServletRequest request) {
+		Json j = new Json();		
+		try {
+			SessionInfo s = getSessionInfo(request);
+			bshootComment.setUserId(s.getId());
+			TbshootComment tbc = bshootCommentService.add(bshootComment);
+			j.setSuccess(true);
+			j.setMsg("添加成功！");		
+			addMessage("MT03",tbc.getId());
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	/**
+	 * 删除评论
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/bshoot_delcomment")
+	@ResponseBody
+	public Json delComment(BshootComment bshootComment, HttpServletRequest request) {
+		Json j = new Json();		
+		try {
+			SessionInfo s = getSessionInfo(request);
+			bshootComment = bshootCommentService.get(bshootComment.getId());
+			if(s.getId().equals(bshootComment.getUserId())) {
+				bshootCommentService.delete(bshootComment.getId());
+				j.setSuccess(true);
+				j.setMsg("删除成功！");
+			} else {
+				j.setSuccess(false);
+				j.setMsg("无权删除他人评论！");	
+			}
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	private SessionInfo getSessionInfo(HttpServletRequest request){
+		SessionInfo s = tokenManage.getSessionInfo(request);
+		return s;
+		
+	}
+	
+	/**
+	 * 美拍播放次数+1
+	 * @param bshootPraise
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/bshoot_addPlay")
+	public Json bshootAddPlay(String bshootId) {
+		Json j = new Json();
+		try {
+			bshootService.updatePlayNum(bshootId);
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	/**
 	 * 美拍收藏
 	 * @param bshoot
 	 * @param request
@@ -115,249 +417,6 @@ public class ApiBshootController extends BaseController {
 		/*bshootCollectService.add(bshoot);			
 		j.setSuccess(true);
 		j.setMsg("成功！");*/
-		return j;
-	}
-	
-	/**
-	 * 美拍点赞
-	 * @param bshootPraise
-	 * @param request
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping("/bshoot_praise")
-	public Json bshootPraise(BshootPraise bshootPraise,HttpServletRequest request) {
-		Json j = new Json();
-		SessionInfo s = getSessionInfo(request);
-		bshootPraise.setUserId(s.getId());
-		int r = bshootPraiseService.add(bshootPraise);
-		if(r==-1){
-			j.setSuccess(false);
-			j.setMsg("已经赞过了！");
-		}else{
-			j.setSuccess(true);
-			j.setMsg("成功！");
-			Bshoot bshoot = bshootService.get(bshootPraise.getBshootId());
-			addMessage("MT04", bshoot.getUserId(), bshootPraise.getId());
-		}
-		return j;
-	}
-	
-	/**
-	 * 美拍取消点赞
-	 * @param bshootPraise
-	 * @param request
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping("/bshoot_dispraise")
-	public Json bshootPraiseCancle(BshootPraise bshootPraise,HttpServletRequest request) {
-		Json j = new Json();
-		SessionInfo s = getSessionInfo(request);
-		bshootPraise.setUserId(s.getId());
-		int r = bshootPraiseService.deleteBshootPraise(bshootPraise);
-		if(r==-1){
-			j.setSuccess(false);
-			j.setMsg("已经取消！");
-		}else{
-			j.setSuccess(true);
-			j.setMsg("成功！");
-			addMessage("MT04",bshootPraise.getBshootId());
-		}
-		return j;
-	}
-	
-	/**
-	 * 美拍详情
-	 * @param b
-	 * @param request
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping("/bshoot_detail")
-	public Json bshootDetail(Bshoot b,HttpServletRequest request) {
-		Json j = new Json();
-		SessionInfo s = getSessionInfo(request);		
-		Bshoot bshoot = bshootService.get(b.getId());
-		User user = userService.get(bshoot.getUserId());
-		PageHelper ph = new PageHelper();
-		ph.setPage(1);
-		ph.setRows(20);
-		ph.setSort("commentDatetime");
-		BshootComment bc = new BshootComment();
-		bc.setBshootId(b.getId());
-		DataGrid dataGrid  = null;
-		//登录情况下
-		if(s != null){
-			//是否赞过
-			
-			if(bshootPraiseService.get(b.getId(), user.getId()) != null){
-				bshoot.setPraised(Constants.GLOBAL_BOOLEAN_TRUE);
-			}else{
-				bshoot.setPraised(Constants.GLOBAL_BOOLEAN_FALSE);
-			}
-			
-			//用户是否关注过
-			if(userAttentionService.get(s.getId(), user.getId()) != null){
-				user.setAttred(Constants.GLOBAL_BOOLEAN_TRUE);
-			}else{
-				user.setAttred(Constants.GLOBAL_BOOLEAN_FALSE);
-			}
-			
-			//评论是否赞过	
-			dataGrid  = bshootCommentService.dataGrid(bc, ph,user.getId());
-			
-		}else{
-			user.setAttred(Constants.GLOBAL_NOT_LOGIN);
-			bshoot.setPraised(Constants.GLOBAL_NOT_LOGIN);
-			dataGrid  = bshootCommentService.dataGrid(bc, ph);
-		}
-		
-		Map<String,Object> obj = new HashMap<String,Object>();
-		obj.put("bshoot", bshoot);
-		obj.put("user", user);
-		obj.put("comments", dataGrid);
-		j.setObj(obj);		
-		j.setSuccess(true);
-		return j;
-	}
-	
-	/**
-	 * 上传美拍
-	 * 
-	 * @return
-	 */
-	@RequestMapping("/upload")
-	@ResponseBody
-	public Json uploadBshoot(Bshoot bshoot,@RequestParam MultipartFile[] movies,@RequestParam MultipartFile[] icons, HttpServletRequest request) {
-		Json j = new Json();		
-		SessionInfo s = getSessionInfo(request);
-		String realPath = request.getSession().getServletContext().getRealPath("/"+Constants.UPLOADFILE+"/"+s.getName());  
-		File file = new File(realPath);
-		bshoot.setId(UUID.randomUUID().toString());
-		bshoot.setUserId(s.getId());
-		if(!file.exists())
-			file.mkdir();
-		
-		for(MultipartFile f : movies){
-			String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
-			String fileName = bshoot.getId()+suffix;
-			bshoot.setBsStream(s.getName()+"/"+fileName);
-			 try {
-				FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		
-		for(MultipartFile f : icons){
-			String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
-			String fileName = bshoot.getId()+suffix;
-			bshoot.setBsIcon(s.getName()+"/"+fileName);
-			 try {
-				FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		
-		bshootService.addBshoot(bshoot);	
-		j.setSuccess(true);
-		j.setMsg("添加成功！");		
-		return j;
-	}
-	
-	
-	/**
-	 * 转发美拍
-	 * 
-	 * @return
-	 */
-	@RequestMapping("/bshoot_transupload")
-	@ResponseBody
-	public Json uploadBshoot(Bshoot bshoot, HttpServletRequest request) {
-		Json j = new Json();		
-		SessionInfo s = getSessionInfo(request);
-		Bshoot parent = bshootService.get(bshoot.getParentId());
-		if(!F.empty(parent.getParentId())) {
-			bshoot.setParentId(parent.getParentId());
-		}
-		bshoot.setId(UUID.randomUUID().toString());
-		bshoot.setUserId(s.getId());		
-//		bshoot.setBsStream(parent.getBsStream());
-//		bshoot.setBsIcon(parent.getBsIcon());
-		bshootService.addBshoot(bshoot);	
-		j.setSuccess(true);
-		j.setMsg("添加成功！");		
-		return j;
-	}
-	
-	
-	
-	
-	/**
-	 * 获取Bshoot数据表格
-	 * 
-	 * @param user
-	 * @return
-	 */
-	@RequestMapping("/dataGrid")
-	@ResponseBody
-	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph,HttpServletRequest request) {
-		DataGrid dg = bshootService.dataGrid(bshoot, ph);
-		
-		return dg;
-	}
-	
-	/**
-	 * 视频评论分页找
-	 * 
-	 * @param user
-	 * @return
-	 */
-	@RequestMapping("/bshoot_comments")
-	@ResponseBody
-	public DataGrid dataGridBshoot(BshootComment bshootComment, PageHelper ph,HttpServletRequest request) {
-		ph.setSort("commentDatetime");
-		DataGrid dg = bshootCommentService.dataGrid(bshootComment, ph);
-		return dg;
-	}
-	
-	/**
-	 * 添加评论
-	 * 
-	 * @return
-	 */
-	@RequestMapping("/bshoot_addcomment")
-	@ResponseBody
-	public Json addComment(BshootComment bshootComment, HttpServletRequest request) {
-		Json j = new Json();		
-		SessionInfo s = getSessionInfo(request);
-		bshootComment.setUserId(s.getId());
-		TbshootComment tbc = bshootCommentService.add(bshootComment);
-		j.setSuccess(true);
-		j.setMsg("添加成功！");		
-		addMessage("MT03",tbc.getId());
-		return j;
-	}
-	
-	private SessionInfo getSessionInfo(HttpServletRequest request){
-		SessionInfo s = tokenManage.getSessionInfo(request);
-		return s;
-		
-	}
-	
-	/**
-	 * 美拍播放次数+1
-	 * @param bshootPraise
-	 * @param request
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping("/bshoot_addPlay")
-	public Json bshootAddPlay(String bshootId) {
-		Json j = new Json();
-		bshootService.updatePlayNum(bshootId);
 		return j;
 	}
 }

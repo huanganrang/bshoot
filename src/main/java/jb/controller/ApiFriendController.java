@@ -3,7 +3,7 @@ package jb.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import jb.interceptors.TokenManage;
-import jb.pageModel.DataGrid;
+import jb.pageModel.Json;
 import jb.pageModel.PageHelper;
 import jb.pageModel.SessionInfo;
 import jb.pageModel.User;
@@ -55,10 +55,17 @@ public class ApiFriendController extends BaseController {
 	 */
 	@RequestMapping("/friend_bshoots")
 	@ResponseBody
-	public DataGrid dataGridMyFriend(PageHelper ph,HttpServletRequest request) {
-		SessionInfo s = getSessionInfo(request);
-		DataGrid dg = bshootService.dataGridByFriend(ph,s.getId());
-		return dg;
+	public Json dataGridMyFriend(PageHelper ph,HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			j.setObj(bshootService.dataGridByFriend(ph,s.getId()));
+			j.setSuccess(true);
+			j.setMsg("查询成功");
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}	
 	
 	/**
@@ -69,13 +76,20 @@ public class ApiFriendController extends BaseController {
 	 */
 	@RequestMapping("/friend_star")
 	@ResponseBody
-	public DataGrid dataGridStar(PageHelper ph,HttpServletRequest request) {
-		SessionInfo s = getSessionInfo(request);
-		User user = new User();
-		user.setId(s.getId());
-		user.setIsStar(true);
-		DataGrid dg = userService.dataGridForApi(user, ph);
-		return dg;
+	public Json dataGridStar(PageHelper ph,HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			User user = new User();
+			user.setId(s.getId());
+			user.setIsStar(true);
+			j.setObj(userService.dataGridForApi(user, ph));
+			j.setSuccess(true);
+			j.setMsg("查询成功");
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}	
 	/**
 	 * 达人
@@ -85,13 +99,21 @@ public class ApiFriendController extends BaseController {
 	 */
 	@RequestMapping("/friend_tarento")
 	@ResponseBody
-	public DataGrid dataGridTarento(PageHelper ph,HttpServletRequest request) {
-		SessionInfo s = getSessionInfo(request);
-		User user = new User();
-		user.setId(s.getId());
-		user.setIsTarento(true);
-		DataGrid dg = userService.dataGridForApi(user, ph);
-		return dg;
+	public Json dataGridTarento(PageHelper ph,HttpServletRequest request) {
+		
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			User user = new User();
+			user.setId(s.getId());
+			user.setIsTarento(true);
+			j.setObj(userService.dataGridForApi(user, ph));
+			j.setSuccess(true);
+			j.setMsg("查询成功");
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}	
 	
 	/**
@@ -102,15 +124,23 @@ public class ApiFriendController extends BaseController {
 	 */
 	@RequestMapping("/friend_search")
 	@ResponseBody
-	public DataGrid dataGridSearch(PageHelper ph,HttpServletRequest request) {
-		SessionInfo s = getSessionInfo(request);
-		User user = new User();
-		user.setId(s.getId());
-		String name = request.getParameter("name");
-		user.setName(name);
-		user.setNickname(name);
-		DataGrid dg = userService.dataGridForApi(user, ph);
-		return dg;
+	public Json dataGridSearch(PageHelper ph,HttpServletRequest request) {
+		
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			User user = new User();
+			user.setId(s.getId());
+			String name = request.getParameter("name");
+			user.setName(name);
+			user.setNickname(name);
+			j.setObj(userService.dataGridForApi(user, ph));
+			j.setSuccess(true);
+			j.setMsg("查询成功");
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}	
 	
 	/**
@@ -121,11 +151,19 @@ public class ApiFriendController extends BaseController {
 	 */
 	@RequestMapping("/friend_hobby")
 	@ResponseBody
-	public DataGrid dataGridHobby(PageHelper ph,HttpServletRequest request) {
-		SessionInfo s = getSessionInfo(request);
-		User user = new User();
-		user.setId(s.getId());
-		DataGrid dg = userService.dataGridHobby(user, ph);
-		return dg;
+	public Json dataGridHobby(PageHelper ph,HttpServletRequest request) {
+		
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			User user = new User();
+			user.setId(s.getId());
+			j.setObj(userService.dataGridHobby(user, ph));
+			j.setSuccess(true);
+			j.setMsg("查询成功");
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}	
 }

@@ -42,12 +42,12 @@
 					</tr>
 					
 					<tr>
-						<td align="right" style="width: 180px;"><label>bshootId(视频ID)：</label></td>
-						<td><input name="bshootId" type="text" class="span2" value=""/></td>
-					</tr>
-					<tr>
 						<td align="right" style="width: 180px;"><label>tokenId(token值，登录获取)：</label></td>
 						<td><input name="tokenId" type="text" class="span2" value=""/></td>
+					</tr>
+					<tr>
+						<td align="right" style="width: 180px;"><label>bshootId(视频ID)：</label></td>
+						<td><input name="bshootId" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>reason(理由)：</label></td>

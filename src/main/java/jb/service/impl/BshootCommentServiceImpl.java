@@ -9,9 +9,12 @@ import java.util.UUID;
 
 import jb.absx.F;
 import jb.dao.BshootCommentDaoI;
+import jb.dao.BshootDaoI;
 import jb.dao.CommentPraiseDaoI;
+import jb.dao.UserDaoI;
 import jb.model.TbshootComment;
 import jb.model.TcommentPraise;
+import jb.model.Tuser;
 import jb.pageModel.BshootComment;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
@@ -30,6 +33,12 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 	
 	@Autowired
 	private CommentPraiseDaoI commentPraiseDao;
+	
+	@Autowired
+	private UserDaoI userDao;
+	
+	@Autowired
+	private BshootDaoI bshootDao;
 
 	@Override
 	public DataGrid dataGrid(BshootComment bshootComment, PageHelper ph) {
@@ -46,9 +55,64 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 			}
 		}
 		dg.setRows(ol);
+		setUserInfo(dg);
 		return dg;
 	}
 	
+
+	@SuppressWarnings("unchecked")
+	private void setUserInfo(DataGrid dataGrid) {
+		List<BshootComment> comments = dataGrid.getRows();
+		if(comments != null && comments.size()>0){
+			
+			List<String> pidList = new ArrayList<String>();
+			
+			List<String> userIdList = new ArrayList<String>();
+			//String[] userIds = new String[comments.size()];
+			//int i = 0;
+			for(BshootComment c : comments){
+				if(!userIdList.contains(c.getUserId())) {
+					userIdList.add(c.getUserId());
+				}
+				//userIds[i++] = c.getUserId();
+				if(!F.empty(c.getParentId()) && !pidList.contains(c.getParentId())) {
+					pidList.add(c.getParentId());
+				}
+			}
+			
+			Map<String, String> pMap = new HashMap<String, String>();
+			if(pidList.size() > 0) {
+				List<TbshootComment> pComments = bshootCommentDao.getTbshootComments(pidList);
+				List<String> pUserIdList = new ArrayList<String>();
+				Map<String, String> cMap = new HashMap<String, String>();
+				for(TbshootComment c : pComments) {
+					if(!pUserIdList.contains(c.getUserId())) {
+						pUserIdList.add(c.getUserId());
+						cMap.put(c.getUserId(), c.getId());
+					}
+				}
+				List<Tuser> list = userDao.getTusers(pUserIdList.toArray(new String[pUserIdList.size()]));
+				for(Tuser t : list) {
+					pMap.put(cMap.get(t.getId()), t.getNickname());
+				}
+			}
+			
+			List<Tuser> list = userDao.getTusers(userIdList.toArray(new String[userIdList.size()]));
+			Map<String, Tuser> map = new HashMap<String, Tuser>();
+			for(Tuser t : list){
+				map.put(t.getId(), t);
+			}
+			for(BshootComment c : comments){
+				Tuser t = map.get(c.getUserId());
+				c.setUserName(t.getNickname());
+				c.setUserHeadImage(t.getHeadImage());
+				if(!F.empty(c.getParentId())) {
+					c.setParentUserName(pMap.get(c.getParentId()));
+				}
+			}
+		}
+	}
+
 
 	protected String whereHql(BshootComment bshootComment, Map<String, Object> params) {
 		String whereHql = "";	
@@ -81,6 +145,7 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 		t.setId(UUID.randomUUID().toString());
 		t.setCommentDatetime(new Date());
 		bshootCommentDao.save(t);
+		updateCount(bshootComment.getBshootId());
 		return t;
 	}
 
@@ -105,10 +170,14 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 
 	@Override
 	public void delete(String id) {
-		bshootCommentDao.delete(bshootCommentDao.get(TbshootComment.class, id));
+		TbshootComment t = bshootCommentDao.get(TbshootComment.class, id);
+		bshootCommentDao.delete(t);
+		deleteCommentPraise(id);
+		updateCountReduce(t.getBshootId());
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public DataGrid dataGrid(BshootComment bshootComment, PageHelper ph,
 			String userId) {
@@ -135,5 +204,22 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 		}	
 		return dataGrid;
 	}
+	
+	private void updateCount(String bshootId){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", bshootId);
+		bshootDao.executeSql("update bshoot t set t.bs_comment = ifnull(t.bs_comment, 0) + 1 where t.id=:id", params);
+	}
 
+	private void updateCountReduce(String bshootId){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", bshootId);
+		bshootDao.executeSql("update bshoot t set t.bs_comment = ifnull(t.bs_comment, 0) - 1 where t.id=:id", params);
+	}
+
+	private void deleteCommentPraise(String commentId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("commentId", commentId);
+		commentPraiseDao.executeSql("delete from comment_praise t where t.comment_id=:commentId", params);
+	}
 }

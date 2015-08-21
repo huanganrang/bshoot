@@ -1,5 +1,7 @@
 ﻿package jb.dao;
 
+import java.util.List;
+
 import jb.model.TbshootPraise;
 
 /**
@@ -9,5 +11,6 @@ import jb.model.TbshootPraise;
  * 
  */
 public interface BshootPraiseDaoI extends BaseDaoI<TbshootPraise> {
+	public List<TbshootPraise> getTbshootPraises(String userId,String[] bshootIds);
 
 }

@@ -114,6 +114,7 @@ public class MessageServiceImpl extends BaseServiceImpl<Message> implements Mess
 	public TmessageCount addAndCount(Message message) {
 		Tmessage t = new Tmessage();
 		BeanUtils.copyProperties(message, t);
+		t.setIsRead(false);
 		t.setId(UUID.randomUUID().toString());
 		t.setCreatedatetime(new Date());
 		messageDao.save(t);
@@ -123,7 +124,8 @@ public class MessageServiceImpl extends BaseServiceImpl<Message> implements Mess
 		List<TmessageCount> messageCounts = messageCountDao.find("from TmessageCount t where t.mtype =:mtype and t.userId = :userId",params);
 		if(messageCounts!=null&&messageCounts.size()>0){
 			TmessageCount tmessageCount = messageCounts.get(0);
-			tmessageCount.setMnumber(tmessageCount.getMnumber()+1);
+			Integer mnumber = tmessageCount.getMnumber();
+			tmessageCount.setMnumber(mnumber == null ? 1 : mnumber + 1);
 			messageCountDao.saveOrUpdate(tmessageCount);
 			return tmessageCount;
 		}else{
@@ -136,6 +138,8 @@ public class MessageServiceImpl extends BaseServiceImpl<Message> implements Mess
 			return tmessageCount;
 				
 		}	
+		
+		
 	}
 
 }

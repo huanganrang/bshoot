@@ -18,10 +18,11 @@ public class Bshoot implements java.io.Serializable {
 	private java.lang.Integer bsPraise;	
 	private java.lang.Integer bsPlay;	
 	private java.lang.String bsType;	
-	private java.lang.String bsComment;	
+	private java.lang.Integer bsComment;	
 	private java.lang.String userId;	
 	private String userHeadImage;
-	
+	private String userName;
+
 	private String userHeadImageAbsolute;
 	private java.lang.String bsIconAbsolute;	
 	private java.lang.String bsStreamAbsolute;	
@@ -109,11 +110,11 @@ public class Bshoot implements java.io.Serializable {
 	public java.lang.String getBsType() {
 		return this.bsType;
 	}
-	public void setBsComment(java.lang.String bsComment) {
+	public void setBsComment(java.lang.Integer bsComment) {
 		this.bsComment = bsComment;
 	}
 	
-	public java.lang.String getBsComment() {
+	public java.lang.Integer getBsComment() {
 		return this.bsComment;
 	}
 	public void setUserId(java.lang.String userId) {
@@ -200,6 +201,14 @@ public class Bshoot implements java.io.Serializable {
 
 	public void setUserHeadImage(String userHeadImage) {
 		this.userHeadImage = userHeadImage;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public String getPraised() {

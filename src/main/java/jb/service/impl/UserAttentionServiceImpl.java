@@ -18,6 +18,7 @@ import jb.pageModel.PageHelper;
 import jb.pageModel.User;
 import jb.pageModel.UserAttention;
 import jb.service.UserAttentionServiceI;
+import jb.util.Constants;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +144,35 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		dg.setRows(ol);
 		return dg;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public DataGrid dataGridUser(UserAttention userAttention, PageHelper ph, String userId) {
+		DataGrid dg = dataGridUser(userAttention, ph);
+		List<User> users = dg.getRows();
+		if(users!=null&&users.size()>0){
+			String[] attUserIds = new String[users.size()];
+			int i = 0;
+			for(User u :users){
+				attUserIds[i++] = u.getId();
+			}
+			List<TuserAttention> list = userAttentionDao.getTuserAttentions(userId, attUserIds);
+			Map<String,String> map = new HashMap<String,String>();
+			for(TuserAttention t : list){
+				map.put(t.getAttUserId(), t.getAttUserId());
+			}
+			for(User u :users){
+				if(map.get(u.getId())!=null){
+					u.setAttred(Constants.GLOBAL_BOOLEAN_TRUE);
+				}else{
+					u.setAttred(Constants.GLOBAL_BOOLEAN_FALSE);
+				}
+			}
+		}	
+		return dg;
+	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private DataGrid dataGridByType(PageHelper ph,UserAttention userAttention,BaseDaoI dao){
 		DataGrid dg = new DataGrid();
 		String hql = "select u from Tuser u ,TuserAttention t  ";

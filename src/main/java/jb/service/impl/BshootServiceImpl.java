@@ -2,9 +2,11 @@ package jb.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,8 +14,11 @@ import java.util.regex.Pattern;
 import jb.absx.F;
 import jb.dao.BaseDaoI;
 import jb.dao.BshootDaoI;
+import jb.dao.BshootPraiseDaoI;
 import jb.dao.UserDaoI;
+import jb.listener.Application;
 import jb.model.Tbshoot;
+import jb.model.TbshootPraise;
 import jb.model.Tuser;
 import jb.pageModel.Bshoot;
 import jb.pageModel.BshootSquare;
@@ -25,6 +30,7 @@ import jb.service.BshootServiceI;
 import jb.service.BshootSquareRelServiceI;
 import jb.service.BshootSquareServiceI;
 import jb.service.BshootUserRelServiceI;
+import jb.util.Constants;
 import jb.util.MyBeanUtils;
 import jb.util.PathUtil;
 import jb.util.RoundTool;
@@ -50,6 +56,9 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	
 	@Autowired
 	private BshootUserRelServiceI bshootUserRelService;
+	
+	@Autowired
+	private BshootPraiseDaoI bshootPraiseDao;
 
 	@Override
 	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph) {
@@ -69,7 +78,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		return dg;
 	}
 	@Override
-	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph, int qtype) {
+	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph, int qtype, String userId) {
 		List<Bshoot> ol = new ArrayList<Bshoot>();
 		String hql = " from Tbshoot t ";
 		DataGrid dg = dataGridByType(hql, ph, bshoot, bshootDao,qtype);
@@ -83,12 +92,16 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 				bshootIds[i++] = b.getParentId();
 			}
 			List<Tbshoot> list = bshootDao.getTbshoots(bshootIds);
+			List<Bshoot> blist = new ArrayList<Bshoot>();
 			if(list != null) {
 				for(Tbshoot t : list){
 					Bshoot b = new Bshoot();
 					BeanUtils.copyProperties(t, b);
 					map.put(t.getId(), b);
+					blist.add(b);
 				}
+				setPraised(blist, userId);
+				setUserInfo(blist);
 			}
 		}
 		if (l != null && l.size() > 0) {
@@ -101,13 +114,15 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 				ol.add(o);
 			}
 		}
+		if(qtype == 1) {
+			setPraised(ol, userId);
+		} else {
+			setUserInfo(ol);
+		}
 		dg.setRows(ol);
 		return dg;
 	}
 	
-	
-	
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private DataGrid dataGridByType(String hql,PageHelper ph,Bshoot t,BaseDaoI dao,int qtype){
 		DataGrid dg = new DataGrid();
@@ -127,10 +142,8 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		return dg;
 	}
 	
-	
-	
 	protected String whereHql(Bshoot bshoot, Map<String, Object> params) {
-		String whereHql = " where status=1 ";	
+		String whereHql = " where t.status=1 and t.parentId is null";	
 		if (bshoot != null) {
 			if (!F.empty(bshoot.getBsTitle())) {
 				whereHql += " and t.bsTitle = :bsTitle";
@@ -160,10 +173,10 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 				whereHql += " and t.bsType = :bsType";
 				params.put("bsType", bshoot.getBsType());
 			}		
-			if (!F.empty(bshoot.getBsComment())) {
+			/*if (!F.empty(bshoot.getBsComment())) {
 				whereHql += " and t.bsComment = :bsComment";
 				params.put("bsComment", bshoot.getBsComment());
-			}		
+			}	*/	
 			if (!F.empty(bshoot.getUserId())) {
 				whereHql += " and t.userId = :userId";
 				params.put("userId", bshoot.getUserId());
@@ -195,6 +208,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		Tbshoot t = new Tbshoot();
 		BeanUtils.copyProperties(bshoot, t);
 		t.setStatus("1");
+		t.setCreateDatetime(new Date());
 		bshootDao.save(t);
 		updateLocation(t);
 	}
@@ -324,14 +338,12 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 				ol.add(o);
 			}
 		}
+		setUserInfo(ol);
 		dg.setRows(ol);
-		setUserHeadImage(dg);
 		return dg;
 	}
 	
-	@SuppressWarnings("unchecked")
-	private void setUserHeadImage(DataGrid dataGrid){
-		List<Bshoot> bshoots = dataGrid.getRows();
+	private void setUserInfo(List<Bshoot> bshoots){
 		if(bshoots!=null&&bshoots.size()>0){
 			String[] userIds = new String[bshoots.size()];
 			int i = 0;
@@ -339,37 +351,75 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 				userIds[i++] = b.getUserId();
 			}
 			List<Tuser> list = userDao.getTusers(userIds);
-			Map<String,String> map = new HashMap<String,String>();
+			Map<String,Tuser> map = new HashMap<String,Tuser>();
 			for(Tuser t : list){
-				map.put(t.getId(), t.getHeadImage());
+				map.put(t.getId(), t);
 			}
 			for(Bshoot b :bshoots){
-				b.setUserHeadImage(map.get(b.getUserId()));
+				Tuser t = map.get(b.getUserId());
+				b.setUserHeadImage(t.getHeadImage());
+				b.setUserName(F.empty(t.getNickname()) ? t.getName() : t.getNickname());
+			}
+		}
+	}
+	
+	private void setPraised(List<Bshoot> bshoots, String userId){
+		if(bshoots!=null&&bshoots.size()>0){
+			String[] bshootIds = new String[bshoots.size()];
+			int i = 0;
+			for(Bshoot b :bshoots){
+				bshootIds[i++] = b.getId();
+			}
+			List<TbshootPraise> listBshootPraises = bshootPraiseDao.getTbshootPraises(userId, bshootIds);
+			Map<String,String> map = new HashMap<String,String>();
+			for(TbshootPraise t : listBshootPraises){
+				map.put(t.getBshootId(), t.getBshootId());
+			}
+			for(Bshoot b :bshoots){
+				if(map.get(b.getId())!=null){
+					b.setPraised(Constants.GLOBAL_BOOLEAN_TRUE);
+				}else{
+					b.setPraised(Constants.GLOBAL_BOOLEAN_FALSE);
+				}
 			}
 		}
 	}
 	
 	@Override
-	public DataGrid dataGridNearby(PageHelper ph,String xStr,String yStr) {
+	public DataGrid dataGridNearby(PageHelper ph,String xStr,String yStr, String userId) {
 		double x = RoundTool.round(new Double(xStr), 6, BigDecimal.ROUND_UP);
 		double y = RoundTool.round(new Double(yStr), 6, BigDecimal.ROUND_UP);
 		List<Map<String,Object>> list = bshootDao.executeNearby(ph.getPage(), ph.getRows(), x, y);
 		DataGrid dataGrid = new DataGrid();
 		int i = 0;
 		String[] userIds = new String[list.size()];
+		String[] bshootIds = new String[list.size()];
 		for(Map<String,Object> bshoot : list){
 			userIds[i++] = (String)bshoot.get("user_id");
+			bshootIds[i++] = (String)bshoot.get("id");
 		}
 		List<Tuser> listUsers = userDao.getTusers(userIds);
 		Map<String,Tuser> map = new HashMap<String,Tuser>();
 		for(Tuser t : listUsers){
 			map.put(t.getId(), t);
 		}
+		Map<String,String> pMap = new HashMap<String,String>();
+		if(userId != null) {
+			List<TbshootPraise> listBshootPraises = bshootPraiseDao.getTbshootPraises(userId, bshootIds);
+			for(TbshootPraise t : listBshootPraises){
+				pMap.put(t.getBshootId(), t.getBshootId());
+			}
+		}
 		for(Map<String,Object> b :list){
 			Tuser t = map.get((String)b.get("user_id"));
 			b.put("userHeadImage",PathUtil.getHeadImagePath(t.getHeadImage()));
 			b.put("nickname",t.getNickname());
 			b.put("memberV", t.getMemberV());
+			if(pMap.get((String)b.get("id"))!=null){
+				b.put("praised", Constants.GLOBAL_BOOLEAN_TRUE);
+			}else{
+				b.put("praised", Constants.GLOBAL_BOOLEAN_FALSE);
+			}
 		}
 		dataGrid.setRows(list);
 		
@@ -379,7 +429,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	public DataGrid dataGridByFriend(PageHelper ph, String userId) {
 		DataGrid dg = new DataGrid();
 		List<Bshoot> ol = new ArrayList<Bshoot>();
-		String hql = "select t from Tbshoot t , TuserAttention ua where t.userId = ua.attUserId and ua.userId = :userId and t.status=1";
+		String hql = "select t from Tbshoot t , TuserAttention ua where t.userId = ua.attUserId and ua.userId = :userId and t.status=1 and t.parentId is null";
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
 		
@@ -392,15 +442,30 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 				ol.add(o);
 			}
 		}
+		setUserInfo(ol);
 		dg.setRows(ol);
-		setUserHeadImage(dg);
 		return dg;
 	}
 	
 	@Override
 	public void updatePlayNum(String id) {
+		int addNum = 1;
+		try {
+			String numStr = Application.getString("SV400");
+			if(!F.empty(numStr)) {
+				int num = Integer.valueOf(numStr);
+				if(num > 0) {
+					addNum = num;
+				} else if(num < 0) {
+					Random random = new Random();
+					addNum = random.nextInt(-num) + 1;
+				}
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
-		bshootDao.executeSql("update bshoot t set t.bs_play = ifnull(t.bs_play, 0) + 1 where t.id=:id", params);
+		bshootDao.executeSql("update bshoot t set t.bs_play = ifnull(t.bs_play, 0) + "+addNum+" where t.id=:id", params);
 	}
 }

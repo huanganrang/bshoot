@@ -20,19 +20,21 @@
 			<div title="广场详情（美拍列表）" data-options="href:'api_find_getBshootBySquare.jsp'"
 				style="padding: 1px"></div>	
 			<div title="附近" data-options="href:'api_find_nearbyBshoot.jsp'"
-				style="padding: 1px"></div>				
-			<div title="点赞" data-options="href:'api_bshoot_praise.jsp'"
-				style="padding: 1px"></div>
-			<div title="取消赞" data-options="href:'api_bshoot_dispraise.jsp'"
 				style="padding: 1px"></div>	
-			<div title="详情" data-options="href:'api_bshoot_detail.jsp'"
+			<div title="美拍详情" data-options="href:'api_bshoot_detail.jsp'"
+				style="padding: 1px"></div>				
+			<div title="美拍点赞" data-options="href:'api_bshoot_praise.jsp'"
+				style="padding: 1px"></div>
+			<div title="取消美拍赞" data-options="href:'api_bshoot_dispraise.jsp'"
 				style="padding: 1px"></div>	
 			<div title="发表评论" data-options="href:'api_bshoot_addcomment.jsp'"
 				style="padding: 1px"></div>	
-			<div title="取消评论赞" data-options="href:'api_comment_dispraise.jsp'"
+			<div title="删除评论" data-options="href:'api_bshoot_delcomment.jsp'"
 				style="padding: 1px"></div>	
 			<div title="评论赞" data-options="href:'api_comment_praise.jsp'"
-				style="padding: 1px"></div>		
+				style="padding: 1px"></div>	
+			<div title="取消评论赞" data-options="href:'api_comment_dispraise.jsp'"
+				style="padding: 1px"></div>	
 			<div title="评论分页查" data-options="href:'api_bshoot_comments.jsp'"
 				style="padding: 1px"></div>
 			<!-- <div title="收藏" data-options="href:'api_bshoot_collect.jsp'"

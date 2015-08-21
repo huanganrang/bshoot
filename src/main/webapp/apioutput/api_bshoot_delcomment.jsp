@@ -10,8 +10,8 @@
 <script type="text/javascript">
 	$(function() {
 	 	parent.$.messager.progress('close');
-		$('#bshoot_praise_Form').form({
-			url : '${pageContext.request.contextPath}/api/bshootController/bshoot_praise',
+		$('#bshoot_delcomment_Form').form({
+			url : '${pageContext.request.contextPath}/api/bshootController/bshoot_delcomment',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
@@ -25,7 +25,7 @@
 			},
 			success : function(result) {
 				parent.$.messager.progress('close');
-				$("#bshoot_praise_result").text(result);
+				$("#bshoot_delcomment_result").text(result);
 			}
 		});
 	});
@@ -34,34 +34,38 @@
 	<div class="easyui-layout" data-options="fit:true">
 		
 		<div data-options="region:'center'">
-			<form id="bshoot_praise_Form" action="">
+			<form id="bshoot_delcomment_Form" action="">
 				<table align="center" width="90%" class="tablex">
 					<tr>
 						<td align="right" style="width: 80px;"><label>url：</label></td>
-						<td>${pageContext.request.contextPath}/api/bshootController/bshoot_praise</td>
+						<td>${pageContext.request.contextPath}/api/bshootController/bshoot_delcomment</td>
 					</tr>
 					
 					<tr>
-						<td align="right" style="width: 180px;"><label>tokenId(token值)：</label></td>
+						<td align="right" style="width: 180px;"><label>tokenId(*token值)：</label></td>
 						<td><input name="tokenId" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
-						<td align="right" style="width: 180px;"><label>bshootId(视频ID)：</label></td>
-						<td><input name="bshootId" type="text" class="span2" value=""/></td>
+						<td align="right" style="width: 180px;"><label>id(*评论ID)：</label></td>
+						<td><input name="id" type="text" class="span2" value=""/></td>
 					</tr>
+					
 					<tr>
 						<td colspan="2" align="center">
 						<input type="button"
-							value="提交" onclick="javascript:$('#bshoot_praise_Form').submit();" /></td>
+							value="提交" onclick="javascript:$('#bshoot_delcomment_Form').submit();" /></td>
 					</tr>
 				</table>
 			</form>
 			<label>结果：</label>
-				<div id="bshoot_praise_result">
+				<div id="bshoot_delcomment_result">
 				</div>
 			<div>
 				结果说明：1、json格式<br/>
 					2、success:true 成功<br/>
+					 
+
+					  
 			</div>
 		</div>
 	</div>

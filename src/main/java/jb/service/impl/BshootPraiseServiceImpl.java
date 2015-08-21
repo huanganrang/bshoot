@@ -147,6 +147,7 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public DataGrid dataGridLike(BshootPraise bshootPraise, PageHelper ph) {	
 		List<BshootPraiseExt> ol = new ArrayList<BshootPraiseExt>();
@@ -172,10 +173,8 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 				try {
 					org.apache.commons.beanutils.BeanUtils.populate(o, t);
 				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				ol.add(o);

@@ -71,14 +71,18 @@ public class ApiUserController extends BaseController {
 	@RequestMapping("/login")
 	public Json login(User user, HttpSession session, HttpServletRequest request) {
 		Json j = new Json();
-		User u = userService.login(user);
-		if (u != null) {
-			String tid = tokenManage.buildToken(user.getId(),user.getName());
-			j.setObj(tid);
-			j.setSuccess(true);
-			j.setMsg("登陆成功！");
-		} else {
-			j.setMsg("用户名或密码错误！");
+		try {
+			User u = userService.login(user);
+			if (u != null) {
+				String tid = tokenManage.buildToken(user.getId(),user.getName());
+				j.setObj(tid);
+				j.setSuccess(true);
+				j.setMsg("登陆成功！");
+			} else {
+				j.setMsg("用户名或密码错误！");
+			}
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
 		}
 		return j;
 	}
@@ -149,16 +153,20 @@ public class ApiUserController extends BaseController {
 	@RequestMapping("/user_attention")
 	public Json userAttention(UserAttention ua,HttpServletRequest request) {
 		Json j = new Json();		
-		SessionInfo s = getSessionInfo(request);
-		ua.setUserId(s.getId());		
-		int r = userAttentionService.add(ua);
-		if(r==-1){
-			j.setSuccess(false);
-			j.setMsg("已经关注！");
-		}else{
-			j.setSuccess(true);
-			j.setMsg("成功！");
-			addMessage("MT01",ua.getAttUserId(),ua.getUserId());
+		try {
+			SessionInfo s = getSessionInfo(request);
+			ua.setUserId(s.getId());		
+			int r = userAttentionService.add(ua);
+			if(r==-1){
+				j.setSuccess(false);
+				j.setMsg("已经关注！");
+			}else{
+				j.setSuccess(true);
+				j.setMsg("成功！");
+				addMessage("MT01",ua.getAttUserId(),ua.getUserId());
+			}
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
 		}
 		
 		return j;
@@ -176,15 +184,19 @@ public class ApiUserController extends BaseController {
 	@RequestMapping("/user_disattention")
 	public Json disUserAttention(UserAttention ua,HttpServletRequest request) {
 		Json j = new Json();
-		SessionInfo s = getSessionInfo(request);
-		ua.setUserId(s.getId());
-		int r = userAttentionService.deleteUa(ua);
-		if(r==-1){
-			j.setSuccess(false);
-			j.setMsg("已经取消！");
-		}else{
-			j.setSuccess(true);
-			j.setMsg("成功！");
+		try {
+			SessionInfo s = getSessionInfo(request);
+			ua.setUserId(s.getId());
+			int r = userAttentionService.deleteUa(ua);
+			if(r==-1){
+				j.setSuccess(false);
+				j.setMsg("已经取消！");
+			}else{
+				j.setSuccess(true);
+				j.setMsg("成功！");
+			}
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
 		}
 		return j;
 	}
@@ -199,44 +211,49 @@ public class ApiUserController extends BaseController {
 	@RequestMapping("/user_index")
 	public Json userIndex(HttpServletRequest request) {
 		Json j = new Json();
-		String userId = request.getParameter("userId");
-		String nickname = request.getParameter("nickname");
-		SessionInfo s = getSessionInfo(request);
-		if(F.empty(userId)){
-			userId = s.getId();
-		}
-		if(!F.empty(nickname)) {
-			nickname = nickname.startsWith("@") ? nickname.substring(1) : nickname;
-			User u = new User();
-			u.setNickname(nickname);
-			u = userService.get(u);
-			if(u == null) {
+		try {
+			String userId = request.getParameter("userId");
+			String nickname = request.getParameter("nickname");
+			SessionInfo s = getSessionInfo(request);
+			if(F.empty(userId)){
+				userId = s.getId();
+			}
+			if(!F.empty(nickname)) {
+				nickname = nickname.startsWith("@") ? nickname.substring(1) : nickname;
+				User u = new User();
+				u.setNickname(nickname);
+				u = userService.get(u);
+				if(u == null) {
+					j.setSuccess(false);
+					j.setMsg("不存在该用户");
+					return j;
+				} else {
+					userId = u.getId();
+				}
+			}
+			Map map = userService.userIndex(userId);
+			if(s!=null){
+				if(userAttentionService.get(s.getId(), userId)!=null){
+					map.put("attred", Constants.GLOBAL_BOOLEAN_TRUE);
+				}else{
+					map.put("attred", Constants.GLOBAL_BOOLEAN_FALSE);
+				}
+			}else{
+				map.put("attred", Constants.GLOBAL_NOT_LOGIN);
+			}
+			if(map == null){
 				j.setSuccess(false);
 				j.setMsg("不存在该用户");
-				return j;
-			} else {
-				userId = u.getId();
-			}
-		}
-		Map map = userService.userIndex(userId);
-		if(s!=null){
-			if(userAttentionService.get(s.getId(), userId)!=null){
-				map.put("attred", Constants.GLOBAL_BOOLEAN_TRUE);
 			}else{
-				map.put("attred", Constants.GLOBAL_BOOLEAN_FALSE);
+				User user = userService.get(userId, true);
+				map.put("user", user);
+				j.setSuccess(true);
+				j.setObj(map);
 			}
-		}else{
-			map.put("attred", Constants.GLOBAL_NOT_LOGIN);
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
 		}
-		if(map == null){
-			j.setSuccess(false);
-			j.setMsg("不存在该用户");
-		}else{
-			User user = userService.get(userId);
-			map.put("user", user);
-			j.setSuccess(true);
-			j.setObj(map);
-		}
+		
 		return j;
 	}
 	
@@ -247,17 +264,24 @@ public class ApiUserController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping("/user_info")
-	public Json userInfo(HttpServletRequest request) {
+	public Json userInfo(String userId, HttpServletRequest request) {
 		Json j = new Json();
-		SessionInfo s = getSessionInfo(request);
-		User user = userService.get(s.getId());
-		if(user == null){
-			j.setSuccess(false);
-			j.setMsg("不存在该用户");
-		}else{
-			user.setPwd(null);
-			j.setSuccess(true);
-			j.setObj(user);
+		try {
+			SessionInfo s = getSessionInfo(request);
+			if(F.empty(userId))
+				userId = s.getId();
+			User user = userService.get(userId, true);
+			if(user == null){
+				j.setSuccess(false);
+				j.setMsg("不存在该用户");
+			}else{
+				user.setPwd(null);
+				j.setSuccess(true);
+				j.setObj(user);
+			}
+		
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
 		}
 		return j;
 	}
@@ -317,11 +341,11 @@ public class ApiUserController extends BaseController {
 		
 		Json j = new Json();
 		try {
+			SessionInfo s = getSessionInfo(request);
 			if(F.empty(bshoot.getUserId())){
-				SessionInfo s = getSessionInfo(request);
 				bshoot.setUserId(s.getId());
 			}
-			j.setObj(bshootService.dataGrid(bshoot, ph,1));
+			j.setObj(bshootService.dataGrid(bshoot, ph, 1, s.getId()));
 			j.success();
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());
@@ -342,11 +366,11 @@ public class ApiUserController extends BaseController {
 	public Json dataGridMytranspond(Bshoot bshoot, PageHelper ph,HttpServletRequest request) {
 		Json j = new Json();
 		try {
+			SessionInfo s = getSessionInfo(request);
 			if(F.empty(bshoot.getUserId())){
-				SessionInfo s = getSessionInfo(request);
 				bshoot.setUserId(s.getId());
 			}
-			j.setObj(bshootService.dataGrid(bshoot, ph,2));
+			j.setObj(bshootService.dataGrid(bshoot, ph,2,s.getId()));
 			j.success();
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());
@@ -418,14 +442,14 @@ public class ApiUserController extends BaseController {
 	public Json dataGridMyattreduser(UserAttention userAttention, PageHelper ph,HttpServletRequest request) {
 		Json j = new Json();
 		try {
+			SessionInfo s = getSessionInfo(request);
 			if(F.empty(userAttention.getUserId())){
-				SessionInfo s = getSessionInfo(request);
 				userAttention.setAttUserId(s.getId());
 			}else{
 				userAttention.setAttUserId(userAttention.getUserId());
 			}
 			userAttention.setUserId(null);
-			j.setObj(userAttentionService.dataGridUser(userAttention, ph));
+			j.setObj(userAttentionService.dataGridUser(userAttention, ph, s.getId()));
 			j.success();
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());
@@ -442,17 +466,21 @@ public class ApiUserController extends BaseController {
 	@RequestMapping("/user_bshootToSquare")
 	@ResponseBody
 	public Json bshootToSquare(BshootToSquare bshootToSquare, HttpServletRequest request) {
-		Json j = new Json();		
-		int i = bshootToSquareService.addFromUser(bshootToSquare);
-		if(i==1){
-			j.setSuccess(true);
-			j.setMsg("添加成功！");		
-		}else if(i==-1){
-			j.setSuccess(false);
-			j.setMsg("在审核中或已经上传到广场");	
-		}else{
-			j.setSuccess(false);
-			j.setMsg("失败");
+		Json j = new Json();	
+		try {
+			int i = bshootToSquareService.addFromUser(bshootToSquare);
+			if(i==1){
+				j.setSuccess(true);
+				j.setMsg("添加成功！");		
+			}else if(i==-1){
+				j.setSuccess(false);
+				j.setMsg("在审核中或已经上传到广场");	
+			}else{
+				j.setSuccess(false);
+				j.setMsg("失败");
+			}
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
 		}
 		return j;
 	}

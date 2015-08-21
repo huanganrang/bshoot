@@ -81,6 +81,14 @@ public interface UserServiceI {
 	 */
 	public User get(String id);
 	
+	/**
+	 * 获得用户对象
+	 * @param id
+	 * @param isBshootUser 是否美拍用户
+	 * @return
+	 */
+	public User get(String id, boolean isBshootUser);
+	
 	public User get(User user);
 
 	/**
@@ -166,5 +174,6 @@ public interface UserServiceI {
 	 * @return
 	 */
 	public Map<String,Object> userIndex(String userId);
+
 
 }

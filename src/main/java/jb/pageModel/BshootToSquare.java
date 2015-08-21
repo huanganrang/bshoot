@@ -2,7 +2,6 @@ package jb.pageModel;
 
 import java.util.Date;
 
-@SuppressWarnings("serial")
 public class BshootToSquare implements java.io.Serializable {
 
 	private static final long serialVersionUID = 5454155825314635342L;
