@@ -150,7 +150,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	public DataGrid dataGridUser(UserAttention userAttention, PageHelper ph, String userId) {
 		DataGrid dg = dataGridUser(userAttention, ph);
 		List<User> users = dg.getRows();
-		if(users!=null&&users.size()>0){
+		if(userId != null && users!=null&&users.size()>0){
 			String[] attUserIds = new String[users.size()];
 			int i = 0;
 			for(User u :users){
@@ -183,7 +183,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 			params.put("userId",userAttention.getUserId());
 		//我的粉丝	
 		}else if(!F.empty(userAttention.getAttUserId())){
-			hql +="where u.id = t.attUserId and t.attUserId = :userId";
+			hql +="where u.id = t.userId and t.attUserId = :userId";
 			params.put("userId",userAttention.getAttUserId());
 		}		
 		List<Bshoot> l = dao.find(hql   + orderHql(ph), params, ph.getPage(), ph.getRows());

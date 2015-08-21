@@ -100,7 +100,9 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 					map.put(t.getId(), b);
 					blist.add(b);
 				}
-				setPraised(blist, userId);
+				if(userId != null) {
+					setPraised(blist, userId);
+				}
 				setUserInfo(blist);
 			}
 		}
@@ -115,7 +117,9 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 			}
 		}
 		if(qtype == 1) {
-			setPraised(ol, userId);
+			if(userId != null) {
+				setPraised(ol, userId);
+			}
 		} else {
 			setUserInfo(ol);
 		}
@@ -325,7 +329,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		
 		DataGrid dg = new DataGrid();
 		List<Bshoot> ol = new ArrayList<Bshoot>();
-		String hql = "select t from Tbshoot t , TbshootSquareRel bs where t.id = bs.bshootId and bs.squareId = :squareId and t.status=1 ";
+		String hql = "select t from Tbshoot t , TbshootSquareRel bs where t.id = bs.bshootId and bs.squareId = :squareId and t.status=1 and t.parentId is null";
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("squareId", squareId);
 		
@@ -395,8 +399,9 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		String[] userIds = new String[list.size()];
 		String[] bshootIds = new String[list.size()];
 		for(Map<String,Object> bshoot : list){
-			userIds[i++] = (String)bshoot.get("user_id");
-			bshootIds[i++] = (String)bshoot.get("id");
+			userIds[i] = (String)bshoot.get("user_id");
+			bshootIds[i] = (String)bshoot.get("id");
+			i++;
 		}
 		List<Tuser> listUsers = userDao.getTusers(userIds);
 		Map<String,Tuser> map = new HashMap<String,Tuser>();
@@ -443,6 +448,34 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 			}
 		}
 		setUserInfo(ol);
+		dg.setRows(ol);
+		return dg;
+	}
+	
+	@Override
+	public DataGrid dataGridSearch(Bshoot bshoot, PageHelper ph, String userId) {
+		DataGrid dg = new DataGrid();
+		List<Bshoot> ol = new ArrayList<Bshoot>();
+		String hql = " from Tbshoot t where t.status=1 and t.parentId is null";
+		Map<String, Object> params = new HashMap<String, Object>();
+		if (!F.empty(bshoot.getBsDescription())) {
+			hql += " and t.bsDescription like :bsDescription";
+			params.put("bsDescription", "%%" + bshoot.getBsDescription() + "%%");
+		}	
+		
+		List<Tbshoot> l = bshootDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
+		dg.setTotal(bshootDao.count("select count(*) " + hql , params));
+		if (l != null && l.size() > 0) {
+			for (Tbshoot t : l) {
+				Bshoot o = new Bshoot();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		setUserInfo(ol);
+		if(userId != null) {
+			setPraised(ol, userId);
+		}
 		dg.setRows(ol);
 		return dg;
 	}

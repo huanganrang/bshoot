@@ -220,6 +220,6 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 	private void deleteCommentPraise(String commentId) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("commentId", commentId);
-		commentPraiseDao.executeSql("delete from comment_praise t where t.comment_id=:commentId", params);
+		commentPraiseDao.executeSql("delete from comment_praise where comment_id=:commentId", params);
 	}
 }

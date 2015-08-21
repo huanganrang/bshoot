@@ -68,12 +68,11 @@
 			<div>
 				结果说明：1、json格式<br/>
 					2、success:true 成功
-					3、bsNum美拍数<br/>
+					3、pbsNum被赞数<br/>
+					bsNum美拍数<br/>
 					bszNum转发数<br/>
 					uaNum关注数<br/>
 					uaedNum粉丝数<br/>
-					headImage头像文件地址<br/>
-					nickname昵称<br/>
 					
 			</div>
 		</div>

@@ -66,6 +66,15 @@ public interface BshootServiceI {
 	 */
 	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph,int qtype, String userId);
 	
+	/**
+	 * 首页搜索
+	 * @param bshoot
+	 * @param ph
+	 * @param id
+	 * @return
+	 */
+	public DataGrid dataGridSearch(Bshoot bshoot, PageHelper ph, String userId);
+	
 
 	/**
 	 * 添加Bshoot
@@ -100,6 +109,7 @@ public interface BshootServiceI {
 
 
 	public void updatePlayNum(String id);
+
 
 
 }

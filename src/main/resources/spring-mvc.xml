@@ -80,6 +80,9 @@
 						<value>/api/apiFinderController/getBshootBySquare</value><!-- 广场视频列表 -->											
 						<value>/api/bshootController/bshoot_detail</value><!-- 详情 -->
 						<value>/api/bshootController/bshoot_comments</value><!-- 评论 -->	
+						<value>/api/bshootController/bshoot_addPlay</value><!-- 播放次数 -->	
+						<value>/api/bshootController/bshoot_bshootSearch</value><!-- 首页搜索（美拍列表） -->	
+						<value>/api/bshootController/bshoot_userSearch</value><!-- 首页搜索（相关用户） -->	
 						<value>/api/apiUserController/user_index</value><!--个人首页接口 -->	
 						<value>/api/apiUserController/user_mybshoots</value><!--个人美拍 -->	
 						<value>/api/apiUserController/user_mytranspond</value><!--个人转发 -->			

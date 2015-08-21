@@ -34,7 +34,7 @@
 	<div class="easyui-layout" data-options="fit:true">
 		
 		<div data-options="region:'center'">
-			<form id="bshoot_addcomment_Form" action="">
+			<form id="bshoot_addcomment_Form" action="" method="post">
 				<table align="center" width="90%" class="tablex">
 					<tr>
 						<td align="right" style="width: 80px;"><label>url：</label></td>

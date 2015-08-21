@@ -369,6 +369,62 @@ public class ApiBshootController extends BaseController {
 	}
 	
 	/**
+	 * 首页搜索（美拍列表）
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("/bshoot_bshootSearch")
+	@ResponseBody
+	public Json dataGridSearch(String keyword, PageHelper ph,HttpServletRequest request) {
+		
+		Json j = new Json();
+		try {
+			ph.setOrder("desc");
+			ph.setSort("bsPraise");
+			String userId = null;
+			SessionInfo s = getSessionInfo(request);
+			if(s != null) {
+				userId = s.getId();
+			}
+			Bshoot bshoot = new Bshoot();
+			bshoot.setBsDescription(keyword);
+			j.setObj(bshootService.dataGridSearch(bshoot, ph, userId));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	/**
+	 * 首页搜索（相关用户）
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("/bshoot_userSearch")
+	@ResponseBody
+	public Json dataGridUserSearch(String keyword, PageHelper ph,HttpServletRequest request) {
+		
+		Json j = new Json();
+		try {
+			String userId = null;
+			SessionInfo s = getSessionInfo(request);
+			if(s != null) {
+				userId = s.getId();
+			}
+			User user = new User();
+			user.setNickname(keyword);
+			j.setObj(userService.dataGridSearch(user, ph, userId));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	/**
 	 * 美拍收藏
 	 * @param bshoot
 	 * @param request

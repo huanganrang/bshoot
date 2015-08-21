@@ -316,6 +316,8 @@ public class ApiUserController extends BaseController {
 					j.setMsg("昵称已被使用！");
 					return j;
 				}
+			} else {
+				user.setNickname(null);
 			}
 			
 			uploadFile(request, user, headImageFile);
@@ -341,11 +343,15 @@ public class ApiUserController extends BaseController {
 		
 		Json j = new Json();
 		try {
+			String userId = null;
 			SessionInfo s = getSessionInfo(request);
+			if(s != null) {
+				userId = s.getId();
+			}
 			if(F.empty(bshoot.getUserId())){
 				bshoot.setUserId(s.getId());
 			}
-			j.setObj(bshootService.dataGrid(bshoot, ph, 1, s.getId()));
+			j.setObj(bshootService.dataGrid(bshoot, ph, 1, userId));
 			j.success();
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());
@@ -366,11 +372,15 @@ public class ApiUserController extends BaseController {
 	public Json dataGridMytranspond(Bshoot bshoot, PageHelper ph,HttpServletRequest request) {
 		Json j = new Json();
 		try {
+			String userId = null;
 			SessionInfo s = getSessionInfo(request);
+			if(s != null) {
+				userId = s.getId();
+			}
 			if(F.empty(bshoot.getUserId())){
 				bshoot.setUserId(s.getId());
 			}
-			j.setObj(bshootService.dataGrid(bshoot, ph,2,s.getId()));
+			j.setObj(bshootService.dataGrid(bshoot, ph,2,userId));
 			j.success();
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());
@@ -442,14 +452,18 @@ public class ApiUserController extends BaseController {
 	public Json dataGridMyattreduser(UserAttention userAttention, PageHelper ph,HttpServletRequest request) {
 		Json j = new Json();
 		try {
+			String userId = null;
 			SessionInfo s = getSessionInfo(request);
+			if(s != null) {
+				userId = s.getId();
+			}
 			if(F.empty(userAttention.getUserId())){
 				userAttention.setAttUserId(s.getId());
 			}else{
 				userAttention.setAttUserId(userAttention.getUserId());
 			}
 			userAttention.setUserId(null);
-			j.setObj(userAttentionService.dataGridUser(userAttention, ph, s.getId()));
+			j.setObj(userAttentionService.dataGridUser(userAttention, ph, userId));
 			j.success();
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());

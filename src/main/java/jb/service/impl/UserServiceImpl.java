@@ -12,17 +12,21 @@ import java.util.UUID;
 import jb.absx.F;
 import jb.dao.ResourceDaoI;
 import jb.dao.RoleDaoI;
+import jb.dao.UserAttentionDaoI;
 import jb.dao.UserDaoI;
 import jb.model.Tresource;
 import jb.model.Trole;
 import jb.model.Tuser;
+import jb.model.TuserAttention;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.pageModel.SessionInfo;
 import jb.pageModel.User;
 import jb.service.UserServiceI;
+import jb.util.Constants;
 import jb.util.MD5Util;
 import jb.util.MyBeanUtils;
+import jb.util.PathUtil;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +43,9 @@ public class UserServiceImpl implements UserServiceI {
 
 	@Autowired
 	private ResourceDaoI resourceDao;
+	
+	@Autowired
+	private UserAttentionDaoI userAttentionDao;
 
 	@Override
 	public User login(User user) {
@@ -396,10 +403,14 @@ public class UserServiceImpl implements UserServiceI {
 		params.put("bzUserId", userId);
 		params.put("uaUserId", userId);
 		params.put("attUserId", userId);
-		params.put("userId", userId);
-		String sql = "select t.head_image as headImage,t.nickname as nickname,(select count(*) from bshoot b where b.user_id = :bUserId and b.parent_id is null) as bsNum,(select count(*) from bshoot b where b.user_id = :bzUserId and b.parent_id is not null) as bszNum,(select count(*) from user_attention ua where ua.user_id = :uaUserId) as uaNum,(select count(*) from user_attention ua1 where ua1.att_user_id = :attUserId) as uaedNum  from tuser t where t.id=:userId";
+		params.put("pbUserId", userId);
+		String sql = "select (select count(*) from bshoot b where b.user_id = :bUserId and b.parent_id is null) as bsNum,"
+				+ "(select count(*) from bshoot b where b.user_id = :bzUserId and b.parent_id is not null) as bszNum,"
+				+ "(select count(*) from user_attention ua where ua.user_id = :uaUserId) as uaNum,"
+				+ "(select count(*) from user_attention ua1 where ua1.att_user_id = :attUserId) as uaedNum,"
+				+ "(select sum(pb.bs_praise) from bshoot pb where pb.user_id = :pbUserId) as pbsNum";
 		List<Map> list = userDao.findBySql2Map(sql, params, 0, 1);
-		if(list!=null&&list.size()>0)
+		if(list!=null&&list.size()>0) 
 			return list.get(0);
 		return null;
 	}
@@ -483,6 +494,51 @@ public class UserServiceImpl implements UserServiceI {
 		}
 		dg.setRows(ul);
 		dg.setTotal(userDao.count("select count(*) " + hql, params));
+		return dg;
+	}
+
+	/**
+	 * 首页搜索（相关用户）
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public DataGrid dataGridSearch(User user, PageHelper ph, String userId) {
+		DataGrid dg = new DataGrid();
+		String sql = "select t.id id, t.head_image headImage, t.nickname nickname, t.member_v memberV, t.area area, t.sex sex, "
+				+ "(select count(*) from user_attention ua where ua.att_user_id = t.id) as uaedNum from tuser t ";
+		String where = "where 1=1";
+		Map<String, Object> params = new HashMap<String, Object>();
+		if(!F.empty(user.getNickname())) {
+			where += " and t.nickname like :nickname";
+			params.put("nickname", "%%" + user.getNickname() + "%%");
+		}
+		
+		dg.setTotal(userDao.count("select count(*) from Tuser t " + where, params));
+		List<Map> l = userDao.findBySql2Map(sql + where + " order by uaedNum desc", params, ph.getPage(), ph.getRows());
+		if(l!=null&&l.size()>0){
+			String[] attUserIds = new String[l.size()];
+			int i = 0;
+			for(Map m :l){
+				attUserIds[i++] = (String)m.get("id");
+				m.put("headImage", PathUtil.getHeadImagePath((String)m.get("headImage")));
+				m.put("attred", Constants.GLOBAL_BOOLEAN_FALSE);
+			}
+			if(userId != null) {
+				List<TuserAttention> list = userAttentionDao.getTuserAttentions(userId, attUserIds);
+				Map<String,String> map = new HashMap<String,String>();
+				for(TuserAttention t : list){
+					map.put(t.getAttUserId(), t.getAttUserId());
+				}
+				for(Map m :l){
+					if(map.get((String)m.get("id")) != null){
+						m.put("attred", Constants.GLOBAL_BOOLEAN_TRUE);
+					}else{
+						m.put("attred", Constants.GLOBAL_BOOLEAN_FALSE);
+					}
+				}
+			} 
+		}	
+		dg.setRows(l);
 		return dg;
 	}
 

@@ -65,6 +65,15 @@ public interface UserServiceI {
 	 * @return
 	 */
 	public DataGrid dataGridNewFriend(User user, PageHelper ph);
+	
+	/**
+	 * 首页搜索（相关用户）
+	 * @param user
+	 * @param ph
+	 * @param userId
+	 * @return
+	 */
+	public DataGrid dataGridSearch(User user, PageHelper ph, String userId);
 
 	/**
 	 * 添加用户

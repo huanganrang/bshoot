@@ -11,7 +11,7 @@
 	$(function() {
 	 	parent.$.messager.progress('close');
 		$('#bshoot_userSearch_Form').form({
-			url : '${pageContext.request.contextPath}/api/bshootController/userSearch',
+			url : '${pageContext.request.contextPath}/api/bshootController/bshoot_userSearch',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
