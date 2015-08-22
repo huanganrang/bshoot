@@ -1,5 +1,6 @@
 package jb.service.impl;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import jb.pageModel.DataGrid;
 import jb.pageModel.Message;
 import jb.pageModel.PageHelper;
 import jb.service.MessageServiceI;
+import jb.util.PathUtil;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,12 +136,101 @@ public class MessageServiceImpl extends BaseServiceImpl<Message> implements Mess
 			tmessageCount.setMnumber(1);
 			tmessageCount.setMtype(message.getMtype());
 			tmessageCount.setUserId(message.getUserId());
-			messageCountDao.saveOrUpdate(tmessageCount);
+			messageCountDao.save(tmessageCount);
 			return tmessageCount;
 				
 		}	
 		
 		
+	}
+
+	/**
+	 * 获取@我的消息列表
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public DataGrid dataGridAtMine(Message message, PageHelper ph) {
+		DataGrid dg = new DataGrid();
+		String sql = "select u.id userId, u.head_image headImage, u.nickname nickname, "
+				+ "b.id bshootId, b.bs_description description, b.bs_icon bsIcon, "
+				+ "m.content type, m.createdatetime createdate "
+				+ "from message m left join bshoot b on b.id = m.relation_id left join tuser u on u.id = b.user_id "
+				+ "where m.content='BSHOOT' and m.m_type=:mtype and m.user_id=:userId "
+				+ "union all "
+				+ "select u.id userId, u.head_image headImage, u.nickname nickname, "
+				+ "b.id bshootId, c.bs_comment_text description, b.bs_icon bsIcon, "
+				+ "m.content type, m.createdatetime createdate "
+				+ "from message m left join bshoot_comment c on c.id = m.relation_id left join bshoot b on b.id = c.bshoot_id left join tuser u on u.id = c.user_id "
+				+ "where m.content='COMMENT' and m.m_type=:mtype and m.user_id=:userId ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("mtype", message.getMtype());
+		params.put("userId", message.getUserId());
+		
+		List<Map> l = messageDao.findBySql2Map("select r.* from (" + sql + ") r order by r.createdate desc", params, ph.getPage(), ph.getRows());
+		BigInteger count = messageDao.countBySql("select count(*) from (" + sql + ") r", params);
+		dg.setTotal(count == null ? 0 : count.longValue());
+		if (l != null && l.size() > 0) {
+			for (Map t : l) {
+				t.put("headImage", PathUtil.getHeadImagePath((String)t.get("headImage")));
+				t.put("bsIcon", PathUtil.getBshootPath((String)t.get("bsIcon")));
+			}
+		}
+		dg.setRows(l);
+		return dg;
+	}
+	
+	/**
+	 * 获取评论消息列表
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public DataGrid dataGridComment(Message message, PageHelper ph) {
+		DataGrid dg = new DataGrid();
+		String sql = "select u.id userId, u.head_image headImage, u.nickname nickname, "
+				+ "b.id bshootId, c.bs_comment_text description, b.bs_icon bsIcon, "
+				+ "m.createdatetime createdate "
+				+ "from message m left join bshoot_comment c on c.id = m.relation_id left join bshoot b on b.id = c.bshoot_id left join tuser u on u.id = c.user_id "
+				+ "where m.m_type=:mtype and m.user_id=:userId ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("mtype", message.getMtype());
+		params.put("userId", message.getUserId());
+		
+		List<Map> l = messageDao.findBySql2Map("select r.* from (" + sql + ") r order by r.createdate desc", params, ph.getPage(), ph.getRows());
+		BigInteger count = messageDao.countBySql("select count(*) from (" + sql + ") r", params);
+		dg.setTotal(count == null ? 0 : count.longValue());
+		if (l != null && l.size() > 0) {
+			for (Map t : l) {
+				t.put("headImage", PathUtil.getHeadImagePath((String)t.get("headImage")));
+				t.put("bsIcon", PathUtil.getBshootPath((String)t.get("bsIcon")));
+			}
+		}
+		dg.setRows(l);
+		return dg;
+	}
+	
+	/**
+	 * 获取评论消息列表
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public DataGrid dataGridPraise(Message message, PageHelper ph) {
+		DataGrid dg = new DataGrid();
+		String sql = "select u.id userId, u.head_image headImage, u.nickname nickname, "
+				+ "b.id bshootId, b.bs_icon bsIcon, m.createdatetime createdate "
+				+ "from message m left join bshoot_praise p on p.id = m.relation_id left join bshoot b on b.id = p.bshoot_id left join tuser u on u.id = p.user_id "
+				+ "where m.m_type=:mtype and m.user_id=:userId ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("mtype", message.getMtype());
+		params.put("userId", message.getUserId());
+		
+		List<Map> l = messageDao.findBySql2Map("select r.* from (" + sql + ") r order by r.createdate desc", params, ph.getPage(), ph.getRows());
+		BigInteger count = messageDao.countBySql("select count(*) from (" + sql + ") r", params);
+		dg.setTotal(count == null ? 0 : count.longValue());
+		if (l != null && l.size() > 0) {
+			for (Map t : l) {
+				t.put("headImage", PathUtil.getHeadImagePath((String)t.get("headImage")));
+				t.put("bsIcon", PathUtil.getBshootPath((String)t.get("bsIcon")));
+			}
+		}
+		dg.setRows(l);
+		return dg;
 	}
 
 }

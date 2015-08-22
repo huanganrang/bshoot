@@ -2,9 +2,13 @@ package jb.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -84,10 +88,12 @@ public class ApiBshootController extends BaseController {
 				j.setSuccess(false);
 				j.setMsg("已经赞过了！");
 			}else{
+				Bshoot bshoot = bshootService.get(bshootPraise.getBshootId());
+				if(!s.getId().equals(bshoot.getUserId())) {
+					addMessage("MT04", bshoot.getUserId(), bshootPraise.getId());
+				}
 				j.setSuccess(true);
 				j.setMsg("成功！");
-				Bshoot bshoot = bshootService.get(bshootPraise.getBshootId());
-				addMessage("MT04", bshoot.getUserId(), bshootPraise.getId());
 			}
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());
@@ -221,7 +227,12 @@ public class ApiBshootController extends BaseController {
 				}
 			}
 			
-			bshootService.addBshoot(bshoot);	
+			List<String> attUserIds = bshootService.addBshoot(bshoot);	
+			if(attUserIds != null && attUserIds.size() > 0) {
+				for(String attUserId : attUserIds) {
+					addMessage("MT02", attUserId, bshoot.getId(), "BSHOOT");
+				}
+			}
 			j.setSuccess(true);
 			j.setMsg("添加成功！");
 		} catch (Exception e) {
@@ -308,15 +319,38 @@ public class ApiBshootController extends BaseController {
 			SessionInfo s = getSessionInfo(request);
 			bshootComment.setUserId(s.getId());
 			TbshootComment tbc = bshootCommentService.add(bshootComment);
+			Bshoot bshoot = bshootService.get(bshootComment.getBshootId());
+			if(!s.getId().equals(bshoot.getUserId())) {
+				addMessage("MT03", bshoot.getUserId(), tbc.getId());
+			}
+			addAtMineMessage(bshootComment);
 			j.setSuccess(true);
 			j.setMsg("添加成功！");		
-			addMessage("MT03",tbc.getId());
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());
 		}
 		return j;
 	}
 	
+	private void addAtMineMessage(BshootComment bshootComment) {
+		List<String> attUserIds = new ArrayList<String>();
+		String bsCommentText = bshootComment.getBsCommentText() + " ";
+		// 建立视频-@关注好友关系
+		String regex="@[^@]+?(?=[\\s:：(),.。@])";
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(bsCommentText);
+		while(m.find()){
+			String nickname = m.group().substring(1); // 去除@
+			User user = new User();
+			user.setNickname(nickname);
+			user = userService.get(user);
+			if(user != null && !attUserIds.contains(user.getId()) && !user.getId().equals(bshootComment.getUserId())) {
+				attUserIds.add(user.getId());
+				addMessage("MT02", user.getId(), bshootComment.getId(), "COMMENT");
+			}
+		}
+	}
+
 	/**
 	 * 删除评论
 	 * 
@@ -329,7 +363,8 @@ public class ApiBshootController extends BaseController {
 		try {
 			SessionInfo s = getSessionInfo(request);
 			bshootComment = bshootCommentService.get(bshootComment.getId());
-			if(s.getId().equals(bshootComment.getUserId())) {
+			Bshoot bshoot = bshootService.get(bshootComment.getId());
+			if(s.getId().equals(bshootComment.getUserId()) || s.getId().equals(bshoot.getUserId())) {
 				bshootCommentService.delete(bshootComment.getId());
 				j.setSuccess(true);
 				j.setMsg("删除成功！");

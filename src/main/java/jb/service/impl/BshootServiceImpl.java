@@ -23,7 +23,6 @@ import jb.model.Tuser;
 import jb.pageModel.Bshoot;
 import jb.pageModel.BshootSquare;
 import jb.pageModel.BshootSquareRel;
-import jb.pageModel.BshootUserRel;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.service.BshootServiceI;
@@ -218,7 +217,9 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	}
 	
 	@Override
-	public void addBshoot(Bshoot bshoot) {
+	public List<String> addBshoot(Bshoot bshoot) {
+		List<String> attUserIdList = new ArrayList<String>();
+		
 		this.add(bshoot);
 		String bsDescription = bshoot.getBsDescription() + " ";
 		
@@ -248,13 +249,16 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("nickname", nickname);
 			Tuser t = userDao.get("from Tuser t where t.nickname = :nickname", params);
-			if(t != null) {
-				BshootUserRel rel = new BshootUserRel();
-				rel.setBshootId(bshoot.getId());
-				rel.setUserId(t.getId());
-				bshootUserRelService.add(rel);
+			if(t != null && !attUserIdList.contains(t.getId()) && !t.getId().equals(bshoot.getUserId())) {
+//				BshootUserRel rel = new BshootUserRel();
+//				rel.setBshootId(bshoot.getId());
+//				rel.setUserId(t.getId());
+//				bshootUserRelService.add(rel);
+				attUserIdList.add(t.getId());
 			}
 		}
+		
+		return attUserIdList;
 	}
 	
 	private void updateLocation(Tbshoot bshoot){

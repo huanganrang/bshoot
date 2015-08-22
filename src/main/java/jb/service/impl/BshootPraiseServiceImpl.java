@@ -1,6 +1,5 @@
 package jb.service.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import jb.dao.BshootDaoI;
 import jb.dao.BshootPraiseDaoI;
 import jb.model.TbshootPraise;
 import jb.pageModel.BshootPraise;
-import jb.pageModel.BshootPraiseExt;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.service.BshootPraiseServiceI;
@@ -146,41 +144,4 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		return o;
 	}
 
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public DataGrid dataGridLike(BshootPraise bshootPraise, PageHelper ph) {	
-		List<BshootPraiseExt> ol = new ArrayList<BshootPraiseExt>();
-		String sqlSelect = "select t.bshoot_id as bshootId,"
-				+ " t.praise_datetime as praiseDatetime,"
-				+ " t.user_Id as userId,"
-				+ " b.bs_icon as bsIcon,"
-				+ " u.head_Image as headImage,"
-				+ " u.nickname ";
-		String sqlFrom = " from bshoot_praise t "
-				+ " left join tuser u on u.id=t.user_id "
-				+ " left join bshoot b on b.id=t.bshoot_id "
-				+ "where exists (select 1 from message m where m.m_type = 'MT04' and m.user_id = :userId and m.relation_Id = t.id)";
-		DataGrid dg = new DataGrid();
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("userId", bshootPraise.getUserId());
-		List<Map> l = bshootPraiseDao.findBySql2Map(sqlSelect+sqlFrom, params,  ph.getPage(), ph.getRows());
-		dg.setTotal(bshootPraiseDao.countBySql("select count(*)" +sqlFrom+"", params).longValue());
-		dg.setRows(l);
-		if (l != null && l.size() > 0) {
-			for (Map t : l) {
-				BshootPraiseExt o = new BshootPraiseExt();
-				try {
-					org.apache.commons.beanutils.BeanUtils.populate(o, t);
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
-				ol.add(o);
-			}
-		}	
-		dg.setRows(ol);
-		return dg;		
-	}
 }

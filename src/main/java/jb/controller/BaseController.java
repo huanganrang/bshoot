@@ -180,13 +180,14 @@ public class BaseController {
 		}
 	}
 	
-	protected void addMessage(String mtype,String relationId){
+	protected void addMessage(String mtype,String attUserId,String relationId, String content){
 		//这里可以异步处理
 		try{
 			Message message = new Message();
 			message.setMtype(mtype);
 			message.setRelationId(relationId);
-			//message.setUserId(attUserId);
+			message.setUserId(attUserId);
+			message.setContent(content);
 			TmessageCount tcount = messageService.addAndCount(message);
 			notification(JSON.toJSONString(tcount));
 		}catch(Exception e){

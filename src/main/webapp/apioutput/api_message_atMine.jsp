@@ -6,14 +6,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 <%
-String path = request.getContextPath()+"/api/apiMessageController/message_praise";
+String path = request.getContextPath()+"/api/apiMessageController/message_atMine";
 %>
 </head>
 <body>
 <script type="text/javascript">
 	$(function() {
 	 	parent.$.messager.progress('close');
-		$('#message_praise_Form').form({
+		$('#message_atMine_Form').form({
 			url : '<%=path%>',
 			onSubmit : function() {
 				parent.$.messager.progress({
@@ -28,7 +28,7 @@ String path = request.getContextPath()+"/api/apiMessageController/message_praise
 			},
 			success : function(result) {
 				parent.$.messager.progress('close');
-				$("#message_praise_result").text(result);
+				$("#message_atMine_result").text(result);
 			}
 		});
 	});
@@ -37,7 +37,7 @@ String path = request.getContextPath()+"/api/apiMessageController/message_praise
 	<div class="easyui-layout" data-options="fit:true">
 		
 		<div data-options="region:'center'">
-			<form id="message_praise_Form" action="">
+			<form id="message_atMine_Form" action="">
 				<table align="center" width="90%" class="tablex">
 					<tr>
 						<td align="right" style="width: 80px;"><label>url：</label></td>
@@ -60,24 +60,27 @@ String path = request.getContextPath()+"/api/apiMessageController/message_praise
 					<tr>
 						<td colspan="2" align="center">
 						<input type="button"
-							value="提交" onclick="javascript:$('#message_praise_Form').submit();" /></td>
+							value="提交" onclick="javascript:$('#message_atMine_Form').submit();" /></td>
 					</tr>
 				</table>
 			</form>
 			<label>结果：</label>
-				<div id="message_praise_result">
+				<div id="message_atMine_result">
 				</div>
 			<div>
 				结果说明：1、json格式<br/>
 					2、success:true 成功<br/>
 					3、obj:数组格式<br/>
-						userId 用户ID	         <br/>
+					  userId 用户ID	         <br/>
 					  headImage 用户头像	         <br/>
 						nickname	用户姓名 <br/>
 						bshootId	视频ID    <br/>
 						bsIcon	视频封面          <br/>
+						description			内容描述         <br/>
 						createdate	时间         <br/>
+						type	类型：COMMENT表示在评论中@了你；BSHOOT表示在视频分享@了你
 
+					  
 			</div>
 		</div>
 	</div>

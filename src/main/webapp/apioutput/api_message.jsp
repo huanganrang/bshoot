@@ -11,14 +11,14 @@
 		<div id="index_find_tabs" class="easyui-tabs" data-options="fit:true">
 			<div title="新的好友" data-options="href:'api_message_newfriend.jsp'"
 				style="padding: 1px"></div>
-			<div title="@我的（开发ing）" data-options="href:'api_doing.jsp'"
+			<div title="@我的" data-options="href:'api_message_atMine.jsp'"
 				style="padding: 1px"></div>
-			<div title="评论（开发ing）" data-options="href:'api_doing.jsp'"
+			<div title="评论" data-options="href:'api_message_comment.jsp'"
 				style="padding: 1px"></div>	
-			<div title="删除评论（开发ing）" data-options="href:'api_doing.jsp'"
-				style="padding: 1px"></div>	
-			<div title="喜欢" data-options="href:'api_message_like.jsp'"
+			<div title="赞" data-options="href:'api_message_like.jsp'"
 				style="padding: 1px"></div>
+			<div title="上线获取消息数量" data-options="href:'api_message_getCount.jsp'"
+				style="padding: 1px"></div>	
 			<!-- 
 			<div title="最近联系人（开发ing）" data-options="href:'api_doing.jsp'"
 				style="padding: 1px"></div>	

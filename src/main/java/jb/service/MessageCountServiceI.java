@@ -1,6 +1,6 @@
 ﻿package jb.service;
 
-import java.util.List;
+import java.util.Map;
 
 import jb.pageModel.DataGrid;
 import jb.pageModel.MessageCount;
@@ -29,7 +29,7 @@ public interface MessageCountServiceI {
 	 * @param messageCount
 	 * @return
 	 */
-	public List<MessageCount> getMessageCounts(MessageCount messageCount);
+	public Map<String, Integer> getMessageCounts(MessageCount messageCount);
 	
 	/**
 	 * 删除消息统计

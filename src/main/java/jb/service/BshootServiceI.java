@@ -1,5 +1,7 @@
 ﻿package jb.service;
 
+import java.util.List;
+
 import jb.pageModel.Bshoot;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
@@ -83,7 +85,7 @@ public interface BshootServiceI {
 	 */
 	public void add(Bshoot bshoot);
 	
-	public void addBshoot(Bshoot bshoot);
+	public List<String> addBshoot(Bshoot bshoot);
 
 	/**
 	 * 获得Bshoot对象

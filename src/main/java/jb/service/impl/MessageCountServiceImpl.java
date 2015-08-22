@@ -94,20 +94,30 @@ public class MessageCountServiceImpl extends BaseServiceImpl<MessageCount> imple
 
 
 	@Override
-	public List<MessageCount> getMessageCounts(MessageCount messageCount) {
-		List<MessageCount> ol = new ArrayList<MessageCount>();
+	public Map<String, Integer> getMessageCounts(MessageCount messageCount) {
+		Map<String, Integer> m = new HashMap<String, Integer>();
 		String hql = " from TmessageCount t ";		
 		Map<String, Object> params = new HashMap<String, Object>();
 		String where = whereHql(messageCount, params);
 		List<TmessageCount> l = messageCountDao.find(hql  + where , params);
 		if (l != null && l.size() > 0) {
 			for (TmessageCount t : l) {
-				MessageCount o = new MessageCount();
-				BeanUtils.copyProperties(t, o);
-				ol.add(o);
+				if("MT01".equals(t.getMtype())) {
+					m.put("newFriendNum", t.getMnumber());
+				} else if("MT02".equals(t.getMtype())) {
+					m.put("atMineNum", t.getMnumber());
+				} else if("MT03".equals(t.getMtype())) {
+					m.put("commentNum", t.getMnumber());
+				} else if("MT04".equals(t.getMtype())) {
+					m.put("praiseNum", t.getMnumber());
+				}
 			}
 		}
-		return ol;
+		if(m.get("newFriendNum") == null) m.put("newFriendNum", 0);
+		if(m.get("atMineNum") == null) m.put("atMineNum", 0);
+		if(m.get("commentNum") == null) m.put("commentNum", 0);
+		if(m.get("praiseNum") == null) m.put("praiseNum", 0);
+		return m;
 	}
 
 

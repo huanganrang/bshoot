@@ -1,21 +1,18 @@
 package jb.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import jb.interceptors.TokenManage;
-import jb.pageModel.BshootPraise;
 import jb.pageModel.DataGrid;
+import jb.pageModel.Json;
+import jb.pageModel.Message;
 import jb.pageModel.MessageCount;
 import jb.pageModel.PageHelper;
 import jb.pageModel.SessionInfo;
 import jb.pageModel.User;
-import jb.service.BshootCollectServiceI;
 import jb.service.BshootPraiseServiceI;
-import jb.service.BshootServiceI;
 import jb.service.MessageCountServiceI;
-import jb.service.UserAttentionServiceI;
+import jb.service.MessageServiceI;
 import jb.service.UserServiceI;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,22 +30,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/api/apiMessageController")
 public class ApiMessageController extends BaseController {
 	@Autowired
+	private MessageServiceI messageService;
+	
+	@Autowired
 	private UserServiceI userService;
 	
 	@Autowired
 	private TokenManage tokenManage;
 	
 	@Autowired
-	private BshootServiceI bshootService;
-	
-	@Autowired
 	private MessageCountServiceI messageCountService; 
-	
-	@Autowired
-	private BshootCollectServiceI bshootCollectService;
-	
-	@Autowired
-	private UserAttentionServiceI userAttentionService;
 	
 	@Autowired
 	private BshootPraiseServiceI bshootPraiseService;
@@ -59,8 +50,6 @@ public class ApiMessageController extends BaseController {
 		return s;		
 	}
 	
-	
-	
 	/**
 	 * 新朋友
 	 * 
@@ -69,30 +58,95 @@ public class ApiMessageController extends BaseController {
 	 */
 	@RequestMapping("/message_newFriend")
 	@ResponseBody
-	public DataGrid dataGridNewFriend(PageHelper ph,HttpServletRequest request) {
-		SessionInfo s = getSessionInfo(request);
-		User user = new User();
-		user.setId(s.getId());
-		DataGrid dg = userService.dataGridNewFriend(user, ph);
-		clearMessageCount(s.getId(),"MT01");
-		return dg;
-	}	
+	public Json dataGridNewFriend(PageHelper ph,HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			User user = new User();
+			user.setId(s.getId());
+			DataGrid dg = userService.dataGridNewFriend(user, ph);
+			clearMessageCount(s.getId(),"MT01");
+			j.setObj(dg);
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
 	
 	/**
+	 * “@我的”消息
 	 * 
-	 * 喜欢的
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping("/message_like")
+	@RequestMapping("/message_atMine")
 	@ResponseBody
-	public DataGrid dataGridLike(PageHelper ph,HttpServletRequest request) {
-		SessionInfo s = getSessionInfo(request);
-		BshootPraise bshootPraise = new BshootPraise();
-		bshootPraise.setUserId(s.getId());		
-		DataGrid dg = bshootPraiseService.dataGridLike(bshootPraise, ph);
-		clearMessageCount(s.getId(),"MT04");
-		return dg;
+	public Json dataGridAtMine(PageHelper ph,HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			Message message = new Message();
+			message.setUserId(s.getId());
+			message.setMtype("MT02");
+			DataGrid dg = messageService.dataGridAtMine(message, ph);
+			clearMessageCount(s.getId(),"MT02");
+			j.setObj(dg);
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}	
+	
+	/**
+	 * 评论消息
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("/message_comment")
+	@ResponseBody
+	public Json dataGridComment(PageHelper ph,HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			Message message = new Message();
+			message.setUserId(s.getId());
+			message.setMtype("MT03");
+			DataGrid dg = messageService.dataGridComment(message, ph);
+			clearMessageCount(s.getId(),"MT03");
+			j.setObj(dg);
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}	
+	
+	/**
+	 * 赞消息
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("/message_praise")
+	@ResponseBody
+	public Json dataGridPraise(PageHelper ph,HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			Message message = new Message();
+			message.setUserId(s.getId());
+			message.setMtype("MT04");
+			DataGrid dg = messageService.dataGridPraise(message, ph);
+			clearMessageCount(s.getId(),"MT04");
+			j.setObj(dg);
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}	
 	
 	/**
@@ -103,12 +157,19 @@ public class ApiMessageController extends BaseController {
 	 */
 	@RequestMapping("/message_count")
 	@ResponseBody
-	public List<MessageCount> getMessageCounts(HttpServletRequest request) {
-		SessionInfo s = getSessionInfo(request);
-		MessageCount messageCount = new MessageCount();
-		messageCount.setUserId(s.getId());
-		List<MessageCount> list = messageCountService.getMessageCounts(messageCount);		
-		return list;
+	public Json getMessageCounts(HttpServletRequest request) {
+		
+		Json j = new Json();
+		try {
+			SessionInfo s = getSessionInfo(request);
+			MessageCount messageCount = new MessageCount();
+			messageCount.setUserId(s.getId());
+			j.setObj(messageCountService.getMessageCounts(messageCount));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
 	}	
 	
 	

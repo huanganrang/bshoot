@@ -6,14 +6,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 <%
-String path = request.getContextPath()+"/api/apiMessageController/message_praise";
+String path = request.getContextPath()+"/api/apiMessageController/message_count";
 %>
 </head>
 <body>
 <script type="text/javascript">
 	$(function() {
 	 	parent.$.messager.progress('close');
-		$('#message_praise_Form').form({
+		$('#message_getCount_Form').form({
 			url : '<%=path%>',
 			onSubmit : function() {
 				parent.$.messager.progress({
@@ -28,7 +28,7 @@ String path = request.getContextPath()+"/api/apiMessageController/message_praise
 			},
 			success : function(result) {
 				parent.$.messager.progress('close');
-				$("#message_praise_result").text(result);
+				$("#message_getCount_result").text(result);
 			}
 		});
 	});
@@ -37,7 +37,7 @@ String path = request.getContextPath()+"/api/apiMessageController/message_praise
 	<div class="easyui-layout" data-options="fit:true">
 		
 		<div data-options="region:'center'">
-			<form id="message_praise_Form" action="">
+			<form id="message_getCount_Form" action="">
 				<table align="center" width="90%" class="tablex">
 					<tr>
 						<td align="right" style="width: 80px;"><label>url：</label></td>
@@ -47,37 +47,26 @@ String path = request.getContextPath()+"/api/apiMessageController/message_praise
 						<td align="right" style="width: 180px;"><label>tokenId(token值)：</label></td>
 						<td><input name="tokenId" type="text" class="span2" value=""/></td>
 					</tr>
-					<tr>
-						<td align="right" style="width: 180px;"><label>page(第几页)：</label></td>
-						<td><input name="page" type="text" class="span2" value="1"/></td>
-					</tr>
-					
-					<tr>
-						<td align="right" style="width: 180px;"><label>rows(每页数)：</label></td>
-						<td><input name="rows" type="text" class="span2" value="10"/></td>
-					</tr>
 		
 					<tr>
 						<td colspan="2" align="center">
 						<input type="button"
-							value="提交" onclick="javascript:$('#message_praise_Form').submit();" /></td>
+							value="提交" onclick="javascript:$('#message_getCount_Form').submit();" /></td>
 					</tr>
 				</table>
 			</form>
 			<label>结果：</label>
-				<div id="message_praise_result">
+				<div id="message_getCount_result">
 				</div>
 			<div>
 				结果说明：1、json格式<br/>
 					2、success:true 成功<br/>
-					3、obj:数组格式<br/>
-						userId 用户ID	         <br/>
-					  headImage 用户头像	         <br/>
-						nickname	用户姓名 <br/>
-						bshootId	视频ID    <br/>
-						bsIcon	视频封面          <br/>
-						createdate	时间         <br/>
-
+					3、obj:对象格式<br/>
+					newFriendNum 新的好友消息数量<br/>
+					atMineNum   @我的消息数量<br/>
+					commentNum  评论消息数量<br/>
+					praiseNum   赞消息数量<br/>
+					  
 			</div>
 		</div>
 	</div>

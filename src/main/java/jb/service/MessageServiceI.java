@@ -58,4 +58,28 @@ public interface MessageServiceI {
 	 */
 	public void delete(String id);
 
+	/**
+	 * 获取@我的消息列表
+	 * @param message
+	 * @param ph
+	 * @return
+	 */
+	public DataGrid dataGridAtMine(Message message, PageHelper ph);
+
+	/**
+	 * 获取评论消息列表
+	 * @param message
+	 * @param ph
+	 * @return
+	 */
+	public DataGrid dataGridComment(Message message, PageHelper ph);
+	
+	/**
+	 * 获取赞消息列表
+	 * @param message
+	 * @param ph
+	 * @return
+	 */
+	public DataGrid dataGridPraise(Message message, PageHelper ph);
+
 }

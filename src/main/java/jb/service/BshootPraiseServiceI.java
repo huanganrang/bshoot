@@ -23,14 +23,6 @@ public interface BshootPraiseServiceI {
 	public DataGrid dataGrid(BshootPraise bshootPraise, PageHelper ph);
 	
 	/**
-	 * 消息模块中喜欢的
-	 * @param bshootPraise
-	 * @param ph
-	 * @return
-	 */
-	public DataGrid dataGridLike(BshootPraise bshootPraise, PageHelper ph);
-
-	/**
 	 * 添加BshootPraise
 	 * 
 	 * @param bshootPraise
