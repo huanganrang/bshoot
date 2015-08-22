@@ -1,5 +1,6 @@
 package jb.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -12,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jb.absx.F;
@@ -25,10 +27,12 @@ import jb.pageModel.Message;
 import jb.service.MessageServiceI;
 import jb.util.Constants;
 import jb.util.StringEscapeEditor;
+import jb.util.Util;
 
 import org.androidpn.server.xmpp.XmppServer;
 import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.SessionManager;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -39,6 +43,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 
@@ -210,6 +215,29 @@ public class BaseController {
 					"uri",
 					usernames.toArray(new ClientSession[usernames.size()]));
 		}
+	}
+	
+	public String uploadFile(HttpServletRequest request, String dirName, MultipartFile file,  String fileName){
+		if(file==null||file.isEmpty())
+			return null;
+		String realPath = request.getSession().getServletContext().getRealPath("/"+Constants.UPLOADFILE+"/"+dirName);  
+		File f = new File(realPath);
+		if(!f.exists())
+			f.mkdir();
+		String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+		fileName = fileName + "_" + Util.CreateNoncestr(4) + System.currentTimeMillis() + suffix;		
+		try {
+			FileUtils.copyInputStreamToFile(file.getInputStream(), new File(realPath, fileName));
+			return Constants.UPLOADFILE+"/"+dirName+"/"+fileName;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+	
+	public String uploadFile(HttpServletRequest request, String dirName, MultipartFile file){
+		return uploadFile(request, dirName, file, dirName);
+		
 	}
 	
 }

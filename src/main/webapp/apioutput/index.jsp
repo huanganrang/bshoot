@@ -23,6 +23,8 @@
 				style="padding: 1px"></div>
 			<div title="行政区域查询" data-options="href:'api_region_query.jsp'"
 				style="padding: 1px"></div>
+			<div title="APP错误日志上传" data-options="href:'api_app_errorlog.jsp'"
+				style="padding: 1px"></div>
 		</div>
 	</div>	
 </body>

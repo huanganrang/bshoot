@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript">
 	var editor;
@@ -20,17 +21,24 @@
 		<table class="table table-hover table-condensed">
 			<tr>
 				<th>编号</th>
-				<td>${bug.id}</td>
-				<th>BUG名称</th>
-				<td>${bug.name}</td>
+				<td colspan="3">${bug.id}</td>
 			</tr>
 			<tr>
-				<th>BUG类型</th>
-				<td colspan="3">${bug.typeName}</td>
+				<th>BUG名称</th>
+				<td colspan="3">${bug.name}</td>
+			</tr>
+			<tr>
+				<th width="10%">BUG类型</th>
+				<td width="40%">${bug.typeName}</td>
+				<th width="10%">下载文件</th>
+				<td width="40%">
+					<a href="${pageContext.request.contextPath}/fileController/download?filePath=${bug.name}">点击下载</a>
+				</td>
 			</tr>
 			<tr>
 				<th>BUG描述</th>
-				<td colspan="3"><textarea name="note" id="note" cols="50" rows="5" style="visibility: hidden;">${bug.note}</textarea></td>
+				<td colspan="3"><textarea name="note" id="note" cols="50"
+						rows="5" style="visibility: hidden;">${bug.note}</textarea></td>
 			</tr>
 		</table>
 	</div>

@@ -55,7 +55,7 @@
 				sortable : true
 			} ] ],
 			columns : [ [ {
-				field : 'nickName',
+				field : 'nickname',
 				title : '昵称',
 				width : 60
 			}, {

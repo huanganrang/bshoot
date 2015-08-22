@@ -56,11 +56,11 @@
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>lg_x(经度)：</label></td>
-						<td><input name="lg_x" type="text" class="span2" value="35.801559"/></td>
+						<td><input name="lg_x" type="text" class="span2" value="121.801559"/></td>
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>lg_y(纬度)：</label></td>
-						<td><input name="lg_y" type="text" class="span2" value="-10.501577"/></td>
+						<td><input name="lg_y" type="text" class="span2" value="31.501577"/></td>
 					</tr>
 					<tr>
 						<td colspan="2" align="center">

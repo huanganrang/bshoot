@@ -213,7 +213,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		t.setStatus("1");
 		t.setCreateDatetime(new Date());
 		bshootDao.save(t);
-		updateLocation(t);
+//		updateLocation(t);
 	}
 	
 	@Override
@@ -261,6 +261,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		return attUserIdList;
 	}
 	
+	@SuppressWarnings("unused")
 	private void updateLocation(Tbshoot bshoot){
 		try{
 			if(F.empty(bshoot.getLgX())){
@@ -297,7 +298,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		if (t != null) {
 			MyBeanUtils.copyProperties(bshoot, t, new String[] { "id" , "createdatetime", "lgX", "lgY" }, true);
 			//t.setModifydatetime(new Date());
-			updateLocation(t);
+//			updateLocation(t);
 		}
 	}
 
@@ -393,8 +394,15 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		}
 	}
 	
-	@Override
-	public DataGrid dataGridNearby(PageHelper ph,String xStr,String yStr, String userId) {
+	/**
+	 * 附近视频查询-废弃
+	 * @param ph
+	 * @param xStr
+	 * @param yStr
+	 * @param userId
+	 * @return
+	 */
+	public DataGrid dataGridNearby_bak(PageHelper ph,String xStr,String yStr, String userId) {
 		double x = RoundTool.round(new Double(xStr), 6, BigDecimal.ROUND_UP);
 		double y = RoundTool.round(new Double(yStr), 6, BigDecimal.ROUND_UP);
 		List<Map<String,Object>> list = bshootDao.executeNearby(ph.getPage(), ph.getRows(), x, y);
@@ -434,6 +442,60 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		
 		return dataGrid;
 	}
+	
+	/**
+	 * 附近视频查询
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public DataGrid dataGridNearby(PageHelper ph,String xStr,String yStr, String userId) {
+		DataGrid dg = new DataGrid();
+		String sql = "select id, user_id userId, bs_stream bsStream, bs_icon bsIcon, bs_description bsDescription, "
+				+ "bs_praise bsPraise, bs_comment bsComment, lg_name lgName, create_datetime createDatetime, "
+				+ "round(6378.138*2*asin(sqrt(pow(sin(("+yStr+"*pi()/180-lg_y*pi()/180)/2),2)+cos("+yStr+"*pi()/180)*cos(lg_y*pi()/180)*pow(sin(("+xStr+"*pi()/180-lg_x*pi()/180)/2),2)))*1000) as distance "
+				+ " from bshoot ";
+		String where = " where status=1 and parent_id is null ";
+		List<Map> list = bshootDao.findBySql2Map(sql + where + " order by case when distance is null then 1 else 0 end ,distance", ph.getPage(), ph.getRows());
+		dg.setTotal(bshootDao.count("select count(*) from Tbshoot " + where));
+		
+		int i = 0;
+		String[] userIds = new String[list.size()];
+		String[] bshootIds = new String[list.size()];
+		for(Map bshoot : list){
+			userIds[i] = (String)bshoot.get("userId");
+			bshootIds[i] = (String)bshoot.get("id");
+			i++;
+		}
+		List<Tuser> listUsers = userDao.getTusers(userIds);
+		Map<String,Tuser> map = new HashMap<String,Tuser>();
+		for(Tuser t : listUsers){
+			map.put(t.getId(), t);
+		}
+		Map<String,String> pMap = new HashMap<String,String>();
+		if(userId != null) {
+			List<TbshootPraise> listBshootPraises = bshootPraiseDao.getTbshootPraises(userId, bshootIds);
+			for(TbshootPraise t : listBshootPraises){
+				pMap.put(t.getBshootId(), t.getBshootId());
+			}
+		}
+		for(Map b :list){
+			Tuser t = map.get((String)b.get("userId"));
+			b.put("userHeadImage",PathUtil.getHeadImagePath(t.getHeadImage()));
+			b.put("nickname",t.getNickname());
+			b.put("memberV", t.getMemberV());
+			if(pMap.get((String)b.get("id"))!=null){
+				b.put("praised", Constants.GLOBAL_BOOLEAN_TRUE);
+			}else{
+				b.put("praised", Constants.GLOBAL_BOOLEAN_FALSE);
+			}
+			b.put("bsStream", PathUtil.getBshootPath((String)b.get("bsStream")));
+			b.put("bsIcon", PathUtil.getBshootPath((String)b.get("bsIcon")));
+		}
+		dg.setRows(list);
+		
+		return dg;
+	}
+	
 	@Override
 	public DataGrid dataGridByFriend(PageHelper ph, String userId) {
 		DataGrid dg = new DataGrid();
