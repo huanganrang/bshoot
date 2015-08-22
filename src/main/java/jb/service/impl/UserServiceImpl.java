@@ -267,10 +267,12 @@ public class UserServiceImpl implements UserServiceI {
 	 * 修改时检测属性是否存在
 	 */
 	public boolean exists(User user) {
+		String userId = user.getId();
+		user.setId(null);
 		Map<String, Object> params = new HashMap<String, Object>();
 		String whereHql = whereHql(user, params);
 		Tuser t = userDao.get("from Tuser t " + whereHql, params);
-		if(t != null && t.getId() != user.getId()) {
+		if(t != null && !t.getId().equals(userId)) {
 			return true;
 		}
 		return false;

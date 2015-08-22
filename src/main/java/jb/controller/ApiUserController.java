@@ -299,9 +299,11 @@ public class ApiUserController extends BaseController {
 		try {
 			SessionInfo s = getSessionInfo(request);
 			user.setId(s.getId());
+			user.setName(s.getName());
 			if(!F.empty(user.getEmail())) {
 				User u = new User();
 				u.setEmail(user.getEmail());
+				u.setId(s.getId());
 				if(userService.exists(u)) {
 					j.setSuccess(false);
 					j.setMsg("邮箱已被使用！");
@@ -311,6 +313,7 @@ public class ApiUserController extends BaseController {
 			if(!F.empty(user.getNickname())) {
 				User u = new User();
 				u.setNickname(user.getNickname());
+				u.setId(s.getId());
 				if(userService.exists(u)) {
 					j.setSuccess(false);
 					j.setMsg("昵称已被使用！");
