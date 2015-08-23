@@ -311,23 +311,12 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public DataGrid dataGridHot(PageHelper ph) {
+	public DataGrid dataGridHot(PageHelper ph, String userId) {
 		DataGrid dataGrid = dataGrid(null, ph);
 		List<Bshoot> bshoots = dataGrid.getRows();
-		if(bshoots!=null&&bshoots.size()>0){
-			String[] userIds = new String[bshoots.size()];
-			int i = 0;
-			for(Bshoot b :bshoots){
-				userIds[i++] = b.getUserId();
-			}
-			List<Tuser> list = userDao.getTusers(userIds);
-			Map<String,String> map = new HashMap<String,String>();
-			for(Tuser t : list){
-				map.put(t.getId(), t.getHeadImage());
-			}
-			for(Bshoot b :bshoots){
-				b.setUserHeadImage(map.get(b.getUserId()));
-			}
+		setUserInfo(bshoots);
+		if(userId != null) {
+			setPraised(bshoots, userId);
 		}
 		return dataGrid;
 	}

@@ -42,6 +42,10 @@
 					</tr>
 					
 					<tr>
+						<td align="right" style="width: 180px;"><label>tokenId(token值，登录获取)：</label></td>
+						<td><input name="tokenId" type="text" class="span2" value=""/></td>
+					</tr>
+					<tr>
 						<td align="right" style="width: 180px;"><label>page(第几页)：</label></td>
 						<td><input name="page" type="text" class="span2" value="1"/></td>
 					</tr>

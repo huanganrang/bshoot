@@ -30,7 +30,7 @@ public interface BshootServiceI {
 	 * @param ph
 	 * @return
 	 */
-	public DataGrid dataGridHot(PageHelper ph);
+	public DataGrid dataGridHot(PageHelper ph, String userId);
 	
 	/**
 	 * 好友视频

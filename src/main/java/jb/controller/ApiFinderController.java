@@ -57,13 +57,19 @@ public class ApiFinderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping("/hotBshoot")
-	public Json hotBshoot(PageHelper ph) {
+	public Json hotBshoot(PageHelper ph, HttpServletRequest request) {
 		
 		Json j = new Json();
 		try {
+			String userId = null;
+			SessionInfo s = getSessionInfo(request);
+			if(s != null) {
+				userId = s.getId();
+			}
+			
 			ph.setOrder("desc");
 			ph.setSort("bsPraise");
-			j.setObj(bshootService.dataGridHot(ph));
+			j.setObj(bshootService.dataGridHot(ph, userId));
 			j.success();
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());
