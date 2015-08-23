@@ -1,6 +1,8 @@
 package jb.service.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -458,62 +460,116 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		List<Map> list = bshootDao.findBySql2Map(sql + where + " order by case when distance is null then 1 else 0 end ,distance", ph.getPage(), ph.getRows());
 		dg.setTotal(bshootDao.count("select count(*) from Tbshoot " + where));
 		
-		int i = 0;
-		String[] userIds = new String[list.size()];
-		String[] bshootIds = new String[list.size()];
-		for(Map bshoot : list){
-			userIds[i] = (String)bshoot.get("userId");
-			bshootIds[i] = (String)bshoot.get("id");
-			i++;
-		}
-		List<Tuser> listUsers = userDao.getTusers(userIds);
-		Map<String,Tuser> map = new HashMap<String,Tuser>();
-		for(Tuser t : listUsers){
-			map.put(t.getId(), t);
-		}
-		Map<String,String> pMap = new HashMap<String,String>();
-		if(userId != null) {
-			List<TbshootPraise> listBshootPraises = bshootPraiseDao.getTbshootPraises(userId, bshootIds);
-			for(TbshootPraise t : listBshootPraises){
-				pMap.put(t.getBshootId(), t.getBshootId());
+		if(list != null && list.size() > 0) {
+			int i = 0;
+			String[] userIds = new String[list.size()];
+			String[] bshootIds = new String[list.size()];
+			for(Map bshoot : list){
+				userIds[i] = (String)bshoot.get("userId");
+				bshootIds[i] = (String)bshoot.get("id");
+				i++;
 			}
-		}
-		for(Map b :list){
-			Tuser t = map.get((String)b.get("userId"));
-			b.put("userHeadImage",PathUtil.getHeadImagePath(t.getHeadImage()));
-			b.put("nickname",t.getNickname());
-			b.put("memberV", t.getMemberV());
-			if(pMap.get((String)b.get("id"))!=null){
-				b.put("praised", Constants.GLOBAL_BOOLEAN_TRUE);
-			}else{
-				b.put("praised", Constants.GLOBAL_BOOLEAN_FALSE);
+			List<Tuser> listUsers = userDao.getTusers(userIds);
+			Map<String,Tuser> map = new HashMap<String,Tuser>();
+			for(Tuser t : listUsers){
+				map.put(t.getId(), t);
 			}
-			b.put("bsStream", PathUtil.getBshootPath((String)b.get("bsStream")));
-			b.put("bsIcon", PathUtil.getBshootPath((String)b.get("bsIcon")));
+			Map<String,String> pMap = new HashMap<String,String>();
+			if(userId != null) {
+				List<TbshootPraise> listBshootPraises = bshootPraiseDao.getTbshootPraises(userId, bshootIds);
+				for(TbshootPraise t : listBshootPraises){
+					pMap.put(t.getBshootId(), t.getBshootId());
+				}
+			}
+			for(Map b :list){
+				Tuser t = map.get((String)b.get("userId"));
+				b.put("userHeadImage",PathUtil.getHeadImagePath(t.getHeadImage()));
+				b.put("nickname",t.getNickname());
+				b.put("memberV", t.getMemberV());
+				if(pMap.get((String)b.get("id"))!=null){
+					b.put("praised", Constants.GLOBAL_BOOLEAN_TRUE);
+				}else{
+					b.put("praised", Constants.GLOBAL_BOOLEAN_FALSE);
+				}
+				b.put("bsStream", PathUtil.getBshootPath((String)b.get("bsStream")));
+				b.put("bsIcon", PathUtil.getBshootPath((String)b.get("bsIcon")));
+			}
 		}
 		dg.setRows(list);
 		
 		return dg;
 	}
 	
+	/**
+	 * 关注好友的视频（包括自己的和转发的）
+	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public DataGrid dataGridByFriend(PageHelper ph, String userId) {
 		DataGrid dg = new DataGrid();
 		List<Bshoot> ol = new ArrayList<Bshoot>();
-		String hql = "select t from Tbshoot t , TuserAttention ua where t.userId = ua.attUserId and ua.userId = :userId and t.status=1 and t.parentId is null";
+		
+		String sql = "select t.id id, t.user_id userId, t.bs_stream bsStream, t.bs_icon bsIcon, t.bs_description bsDescription, "
+				+ " t.bs_praise bsPraise, t.bs_comment bsComment, t.lg_name lgName, t.create_datetime createDatetime, t.parent_id parentId "
+				+ " from bshoot t left join user_attention ua on ua.att_user_id = t.user_id " 
+				+ " where t.status=1 and (ua.user_id = :userId or t.user_id = :userId) ";
+		//String hql = "select t from Tbshoot t , TuserAttention ua where t.userId = ua.attUserId and ua.userId = :userId and t.status=1";
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
 		
-		List<Tbshoot> l = bshootDao.find(hql + " order by t.userId", params, ph.getPage(), ph.getRows());
-		dg.setTotal(bshootDao.count(hql.replace("select t", "select count(*)") , params));
+		List<Tbshoot> l = new ArrayList<Tbshoot>();
+//		List<Tbshoot> l = bshootDao.find(hql + " order by t.createDatetime desc", params, ph.getPage(), ph.getRows());
+//		dg.setTotal(bshootDao.count(hql.replace("select t", "select count(*)") , params));
+		List<Map> lm = bshootDao.findBySql2Map(sql + " order by t.create_datetime desc ", params, ph.getPage(), ph.getRows());
+		BigInteger count = bshootDao.countBySql("select count(*) from bshoot t left join user_attention ua on ua.att_user_id = t.user_id where t.status=1 and (ua.user_id = :userId or t.user_id = :userId)", params);
+		dg.setTotal(count == null ? 0 : count.longValue());
+		if(lm != null && lm.size() > 0) {
+			for(Map m : lm) {
+				Tbshoot t = new Tbshoot();
+				try {
+					org.apache.commons.beanutils.BeanUtils.populate(t, m);
+					l.add(t);
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
 		if (l != null && l.size() > 0) {
+			Map<String, Bshoot> map = new HashMap<String,Bshoot>();
+			String[] bshootIds = new String[l.size()];
+			int i = 0;
+			for(Tbshoot b : l){
+				bshootIds[i++] = b.getParentId();
+			}
+			List<Tbshoot> list = bshootDao.getTbshoots(bshootIds);
+			List<Bshoot> blist = new ArrayList<Bshoot>();
+			if(list != null) {
+				for(Tbshoot t : list){
+					Bshoot b = new Bshoot();
+					BeanUtils.copyProperties(t, b);
+					map.put(t.getId(), b);
+					blist.add(b);
+				}
+				if(userId != null) {
+					setPraised(blist, userId);
+				}
+				setUserInfo(blist);
+			}
+			
 			for (Tbshoot t : l) {
 				Bshoot o = new Bshoot();
 				BeanUtils.copyProperties(t, o);
+				if(!F.empty(t.getParentId()) && map.containsKey(t.getParentId())) {
+					o.setParentBshoot(map.get(t.getParentId()));
+				}
 				ol.add(o);
 			}
 		}
 		setUserInfo(ol);
+		setPraised(ol, userId);
 		dg.setRows(ol);
 		return dg;
 	}
