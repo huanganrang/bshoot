@@ -5,6 +5,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jb.absx.F;
+
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -72,7 +74,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		String tokenId = request.getParameter(TokenManage.TOKEN_FIELD);		
-		if(!tokenManage.validToken(tokenId)) {
+		if(F.empty(tokenId) || !tokenManage.validToken(tokenId)) {
 			request.getRequestDispatcher("/api/apiCommon/error").forward(request, response);
 			return false;
 		}		

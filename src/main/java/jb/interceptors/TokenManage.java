@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import jb.absx.F;
 import jb.absx.UUID;
 import jb.pageModel.SessionInfo;
 
@@ -64,6 +65,7 @@ public class TokenManage {
 	
 	public SessionInfo getSessionInfo(HttpServletRequest request){
 		String tokenId = request.getParameter(TokenManage.TOKEN_FIELD);	
+		if(F.empty(tokenId)) return null;
 		TokenWrap token = tokenMap.get(tokenId);
 		if(token == null) return null;
 		SessionInfo s = new SessionInfo();		
