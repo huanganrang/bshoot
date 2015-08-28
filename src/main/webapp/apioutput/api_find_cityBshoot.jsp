@@ -55,7 +55,7 @@
 						<td><input name="rows" type="text" class="span2" value="10"/></td>
 					</tr>
 					<tr>
-						<td align="right" style="width: 180px;"><label>bsArea(地理位置)：</label></td>
+						<td align="right" style="width: 180px;"><label>bsArea(当前位置)：</label></td>
 						<td><input name="bsArea" type="text" class="span2" value=""/>(同城范围待定，指省还是市？如：中国上海市？中国上海市浦东新区？)</td>
 					</tr>
 					<tr>

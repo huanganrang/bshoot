@@ -55,7 +55,7 @@
 						<td><input name="rows" type="text" class="span2" value="10"/></td>
 					</tr>
 					<tr>
-						<td align="right" style="width: 180px;"><label>bsArea(地理位置)：</label></td>
+						<td align="right" style="width: 180px;"><label>bsArea(当前位置)：</label></td>
 						<td><input name="bsArea" type="text" class="span2" value=""/>(格式：国家 如：中国)</td>
 					</tr>
 					<tr>
