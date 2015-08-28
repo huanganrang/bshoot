@@ -38,6 +38,7 @@ public class Bshoot implements java.io.Serializable {
 	private java.lang.String lgName;	
 	private java.lang.String parentId;
 	private java.lang.String status;
+	private java.lang.String bsArea;
 	private double distance; //距离
 	private String praised; //是否赞过
 	
@@ -245,6 +246,14 @@ public class Bshoot implements java.io.Serializable {
 
 	public void setStatus(java.lang.String status) {
 		this.status = status;
+	}
+
+	public java.lang.String getBsArea() {
+		return bsArea;
+	}
+
+	public void setBsArea(java.lang.String bsArea) {
+		this.bsArea = bsArea;
 	}
 
 	public Bshoot getParentBshoot() {

@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import jb.interceptors.TokenManage;
+import jb.pageModel.Bshoot;
 import jb.pageModel.BshootSquare;
 import jb.pageModel.Json;
 import jb.pageModel.PageHelper;
@@ -93,6 +94,81 @@ public class ApiFinderController extends BaseController {
 				userId = s.getId();
 			}
 			j.setObj(bshootService.dataGridNearby(ph,lg_x,lg_y,userId));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}	
+	
+	/**
+	 * 同城视频
+	 * @param ph
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/cityBshoot")
+	public Json cityBshoot(Bshoot bshoot, PageHelper ph, HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			ph.setOrder("desc");
+			ph.setSort("bsPraise");
+			String userId = null;
+			SessionInfo s = getSessionInfo(request);
+			if(s != null) {
+				userId = s.getId();
+			}
+			j.setObj(bshootService.dataGridCity(bshoot, ph, userId, 1));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	/**
+	 * 国内视频
+	 * @param ph
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/domesticBshoot")
+	public Json domesticBshoot(Bshoot bshoot, PageHelper ph, HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			ph.setOrder("desc");
+			ph.setSort("bsPraise");
+			String userId = null;
+			SessionInfo s = getSessionInfo(request);
+			if(s != null) {
+				userId = s.getId();
+			}
+			j.setObj(bshootService.dataGridCity(bshoot, ph, userId, 1));
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}	
+	
+	/**
+	 * 国外视频
+	 * @param ph
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/abroadBshoot")
+	public Json abroadBshoot(Bshoot bshoot, PageHelper ph, HttpServletRequest request) {
+		Json j = new Json();
+		try {
+			ph.setOrder("desc");
+			ph.setSort("bsPraise");
+			String userId = null;
+			SessionInfo s = getSessionInfo(request);
+			if(s != null) {
+				userId = s.getId();
+			}
+			j.setObj(bshootService.dataGridCity(bshoot, ph, userId, 2));
 			j.success();
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());

@@ -592,6 +592,40 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	}
 	
 	@Override
+	public DataGrid dataGridCity(Bshoot bshoot, PageHelper ph, String userId, int type) {
+		List<Bshoot> ol = new ArrayList<Bshoot>();
+		DataGrid dg = new DataGrid();
+		Map<String, Object> params = new HashMap<String, Object>();
+		String hql = " from Tbshoot t  where t.status = 1 and t.parentId is null ";
+		if(!F.empty(bshoot.getBsArea())) {
+			if(type == 1) { // 国内/同城
+				hql += " and t.bsArea like :bsArea";
+			} else if(type == 2){ // 国外
+				hql += " and t.bsArea not like :bsArea";
+			}
+			params.put("bsArea", bshoot.getBsArea() + "%%");
+		}
+		
+		List<Tbshoot> l = bshootDao.find(hql  + orderHql(ph), params, ph.getPage(), ph.getRows());
+		dg.setTotal(bshootDao.count("select count(*) " + hql, params));
+		dg.setRows(l);
+		
+		if (l != null && l.size() > 0) {
+			for (Tbshoot t : l) {
+				Bshoot o = new Bshoot();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		setUserInfo(ol);
+		if(userId != null) {
+			setPraised(ol, userId);
+		}
+		dg.setRows(ol);
+		return dg;
+	}
+	
+	@Override
 	public void updatePlayNum(String id) {
 		int addNum = 1;
 		try {

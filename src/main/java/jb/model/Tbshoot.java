@@ -90,13 +90,15 @@ public class Tbshoot implements java.io.Serializable{
 	private java.lang.String lgX;
 	//@Length(max=18)
 	private java.lang.String lgY;
-	//@Length(max=36)
+	//@Length(max=256)
 	private java.lang.String lgName;
 	//@Length(max=36)
 	private java.lang.String parentId;
 	
 	//@Length(max=4)
 	private java.lang.String status;
+	//@Length(max=256)
+	private java.lang.String bsArea;
 
 		public Tbshoot(){
 		}
@@ -279,13 +281,22 @@ public class Tbshoot implements java.io.Serializable{
 		this.lgY = lgY;
 	}
 	
-	@Column(name = "lg_name", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
+	@Column(name = "lg_name", unique = false, nullable = true, insertable = true, updatable = true, length = 256)
 	public java.lang.String getLgName() {
 		return this.lgName;
 	}
 	
 	public void setLgName(java.lang.String lgName) {
 		this.lgName = lgName;
+	}
+	
+	@Column(name = "bs_area", unique = false, nullable = true, insertable = true, updatable = true, length = 256)
+	public java.lang.String getBsArea() {
+		return bsArea;
+	}
+	
+	public void setBsArea(java.lang.String bsArea) {
+		this.bsArea = bsArea;
 	}
 	
 	@Column(name = "parent_id", unique = false, nullable = true, insertable = true, updatable = true, length = 36)

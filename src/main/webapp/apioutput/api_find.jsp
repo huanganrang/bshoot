@@ -21,6 +21,12 @@
 				style="padding: 1px"></div>	
 			<div title="附近" data-options="href:'api_find_nearbyBshoot.jsp'"
 				style="padding: 1px"></div>	
+			<div title="同城" data-options="href:'api_find_cityBshoot.jsp'"
+				style="padding: 1px"></div>	
+			<div title="国内" data-options="href:'api_find_domesticBshoot.jsp'"
+				style="padding: 1px"></div>	
+			<div title="国外" data-options="href:'api_find_abroadBshoot.jsp'"
+				style="padding: 1px"></div>	
 			<div title="美拍详情" data-options="href:'api_bshoot_detail.jsp'"
 				style="padding: 1px"></div>				
 			<div title="美拍点赞" data-options="href:'api_bshoot_praise.jsp'"

@@ -75,7 +75,10 @@
 						<value>/api/bshootController/dataGrid</value>
 						<value>/api/apiUserController/register</value><!-- 用户注册 -->
 						<value>/api/apiFinderController/hotBshoot</value><!-- 热门 -->
-						<value>/api/apiFinderController/nearbyBshoot</value><!-- 热门 -->
+						<value>/api/apiFinderController/nearbyBshoot</value><!-- 附近 -->
+						<value>/api/apiFinderController/cityBshoot</value><!-- 同城 -->
+						<value>/api/apiFinderController/domesticBshoot</value><!-- 国内 -->
+						<value>/api/apiFinderController/abroadBshoot</value><!-- 国外 -->
 						<value>/api/apiFinderController/bshootSquare</value><!-- 广场页 -->	
 						<value>/api/apiFinderController/bshootSquareTopic</value><!-- 广场话题页 -->	
 						<value>/api/apiFinderController/getBshootSquareDetail</value><!-- 广场详情 -->	

@@ -67,7 +67,11 @@
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>lgName(地点名称)：</label></td>
-						<td><input name="lgName" type="text" class="span2" value=""/></td>
+						<td><input name="lgName" type="text" class="span2" value=""/>(位置详细地址)</td>
+					</tr>
+					<tr>
+						<td align="right" style="width: 180px;"><label>bsArea(*地点)：</label></td>
+						<td><input name="bsArea" type="text" class="span2" value=""/>(非客户端显示数据，用于搜索同城、国内、国外数据。格式：国省市，如：中国上海市浦东新区,具体名称按定位api为准)</td>
 					</tr>
 					<tr>
 						<td colspan="2" align="center">

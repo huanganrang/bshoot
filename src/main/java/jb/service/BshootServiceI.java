@@ -77,6 +77,14 @@ public interface BshootServiceI {
 	 */
 	public DataGrid dataGridSearch(Bshoot bshoot, PageHelper ph, String userId);
 	
+	/**
+	 * 同城视频
+	 * @param bshoot
+	 * @param ph
+	 * @param userId
+	 * @return
+	 */
+	public DataGrid dataGridCity(Bshoot bshoot, PageHelper ph, String userId, int type);
 
 	/**
 	 * 添加Bshoot
