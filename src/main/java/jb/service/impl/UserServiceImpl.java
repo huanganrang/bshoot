@@ -52,7 +52,12 @@ public class UserServiceImpl implements UserServiceI {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("name", user.getName());
 		params.put("pwd", MD5Util.md5(user.getPwd()));
-		Tuser t = userDao.get("from Tuser t where t.name = :name and t.pwd = :pwd", params);
+		String where = "";
+		if(!F.empty(user.getUtype())) {
+			params.put("utype", user.getUtype());
+			where += " and t.utype = :utype";
+		}
+		Tuser t = userDao.get("from Tuser t where t.name = :name and t.pwd = :pwd" + where, params);
 		if (t != null) {
 			BeanUtils.copyProperties(t, user);
 			return user;
@@ -99,6 +104,7 @@ public class UserServiceImpl implements UserServiceI {
 		user.setPwd(MD5Util.md5(user.getPwd()));
 		user.setCreatedatetime(new Date());
 		BeanUtils.copyProperties(user, u);
+		u.setUtype("UT02");
 		userDao.save(u);
 	}
 
@@ -171,6 +177,10 @@ public class UserServiceImpl implements UserServiceI {
 				hql += " and t.nickname = :nickname";
 				params.put("nickname", user.getNickname());
 			}
+			if (!F.empty(user.getUtype())) {
+				hql += " and t.utype = :utype";
+				params.put("utype", user.getUtype());
+			}
 		}
 		return hql;
 	}
@@ -194,6 +204,7 @@ public class UserServiceImpl implements UserServiceI {
 			BeanUtils.copyProperties(user, u);
 			u.setCreatedatetime(new Date());
 			u.setPwd(MD5Util.md5(user.getPwd()));
+			u.setUtype("UT01");
 			userDao.save(u);
 		}
 	}
@@ -422,7 +433,7 @@ public class UserServiceImpl implements UserServiceI {
 		DataGrid dg = new DataGrid();
 		List<User> ul = new ArrayList<User>();
 		Map<String, Object> params = new HashMap<String, Object>();
-		String hql = "from Tuser t WHERE NOT exists (SELECT 1 FROM TuserAttention ua WHERE ua.attUserId=t.id and ua.userId = :userId)";
+		String hql = "from Tuser t WHERE NOT exists (SELECT 1 FROM TuserAttention ua WHERE ua.attUserId=t.id and ua.userId = :userId) and t.utype='UT02'";
 		params.put("userId", user.getId());
 		List<Tuser> l = userDao.find(hql, params, ph.getPage(), ph.getRows());
 		if (l != null && l.size() > 0) {
@@ -459,7 +470,7 @@ public class UserServiceImpl implements UserServiceI {
 	private String whereHqlApi(User user, Map<String, Object> params) {
 		String hql = "";
 		if (user != null) {
-			hql += " where NOT exists (SELECT 1 FROM TuserAttention ua WHERE ua.attUserId=t.id and ua.userId = :userId)";
+			hql += " where t.utype = 'UT02' and NOT exists (SELECT 1 FROM TuserAttention ua WHERE ua.attUserId=t.id and ua.userId = :userId)";
 			params.put("userId", user.getId());
 			if (user.getName() != null) {
 				hql += " and (t.name like :name or t.nickname like :nickname)";
@@ -508,7 +519,7 @@ public class UserServiceImpl implements UserServiceI {
 		DataGrid dg = new DataGrid();
 		String sql = "select t.id id, t.head_image headImage, t.nickname nickname, t.member_v memberV, t.area area, t.sex sex, "
 				+ "(select count(*) from user_attention ua where ua.att_user_id = t.id) as uaedNum from tuser t ";
-		String where = "where 1=1";
+		String where = " where t.utype='UT02' ";
 		Map<String, Object> params = new HashMap<String, Object>();
 		if(!F.empty(user.getNickname())) {
 			where += " and t.nickname like :nickname";

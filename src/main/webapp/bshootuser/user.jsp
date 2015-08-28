@@ -30,7 +30,7 @@
 	var dataGrid;
 	$(function() {
 		dataGrid = $('#dataGrid').datagrid({
-			url : '${pageContext.request.contextPath}/userController/dataGrid',
+			url : '${pageContext.request.contextPath}/userController/dataGrid?utype=UT02',
 			fit : true,
 			fitColumns : true,
 			border : false,

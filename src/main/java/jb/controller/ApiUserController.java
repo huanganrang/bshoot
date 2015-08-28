@@ -72,6 +72,7 @@ public class ApiUserController extends BaseController {
 	public Json login(User user, HttpSession session, HttpServletRequest request) {
 		Json j = new Json();
 		try {
+			user.setUtype("UT02");
 			User u = userService.login(user);
 			if (u != null) {
 				String tid = tokenManage.buildToken(user.getId(),user.getName());

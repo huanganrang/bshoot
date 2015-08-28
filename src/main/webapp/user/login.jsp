@@ -10,12 +10,13 @@
 		loginDialog = $('#loginDialog').show().dialog({
 			modal : true,
 			closable : false,
-			buttons : [ {
+			buttons : [ 
+			/*{
 				text : '注册',
 				handler : function() {
 					$('#registerDialog').dialog('open');
 				}
-			}, {
+			}, */{
 				text : '登录',
 				handler : function() {
 					loginFun();

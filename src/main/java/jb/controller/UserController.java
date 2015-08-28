@@ -57,6 +57,7 @@ public class UserController extends BaseController {
 	@RequestMapping("/login")
 	public Json login(User user, HttpSession session, HttpServletRequest request) {
 		Json j = new Json();
+		user.setUtype("UT01");
 		User u = userService.login(user);
 		if (u != null) {
 			j.setSuccess(true);
