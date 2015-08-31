@@ -24,15 +24,17 @@
 				<td colspan="3">${bug.id}</td>
 			</tr>
 			<tr>
-				<th>BUG名称</th>
-				<td colspan="3">${bug.name}</td>
+				<th>系统类型</th>
+				<td>${bug.systemType}</td>
+				<th>手机型号</th>
+				<td>${bug.phoneModel}</td>
 			</tr>
 			<tr>
 				<th width="10%">BUG类型</th>
 				<td width="40%">${bug.typeName}</td>
 				<th width="10%">下载文件</th>
 				<td width="40%">
-					<a href="${pageContext.request.contextPath}/fileController/download?filePath=${bug.name}">点击下载</a>
+					<a href="${pageContext.request.contextPath}/fileController/download?filePath=${bug.filePath}">点击下载</a>
 				</td>
 			</tr>
 			<tr>

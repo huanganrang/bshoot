@@ -47,20 +47,20 @@
 				width : 150,
 				hidden : true
 			}, {
-				field : 'name',
-				title : 'BUG名称',
-				width : 80,
-				sortable : true
-			} ] ],
-			columns : [ [ {
 				field : 'createdatetime',
 				title : '创建时间',
 				width : 150,
 				sortable : true
+			} ] ],
+			columns : [ [ {
+				field : 'systemType',
+				title : '系统类型',
+				width : 80,
+				sortable : true
 			}, {
-				field : 'modifydatetime',
-				title : '最后修改时间',
-				width : 150,
+				field : 'phoneModel',
+				title : '手机型号',
+				width : 100,
 				sortable : true
 			}, {
 				field : 'typeId',
@@ -196,12 +196,14 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 160px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 120px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 					<tr>
-						<th>BUG名称</th>
-						<td><input name="name" placeholder="可以模糊查询" class="span2" /></td>
+						<th>系统类型</th>
+						<td><input name="systemType" placeholder="可以模糊查询" class="span2" /></td>
+						<th>手机型号</th>
+						<td><input name="phoneModel" placeholder="可以模糊查询" class="span2" /></td>
 						<th>BUG类型</th>
 						<td><select name="typeId" class="easyui-combobox" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
 								<option value=""></option>
@@ -212,11 +214,7 @@
 					</tr>
 					<tr>
 						<th>创建时间</th>
-						<td colspan="3"><input class="span2" name="createdatetimeStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />至<input class="span2" name="createdatetimeEnd" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" /></td>
-					</tr>
-					<tr>
-						<th>最后修改时间</th>
-						<td colspan="3"><input class="span2" name="modifydatetimeStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />至<input class="span2" name="modifydatetimeEnd" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" /></td>
+						<td colspan="5"><input class="span2" name="createdatetimeStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />至<input class="span2" name="createdatetimeEnd" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" /></td>
 					</tr>
 				</table>
 			</form>

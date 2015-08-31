@@ -42,8 +42,20 @@
 					</tr>
 					
 					<tr>
-						<td align="right" style="width: 180px;"><label>logFile(日志文件)：</label></td>
+						<td align="right" style="width: 180px;"><label>logFile(log日志文件)：</label></td>
 						<td><input name="logFile" type="file" class="span2" value=""/>（请上传后缀名为.log）</td>
+					</tr>
+					<tr>
+						<td align="right" style="width: 180px;"><label>systemType(系统类型)：</label></td>
+						<td><input name="systemType" type="text" class="span2" value=""/></td>
+					</tr>
+					<tr>
+						<td align="right" style="width: 180px;"><label>phoneModel(手机型号)：</label></td>
+						<td><input name="phoneModel" type="text" class="span2" value=""/></td>
+					</tr>
+					<tr>
+						<td align="right" style="width: 180px;"><label>createdatetime(时间戳)：</label></td>
+						<td><input name="createdatetime" type="text" class="span2" value=""/>（格式：yyyy-MM-dd HH:mm:ss）</td>
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>note(描述)：</label></td>
