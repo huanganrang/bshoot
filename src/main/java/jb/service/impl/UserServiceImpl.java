@@ -417,11 +417,11 @@ public class UserServiceImpl implements UserServiceI {
 		params.put("uaUserId", userId);
 		params.put("attUserId", userId);
 		params.put("pbUserId", userId);
-		String sql = "select (select count(*) from bshoot b where b.user_id = :bUserId and b.parent_id is null) as bsNum,"
-				+ "(select count(*) from bshoot b where b.user_id = :bzUserId and b.parent_id is not null) as bszNum,"
+		String sql = "select (select count(*) from bshoot b where b.user_id = :bUserId and b.status=1 and b.parent_id is null) as bsNum,"
+				+ "(select count(*) from bshoot b where b.user_id = :bzUserId and b.status=1 and b.parent_id is not null) as bszNum,"
 				+ "(select count(*) from user_attention ua where ua.user_id = :uaUserId) as uaNum,"
 				+ "(select count(*) from user_attention ua1 where ua1.att_user_id = :attUserId) as uaedNum,"
-				+ "(select sum(pb.bs_praise) from bshoot pb where pb.user_id = :pbUserId) as pbsNum";
+				+ "(select sum(pb.bs_praise) from bshoot pb where pb.status=1 and pb.user_id = :pbUserId) as pbsNum";
 		List<Map> list = userDao.findBySql2Map(sql, params, 0, 1);
 		if(list!=null&&list.size()>0) 
 			return list.get(0);
