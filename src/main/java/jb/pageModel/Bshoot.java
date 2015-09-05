@@ -43,6 +43,8 @@ public class Bshoot implements java.io.Serializable {
 	private String praised; //是否赞过
 	
 	private Bshoot parentBshoot; // 转发的美拍
+	
+	private String squareIds; // 广场分类id集合
 
 	public void setId(java.lang.String value) {
 		this.id = value;
@@ -262,5 +264,13 @@ public class Bshoot implements java.io.Serializable {
 
 	public void setParentBshoot(Bshoot parentBshoot) {
 		this.parentBshoot = parentBshoot;
+	}
+	
+	public String getSquareIds() {
+		return squareIds;
+	}
+
+	public void setSquareIds(String squareIds) {
+		this.squareIds = squareIds;
 	}
 }

@@ -223,8 +223,21 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		List<String> attUserIdList = new ArrayList<String>();
 		
 		this.add(bshoot);
-		String bsDescription = bshoot.getBsDescription() + " ";
 		
+		// 建立视频-广场主题对应关系
+		if(bshoot.getSquareIds() != null) {
+			String[] squareIds = bshoot.getSquareIds().split(",");
+			for(String squareId : squareIds) {
+				if(F.empty(squareId)) continue;
+				
+				BshootSquareRel rel = new BshootSquareRel();
+				rel.setBshootId(bshoot.getId());
+				rel.setSquareId(squareId.trim());
+				bshootSquareRelService.add(rel);
+			}
+		}
+		
+		String bsDescription = bshoot.getBsDescription() + " ";
 		// 建立视频-话题对应关系
 		String regex="#(.*?)#";
 		Pattern p = Pattern.compile(regex);
