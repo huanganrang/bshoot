@@ -80,16 +80,16 @@
 				loginFun();
 			}
 		});
-		userLoginCombobox.combobox('textbox').keyup(function(event) {
-			if (event.keyCode == '13') {
-				loginFun();
-			}
-		});
-		userLoginCombogrid.combogrid('textbox').keyup(function(event) {
-			if (event.keyCode == '13') {
-				loginFun();
-			}
-		});
+// 		userLoginCombobox.combobox('textbox').keyup(function(event) {
+// 			if (event.keyCode == '13') {
+// 				loginFun();
+// 			}
+// 		});
+// 		userLoginCombogrid.combogrid('textbox').keyup(function(event) {
+// 			if (event.keyCode == '13') {
+// 				loginFun();
+// 			}
+// 		});
 	});
 	function loginFun() {
 		if (layout_west_tree) {//当west功能菜单树加载成功后再执行登录
@@ -133,25 +133,26 @@
 				<table class="table table-hover table-condensed">
 					<tr>
 						<th>登录名</th>
-						<td><input name="name" type="text" placeholder="请输入登录名" class="easyui-validatebox" data-options="required:true" value="John"></td>
+						<td><input name="name" type="text" placeholder="请输入登录名" class="easyui-validatebox" data-options="required:true"></td>
 					</tr>
 					<tr>
 						<th>密码</th>
-						<td><input name="pwd" type="password" placeholder="请输入密码" class="easyui-validatebox" data-options="required:true" value="123456"></td>
+						<td><input name="pwd" type="password" placeholder="请输入密码" class="easyui-validatebox" data-options="required:true"></td>
 					</tr>
 				</table>
 			</form>
 		</div>
+		<!-- 
 		<div title="自动补全模式" style="overflow: hidden; padding: 10px;">
 			<form method="post">
 				<table class="table table-hover table-condensed">
 					<tr>
 						<th>登录名</th>
-						<td><input id="userLoginCombobox" name="name" type="text" placeholder="请输入登录名" class="easyui-validatebox" data-options="required:true" value="孙宇" style="height: 29px;"></td>
+						<td><input id="userLoginCombobox" name="name" type="text" placeholder="请输入登录名" class="easyui-validatebox" data-options="required:true" value="" style="height: 29px;"></td>
 					</tr>
 					<tr>
 						<th>密码</th>
-						<td><input name="pwd" type="password" placeholder="请输入密码" class="easyui-validatebox" data-options="required:true" value="123456"></td>
+						<td><input name="pwd" type="password" placeholder="请输入密码" class="easyui-validatebox" data-options="required:true" value=""></td>
 					</tr>
 				</table>
 			</form>
@@ -161,18 +162,19 @@
 				<table class="table table-hover table-condensed">
 					<tr>
 						<th>登录名</th>
-						<td><input id="userLoginCombogrid" name="name" type="text" placeholder="请输入登录名" class="easyui-validatebox" data-options="required:true" value="孙宇" style="height: 29px;"></td>
+						<td><input id="userLoginCombogrid" name="name" type="text" placeholder="请输入登录名" class="easyui-validatebox" data-options="required:true" value="" style="height: 29px;"></td>
 					</tr>
 					<tr>
 						<th>密码</th>
-						<td><input name="pwd" type="password" placeholder="请输入密码" class="easyui-validatebox" data-options="required:true" value="123456"></td>
+						<td><input name="pwd" type="password" placeholder="请输入密码" class="easyui-validatebox" data-options="required:true" value=""></td>
 					</tr>
 				</table>
 			</form>
-		</div>
+		</div> -->
 	</div>
 </div>
 
+<!-- 
 <div id="defaultUserInfoDialog" title="系统测试账号" style="width: 300px; height: 260px; overflow: hidden; display: none;">
 	<div class="well well-small" style="margin: 3px;">请大家不要随意更改系统默认账户的信息，如果想测试，请自己新建立用户进行测试</div>
 	<div class="well well-small" style="margin: 3px;">
@@ -198,4 +200,4 @@
 			<span class="badge">7</span>来宾用户：guest/123456
 		</div>
 	</div>
-</div>
+</div> -->
