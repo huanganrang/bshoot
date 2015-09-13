@@ -454,7 +454,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	@Override
 	public DataGrid dataGridNearby(PageHelper ph,String xStr,String yStr, String userId) {
 		DataGrid dg = new DataGrid();
-		String sql = "select id, user_id userId, bs_stream bsStream, bs_icon bsIcon, bs_description bsDescription, "
+		String sql = "select id, user_id userId, bs_stream bsStream, bs_icon bsIcon, bs_description bsDescription, bs_play bsPlay, "
 				+ "bs_praise bsPraise, bs_comment bsComment, lg_name lgName, create_datetime createDatetime, "
 				+ "round(6378.138*2*asin(sqrt(pow(sin(("+yStr+"*pi()/180-lg_y*pi()/180)/2),2)+cos("+yStr+"*pi()/180)*cos(lg_y*pi()/180)*pow(sin(("+xStr+"*pi()/180-lg_x*pi()/180)/2),2)))*1000) as distance "
 				+ " from bshoot ";
@@ -511,7 +511,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		DataGrid dg = new DataGrid();
 		List<Bshoot> ol = new ArrayList<Bshoot>();
 		
-		String sql = "select t.id id, t.user_id userId, t.bs_stream bsStream, t.bs_icon bsIcon, t.bs_description bsDescription, "
+		String sql = "select t.id id, t.user_id userId, t.bs_stream bsStream, t.bs_icon bsIcon, t.bs_description bsDescription, bs_play bsPlay, "
 				+ " t.bs_praise bsPraise, t.bs_comment bsComment, t.lg_name lgName, t.create_datetime createDatetime, t.parent_id parentId "
 				+ " from bshoot t left join user_attention ua on ua.att_user_id = t.user_id " 
 				+ " where t.status=1 and (ua.user_id = :userId or t.user_id = :userId) ";
