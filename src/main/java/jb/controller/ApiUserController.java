@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import jb.absx.F;
 import jb.interceptors.TokenManage;
 import jb.pageModel.Bshoot;
+import jb.pageModel.BshootSkill;
 import jb.pageModel.BshootToSquare;
 import jb.pageModel.Json;
 import jb.pageModel.PageHelper;
@@ -18,6 +19,7 @@ import jb.pageModel.User;
 import jb.pageModel.UserAttention;
 import jb.service.BshootCollectServiceI;
 import jb.service.BshootServiceI;
+import jb.service.BshootSkillServiceI;
 import jb.service.BshootToSquareServiceI;
 import jb.service.UserAttentionServiceI;
 import jb.service.UserServiceI;
@@ -57,6 +59,9 @@ public class ApiUserController extends BaseController {
 	
 	@Autowired
 	private BshootToSquareServiceI bshootToSquareService;
+	
+	@Autowired
+	private BshootSkillServiceI bshootSkillService;
 	
 	/**
 	 * 用户登录
@@ -497,6 +502,28 @@ public class ApiUserController extends BaseController {
 				j.setSuccess(false);
 				j.setMsg("失败");
 			}
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	
+	/**
+	 * 美拍小技巧
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("/bshootSkill")
+	@ResponseBody
+	public Json dataGridBshootSkill(BshootSkill bshootSkill, PageHelper ph,HttpServletRequest request) {
+		
+		Json j = new Json();
+		try {
+			ph.setOrder("desc");
+			ph.setSort("hot");
+			j.setObj(bshootSkillService.dataGrid(bshootSkill, ph));
+			j.success();
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());
 		}

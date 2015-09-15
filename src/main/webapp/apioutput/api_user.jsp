@@ -35,6 +35,8 @@
 				style="padding: 1px"></div>						
 			<div title="删除美拍/转发" data-options="href:'api_user_delBshoot.jsp'"
 				style="padding: 1px"></div>						
+			<div title="美拍小技巧" data-options="href:'api_user_bshootSkill.jsp'"
+				style="padding: 1px"></div>						
 		</div>
 
 </body>

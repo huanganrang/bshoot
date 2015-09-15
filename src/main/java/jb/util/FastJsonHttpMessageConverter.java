@@ -29,7 +29,7 @@ public class FastJsonHttpMessageConverter extends AbstractHttpMessageConverter<O
 
 	private Charset charset = UTF8;
 
-	private SerializerFeature[] serializerFeature;
+	private SerializerFeature[] serializerFeature = new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect,SerializerFeature.WriteDateUseDateFormat};
 
 	@Override
 	protected boolean supports(Class<?> clazz) {

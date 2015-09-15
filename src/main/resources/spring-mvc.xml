@@ -93,8 +93,10 @@
 						<value>/api/apiUserController/user_mytranspond</value><!--个人转发 -->			
 						<value>/api/apiUserController/user_myattruser</value><!--个人关注 -->			
 						<value>/api/apiUserController/user_myattreduser</value><!--个人粉丝 -->	
+						<value>/api/apiUserController/bshootSkill</value><!--美拍小技巧 -->	
 						<value>/api/apiCommon/error</value><!-- token过期错误返回 -->								
 						<value>/api/apiCommon/upload_errorlog</value><!-- token过期错误返回 -->								
+						<value>/api/apiCommon/html</value>							
 					</list>
 				</property>
 				<property name="tokenManage" ref="tokenManage"/>
@@ -103,7 +105,7 @@
 	</mvc:interceptors>
 	<bean id="tokenManage" class="jb.interceptors.TokenManage" init-method="init"/>
 	<!-- SpringMVC上传文件时，需要配置MultipartResolver处理器 -->  
-    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+    <bean id="multipartResolver" class="jb.util.MyMultipartResolver">  
         <property name="defaultEncoding" value="UTF-8"/>  
         <!-- 指定所上传文件的总大小不能超过200KB。注意maxUploadSize属性的限制不是针对单个文件，而是所有文件的容量之和 -->  
         <property name="maxUploadSize" value="20000000"/>  

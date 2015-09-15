@@ -1,15 +1,18 @@
 package jb.controller;
 
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import jb.pageModel.BshootRegion;
 import jb.pageModel.Bug;
 import jb.pageModel.Json;
 import jb.service.BshootRegionServiceI;
+import jb.service.BshootSkillServiceI;
 import jb.service.BugServiceI;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,9 @@ public class ApiCommonController extends BaseController {
 	
 	@Autowired
 	private BugServiceI bugService;
+	
+	@Autowired
+	private BshootSkillServiceI bshootSkillService;
 	
 	/**
 	 * 获取行政区域列表
@@ -94,4 +100,39 @@ public class ApiCommonController extends BaseController {
 		}		
 		return j;
 	}
+	
+	/**
+	 * 生成html
+	 * @return
+	 */
+	@RequestMapping("/html")
+	public void html(String id, HttpServletResponse response) {
+		PrintWriter out = null;
+		String content = "";
+		try{
+			response.setContentType("text/html");  
+			response.setCharacterEncoding("UTF-8");
+			content = bshootSkillService.get(id).getDescription();
+			out = response.getWriter();
+			out.write("<html><head>");
+			out.write("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\">");
+			out.write("<style type=\"text/css\">");
+			out.write("body {font-family:\"微软雅黑\";font-size:12px; background-color:#f8f7f5;}");
+			out.write("ul,ol,li{padding:0; margin:0;}");
+			out.write("img{border:0; line-height:0; width: 100%;}");
+			out.write("ol,ul {list-style:none;}");
+			out.write("a { color: #000; text-decoration: none; outline: none;}");
+			out.write("a img { border: none; }");
+			out.write("</style></head><body>");
+			out.write(content);
+			out.write("</body></html>");
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(out!=null){
+				out.flush();
+				out.close();
+			}
+		}	
+	}	
 }
