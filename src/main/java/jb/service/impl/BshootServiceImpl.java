@@ -23,10 +23,12 @@ import jb.model.Tbshoot;
 import jb.model.TbshootPraise;
 import jb.model.Tuser;
 import jb.pageModel.Bshoot;
+import jb.pageModel.BshootComment;
 import jb.pageModel.BshootSquare;
 import jb.pageModel.BshootSquareRel;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
+import jb.service.BshootCommentServiceI;
 import jb.service.BshootServiceI;
 import jb.service.BshootSquareRelServiceI;
 import jb.service.BshootSquareServiceI;
@@ -60,7 +62,10 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	
 	@Autowired
 	private BshootPraiseDaoI bshootPraiseDao;
-
+	
+	@Autowired
+	private BshootCommentServiceI bshootCommentService;
+	
 	@Override
 	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph) {
 		List<Bshoot> ol = new ArrayList<Bshoot>();
@@ -398,6 +403,40 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		}
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void setCommentAndPraiseList(List<Bshoot> bshoots, String userId) {
+		if(bshoots!=null&&bshoots.size()>0){
+			PageHelper ph = new PageHelper();
+			ph.setPage(1);
+			ph.setRows(20);
+			ph.setSort("commentDatetime");
+			BshootComment bc = new BshootComment();
+			DataGrid dataGrid  = null;
+			List<Map> praises = null;
+			for(Bshoot b :bshoots){
+				
+				if(b.getBsComment() != null && b.getBsComment() != 0) {
+					bc.setBshootId(b.getId());
+					// 评论是否赞过	
+					dataGrid  = bshootCommentService.dataGrid(bc, ph, userId);
+					b.setComments(dataGrid);
+				}
+				if(b.getBsPraise() != null && b.getBsPraise() != 0) {
+					Map<String,Object> params = new HashMap<String,Object>();
+					params.put("bshootId", b.getId());
+					String sql = "select t.user_id userId, ifnull(u.nickname, u.name) nickname, u.head_image headImage "
+							+ " from bshoot_praise t left join tuser u on u.id = t.user_id "
+							+ " where t.bshoot_id = :bshootId order by praise_datetime ";
+					praises = bshootPraiseDao.findBySql2Map(sql, params);
+					for(Map m : praises) {
+						m.put("headImage", PathUtil.getHeadImagePath((String)m.get("headImage")));
+					}
+					b.setPraises(praises);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * 附近视频查询-废弃
 	 * @param ph
@@ -511,7 +550,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		DataGrid dg = new DataGrid();
 		List<Bshoot> ol = new ArrayList<Bshoot>();
 		
-		String sql = "select t.id id, t.user_id userId, t.bs_stream bsStream, t.bs_icon bsIcon, t.bs_description bsDescription, bs_play bsPlay, "
+		String sql = "select distinct t.id id, t.user_id userId, t.bs_stream bsStream, t.bs_icon bsIcon, t.bs_description bsDescription, bs_play bsPlay, "
 				+ " t.bs_praise bsPraise, t.bs_comment bsComment, t.lg_name lgName, t.create_datetime createDatetime, t.parent_id parentId "
 				+ " from bshoot t left join user_attention ua on ua.att_user_id = t.user_id " 
 				+ " where t.status=1 and (ua.user_id = :userId or t.user_id = :userId) ";
@@ -523,7 +562,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 //		List<Tbshoot> l = bshootDao.find(hql + " order by t.createDatetime desc", params, ph.getPage(), ph.getRows());
 //		dg.setTotal(bshootDao.count(hql.replace("select t", "select count(*)") , params));
 		List<Map> lm = bshootDao.findBySql2Map(sql + " order by t.create_datetime desc ", params, ph.getPage(), ph.getRows());
-		BigInteger count = bshootDao.countBySql("select count(*) from bshoot t left join user_attention ua on ua.att_user_id = t.user_id where t.status=1 and (ua.user_id = :userId or t.user_id = :userId)", params);
+		BigInteger count = bshootDao.countBySql("select count(distinct t.id) from bshoot t left join user_attention ua on ua.att_user_id = t.user_id where t.status=1 and (ua.user_id = :userId or t.user_id = :userId)", params);
 		dg.setTotal(count == null ? 0 : count.longValue());
 		if(lm != null && lm.size() > 0) {
 			for(Map m : lm) {
@@ -569,6 +608,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 				}
 				ol.add(o);
 			}
+			setCommentAndPraiseList(ol, userId);
 		}
 		setUserInfo(ol);
 		setPraised(ol, userId);

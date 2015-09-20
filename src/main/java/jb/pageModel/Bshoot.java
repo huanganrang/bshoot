@@ -1,10 +1,12 @@
 package jb.pageModel;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import jb.util.PathUtil;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "rawtypes"})
 public class Bshoot implements java.io.Serializable {
 
 	private static final long serialVersionUID = 5454155825314635342L;
@@ -45,6 +47,10 @@ public class Bshoot implements java.io.Serializable {
 	private Bshoot parentBshoot; // 转发的美拍
 	
 	private String squareIds; // 广场分类id集合
+	
+	private DataGrid comments; // 评论集合
+	
+	private List<Map> praises; // 赞集合
 
 	public void setId(java.lang.String value) {
 		this.id = value;
@@ -272,5 +278,21 @@ public class Bshoot implements java.io.Serializable {
 
 	public void setSquareIds(String squareIds) {
 		this.squareIds = squareIds;
+	}
+	
+	public DataGrid getComments() {
+		return comments;
+	}
+
+	public void setComments(DataGrid comments) {
+		this.comments = comments;
+	}
+
+	public List<Map> getPraises() {
+		return praises;
+	}
+
+	public void setPraises(List<Map> praises) {
+		this.praises = praises;
 	}
 }
