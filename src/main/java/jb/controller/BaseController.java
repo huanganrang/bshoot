@@ -6,18 +6,14 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jb.absx.F;
-import jb.android.push.NotificationManager;
 import jb.listener.Application;
 import jb.model.TmessageCount;
 import jb.pageModel.Colum;
@@ -25,13 +21,12 @@ import jb.pageModel.DataGrid;
 import jb.pageModel.Json;
 import jb.pageModel.Message;
 import jb.service.MessageServiceI;
+import jb.service.UserServiceI;
 import jb.util.Constants;
+import jb.util.NotificationMesageUtil;
 import jb.util.StringEscapeEditor;
 import jb.util.Util;
 
-import org.androidpn.server.xmpp.XmppServer;
-import org.androidpn.server.xmpp.session.ClientSession;
-import org.androidpn.server.xmpp.session.SessionManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -62,6 +57,8 @@ public class BaseController {
 	private String _publishSettingVal = "2"; //生产环境
 	@Autowired
 	protected MessageServiceI messageService;
+	@Autowired
+	private UserServiceI userService;
 	
 	@InitBinder
 	public void initBinder(ServletRequestDataBinder binder) {
@@ -179,7 +176,7 @@ public class BaseController {
 			message.setRelationId(relationId);
 			message.setUserId(attUserId);
 			TmessageCount tcount = messageService.addAndCount(message);
-			notification(JSON.toJSONString(tcount));
+			notification(attUserId, JSON.toJSONString(tcount));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -194,26 +191,27 @@ public class BaseController {
 			message.setUserId(attUserId);
 			message.setContent(content);
 			TmessageCount tcount = messageService.addAndCount(message);
-			notification(JSON.toJSONString(tcount));
+			notification(attUserId, JSON.toJSONString(tcount));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 	
-	public void notification(String rs) {
+	public void notification(String userId, String rs) {
 		if (!F.empty(rs)) {
-			NotificationManager notif = (NotificationManager) XmppServer
-					.getInstance().getBean("notificationManager");
-			Collection<ClientSession> sessions = SessionManager.getInstance()
-					.getSessions();
-			Set<ClientSession> usernames = new HashSet<ClientSession>();
-			for (ClientSession cs : sessions) {
-					usernames.add(cs);
-
-			}
-			notif.sendNotifcationToSession("1234567890", "Admin", "timtle", rs,
-					"uri",
-					usernames.toArray(new ClientSession[usernames.size()]));
+			NotificationMesageUtil.notifMessage(userService.get(userId).getName(), rs);
+//			NotificationManager notif = (NotificationManager) XmppServer
+//					.getInstance().getBean("notificationManager");
+//			Collection<ClientSession> sessions = SessionManager.getInstance()
+//					.getSessions();
+//			Set<ClientSession> usernames = new HashSet<ClientSession>();
+//			for (ClientSession cs : sessions) {
+//					usernames.add(cs);
+//
+//			}
+//			notif.sendNotifcationToSession("1234567890", "Admin", "timtle", rs,
+//					"uri",
+//					usernames.toArray(new ClientSession[usernames.size()]));
 		}
 	}
 	

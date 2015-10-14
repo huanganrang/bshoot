@@ -14,6 +14,7 @@ import jb.service.BshootPraiseServiceI;
 import jb.service.MessageCountServiceI;
 import jb.service.MessageServiceI;
 import jb.service.UserServiceI;
+import jb.util.NotificationMesageUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -172,6 +173,25 @@ public class ApiMessageController extends BaseController {
 		return j;
 	}	
 	
+	/**
+	 * 推送消息测试
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("/message_test")
+	@ResponseBody
+	public Json test(String name, String type) {
+		
+		Json j = new Json();
+		try {
+			NotificationMesageUtil.notifMessage(name, "{\"mnumber\":2, \"mtype\":\""+type+"\"}");
+			j.success();
+		} catch (Exception e) {
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}	
 	
 	/**
 	 * 删除消息统计数据

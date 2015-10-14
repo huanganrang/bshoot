@@ -19,6 +19,8 @@
 				style="padding: 1px"></div>
 			<div title="上线获取消息数量" data-options="href:'api_message_getCount.jsp'"
 				style="padding: 1px"></div>	
+			<div title="推送消息测试" data-options="href:'api_message_test.jsp'"
+				style="padding: 1px"></div>	
 			<!-- 
 			<div title="最近联系人（开发ing）" data-options="href:'api_doing.jsp'"
 				style="padding: 1px"></div>	
