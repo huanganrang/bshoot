@@ -29,12 +29,13 @@ public class Test {
     }
 
     public static void main(String[] args) {
-        String[] str = new String[]{"A"};
+       /* String[] str = new String[]{"A"};
         List<String> out = new ArrayList<String>();
         combine2(str,1,out);
         for(String em:out){
             System.out.println(em);
-        }
+        }*/
+        System.out.println(1<<8);
     }
 
     public static void stringCombine(String[] str,List<String> out,int matchFactor){

@@ -1,6 +1,7 @@
 package jb.pageModel;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by zhou on 2016/1/5.
@@ -11,16 +12,18 @@ public class HotShootRequest {
     private Integer praiseNum;
     private Integer start;
     private Integer fileType;
+    private String hobby;
     private Integer rows;
 
     public HotShootRequest() {
     }
 
-    public HotShootRequest(Date pubTime, Integer praiseNum, Integer start, Integer fileType, Integer rows) {
+    public HotShootRequest(Date pubTime, Integer praiseNum, Integer start, Integer fileType, String hobby, Integer rows) {
         this.pubTime = pubTime;
         this.praiseNum = praiseNum;
         this.start = start;
         this.fileType = fileType;
+        this.hobby = hobby;
         this.rows = rows;
     }
 
@@ -64,6 +67,14 @@ public class HotShootRequest {
         this.rows = rows;
     }
 
+    public String getHobby() {
+        return hobby;
+    }
+
+    public void setHobby(String hobby) {
+        this.hobby = hobby;
+    }
+
     @Override
     public String toString() {
         return "HotShootRequest{" +
@@ -71,6 +82,7 @@ public class HotShootRequest {
                 ", praiseNum=" + praiseNum +
                 ", start=" + start +
                 ", fileType=" + fileType +
+                ", hobby=" + hobby +
                 ", rows=" + rows +
                 '}';
     }

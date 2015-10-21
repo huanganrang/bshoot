@@ -95,12 +95,19 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 		String hql = null;
 		if(hotShootRequest.getFileType()!=null){
 			hql="select * from bshoot t  where t.bs_file_type=:fileType and t.create_datetime >=:pubTime and t.bs_praise>=:praiseNum order by t.create_datetime desc  limit :start,:rows";
+			if(null!=hotShootRequest.getHobby())
+				hql="select * from bshoot t ,user_hobby t1  where t.bs_file_type=:fileType and t.create_datetime >=:pubTime and t.bs_praise>=:praiseNum and ("+hotShootRequest.getHobby()+")in (t1.hobby_type) and t1.user_id=t.user_id order by t.create_datetime desc  limit :start,:rows";
 		}else{
 			hql="select * from bshoot t  where t.create_datetime >=:pubTime and t.bs_praise>=:praiseNum order by t.create_datetime desc  limit :start,:rows";
+			if(null!=hotShootRequest.getHobby())
+				hql="select * from bshoot t,user_hobby t1  where t.create_datetime >=:pubTime and t.bs_praise>=:praiseNum and ("+hotShootRequest.getHobby()+") in (t1.hobby_type) and t1.user_id=t.user_id order by t.create_datetime desc  limit :start,:rows";
+
 		}
 
 		Query query = getCurrentSession().createSQLQuery(hql).addEntity(Tbshoot.class);
 		query.setParameter("pubTime", hotShootRequest.getPubTime());
+		if(hotShootRequest.getFileType()!=null)
+			query.setParameter("fileType", hotShootRequest.getFileType());
 		query.setParameter("praiseNum",hotShootRequest.getPraiseNum());
 		query.setParameter("start",hotShootRequest.getStart());
 		query.setParameter("rows",hotShootRequest.getRows());

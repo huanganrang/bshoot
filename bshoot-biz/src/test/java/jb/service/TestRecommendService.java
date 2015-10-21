@@ -26,7 +26,7 @@ public class TestRecommendService extends TestConfig{
 
     @Test
     public void testRecommendHot(){
-        List<Bshoot> bshoots = recommendServiceImpl.recommendHot(0,1);
+        List<Bshoot> bshoots = recommendServiceImpl.recommendHot("e2891f2f-6a6f-41d5-933d-28fa796eee93",0,null,1);
         for(Bshoot bshoot:bshoots){
             System.out.println(bshoot);
         }

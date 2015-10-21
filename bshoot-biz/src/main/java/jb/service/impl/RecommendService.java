@@ -108,9 +108,18 @@ public class RecommendService implements RecommendServiceI{
     }
 
     @Override
-    public List<Bshoot> recommendHot(Integer start,Integer fileType) {
-        Date oneDayago = DateUtil.stringToDate(DateUtil.getDate(-1, DateUtil.DATETIME_FORMAT));
-        HotShootRequest hotShootRequest = new HotShootRequest(oneDayago,200,start,fileType,50);
+    public List<Bshoot> recommendHot(String userId,Integer start,Integer fileType,Integer interested) {
+        //可以使用solr查询，但是在用户帅选同兴趣的情况下，需要solr的core_user和core_bs联合查询，但是在分布式环境下solr联合查询有文档说是可以实现，考虑风险暂且使用库查询 _query_:"{!join fromIndex=core_user from=id to=userId v='hobby:(HO01 OR HO02 HO03)'}"
+        Date oneDayago = DateUtil.stringToDate(DateUtil.getDate(-1, DateUtil.DATETIME_FORMAT),DateUtil.DATETIME_FORMAT);
+        String hobby = null;
+        if(interested==1) {
+            UserHobby userHobby = userHobbyServiceImpl.getUserHobby(userId);
+            String[] hobbyType = userHobby.getHobbyType().split(",");
+            List<String> out = new ArrayList<String>();
+            SystemUtils.combineStr(hobbyType, hobbyType.length, out, "OR");
+            hobby = out.get(0);
+        }
+        HotShootRequest hotShootRequest = new HotShootRequest(oneDayago,200,start,fileType,hobby,50);
         return bshootServiceImpl.getHotBshoots(hotShootRequest);
     }
 
@@ -132,7 +141,7 @@ public class RecommendService implements RecommendServiceI{
         if(CollectionUtils.isNotEmpty(comment_praise))
             bshoots.addAll(comment_praise);
 
-        //4.好友打赏过的人
+        //4.好友打赏过的人 done
         List<Bshoot> friendPraise = friendPraise(userId, start,threeDaysAgo);
         if(CollectionUtils.isNotEmpty(friendPraise))
             bshoots.addAll(friendPraise);
@@ -321,7 +330,7 @@ public class RecommendService implements RecommendServiceI{
         return bshoots;
     }
     public static void main(String[] args){
-        System.out.println(DateUtil.convert2SolrDate(DateUtil.getDateStart(0)));
+        System.out.println(DateUtil.convert2SolrDate(DateUtil.getDate(-1, DateUtil.DATETIME_FORMAT)));
         //System.out.println(DateUtil.convert2SolrDate(DateUtil.getDateBeforeHours(-10, DateUtil.DATETIME_FORMAT)));
         //a();
     }

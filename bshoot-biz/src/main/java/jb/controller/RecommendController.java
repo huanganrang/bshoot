@@ -25,8 +25,9 @@ public class RecommendController extends  BaseController{
     //热门推荐
     @RequestMapping("/hot")
     @ResponseBody
-    public List<Bshoot> recommentHost(Integer start,Integer fileType) {
-        return  recommendService.recommendHot(start,fileType);
+    public List<Bshoot> recommentHost(Integer start,Integer fileType,Integer interested) {
+        //获得登录用户id TODO
+        return  recommendService.recommendHot("1",start,fileType,interested);
     }
 
 
