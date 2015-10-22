@@ -34,7 +34,7 @@ month_parise                 month_parise(int,table:user_profile)
         <field column="ID" name="id"/>
         <field column="utype" name="utype"/>
         <field column="nickname" name="nickname"/>
-        <field column="headImg" name="head_image"/>
+        <field column="head_image" name="headImg"/>
         <field column="sex" name="usex"/>
         <field column="area" name="areaCode"/>
         <field column="birthday" name="birthday"/>
