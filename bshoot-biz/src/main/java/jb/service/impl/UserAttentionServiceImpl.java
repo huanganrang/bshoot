@@ -98,13 +98,13 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	}
 
 	@Override
-	public List<String> friendCommonAtt(String userId,int start,int rows) {
-		return userAttentionDao.friendCommonAtt(userId,start,rows);
+	public List<String> friendCommonAtt(AttentionRequest attentionRequest) {
+		return userAttentionDao.friendCommonAtt(attentionRequest);
 	}
 
 	@Override
-	public List<String> singleFriednAtt(String userId, int start, int rows) {
-		return userAttentionDao.singleFriednAtt(userId,start,rows);
+	public List<String> singleFriednAtt(AttentionRequest attentionRequest) {
+		return userAttentionDao.singleFriednAtt(attentionRequest);
 	}
 
 	@Override

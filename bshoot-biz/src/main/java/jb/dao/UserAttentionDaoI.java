@@ -1,6 +1,7 @@
 package jb.dao;
 
 import jb.model.TuserAttention;
+import jb.pageModel.AttentionRequest;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface UserAttentionDaoI extends BaseDaoI<TuserAttention> {
 
 	public List<TuserAttention> getTuserAttentions(String userId, String[] attUserIds);
 
-	List<String> friendCommonAtt(String userId, int start,int rows);
+	List<String> friendCommonAtt(AttentionRequest attentionRequest);
 
-	List<String> singleFriednAtt(String userId,int start,int rows);
+	List<String> singleFriednAtt(AttentionRequest attentionRequest);
 }

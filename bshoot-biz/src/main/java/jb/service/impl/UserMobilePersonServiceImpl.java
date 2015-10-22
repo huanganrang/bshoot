@@ -13,6 +13,7 @@ import jb.model.TuserMobilePerson;
 import jb.pageModel.UserMobilePerson;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
+import jb.pageModel.UserMobilePersonRequest;
 import jb.service.UserMobilePersonServiceI;
 
 import org.springframework.beans.BeanUtils;
@@ -100,29 +101,13 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 	}
 
 	@Override
-	public List<UserMobilePerson> notAttMobilePerson(String userId, int start, int rows) {
-		List<TuserMobilePerson> tuserMobilePersons = userMobilePersonDao.notAttMobilePerson(userId,start,rows);
-		UserMobilePerson userMobilePerson = null;
-		List<UserMobilePerson> userMobilePersonList = new ArrayList<UserMobilePerson>();
-		for(TuserMobilePerson u:tuserMobilePersons){
-			userMobilePerson = new UserMobilePerson();
-			BeanUtils.copyProperties(u,userMobilePerson);
-			userMobilePersonList.add(userMobilePerson);
-		}
-		return userMobilePersonList;
+	public List<String> notAttMobilePerson(UserMobilePersonRequest request) {
+		return userMobilePersonDao.notAttMobilePerson(request);
 	}
 
 	@Override
-	public List<UserMobilePerson> noAttMobilePersonPerson(String userId, int start, int rows) {
-		List<TuserMobilePerson> tuserMobilePersons = userMobilePersonDao.noAttMobilePersonPerson(userId,start,rows);
-		UserMobilePerson userMobilePerson = null;
-		List<UserMobilePerson> userMobilePersonList = new ArrayList<UserMobilePerson>();
-		for(TuserMobilePerson u:tuserMobilePersons){
-			userMobilePerson = new UserMobilePerson();
-			BeanUtils.copyProperties(u,userMobilePerson);
-			userMobilePersonList.add(userMobilePerson);
-		}
-		return userMobilePersonList;
+	public List<String> noAttMobilePersonPerson(UserMobilePersonRequest request) {
+		return  userMobilePersonDao.noAttMobilePersonPerson(request);
 	}
 
 }

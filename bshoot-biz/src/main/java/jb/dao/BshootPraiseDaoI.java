@@ -1,6 +1,7 @@
 package jb.dao;
 
 import jb.model.TbshootPraise;
+import jb.pageModel.PraiseCommentRequest;
 
 import java.util.Date;
 import java.util.List;
@@ -16,21 +17,15 @@ public interface BshootPraiseDaoI extends BaseDaoI<TbshootPraise> {
 
 	/**
 	 * 好友打赏过的人
-	 * @param userId
-	 * @param start
-	 * @param rows
 	 * @return
 	 */
-	public List<String> friendHasPraisedUser(String userId,int start,int rows);
+	public List<String> friendHasPraisedUser(PraiseCommentRequest praiseCommentRequest);
 
-	public List<String> singleFriendHasPraisedUser(String userId,int start,int rows);
+	public List<String> singleFriendHasPraisedUser(PraiseCommentRequest praiseCommentRequest);
 
 	/**
 	 * 我评论打赏过的人
-	 * @param userId
-	 * @param start
-	 * @param rows
 	 * @return
 	 */
-	public List<String> mePraiseCommentUser(String userId,int start,int rows);
+	public List<String> mePraiseCommentUser(PraiseCommentRequest praiseCommentRequest);
 }

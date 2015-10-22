@@ -1,6 +1,7 @@
 package jb.dao;
 
 import jb.model.TuserMobilePerson;
+import jb.pageModel.UserMobilePersonRequest;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public interface UserMobilePersonDaoI extends BaseDaoI<TuserMobilePerson> {
 
-    List<TuserMobilePerson> notAttMobilePerson(String userId, int start, int rows);
+    List<String> notAttMobilePerson(UserMobilePersonRequest request);
 
-    List<TuserMobilePerson> noAttMobilePersonPerson(String userId,int start,int rows);
+    List<String> noAttMobilePersonPerson(UserMobilePersonRequest request);
 }

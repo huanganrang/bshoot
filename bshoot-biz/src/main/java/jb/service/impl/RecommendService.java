@@ -177,25 +177,23 @@ public class RecommendService implements RecommendServiceI{
         //获得当前用户画像
         UserProfile userProfile = userProfileServiceImpl.get(userId);
         List<Bshoot> bshoots = new ArrayList<Bshoot>();
-        //1.新人推荐 done
-        String uid = recommendNewUser(userId,userProfile.getFansNum(),userProfile.getLoginArea(),start);
-        List<Bshoot> newUserBshoot = getLastBshoot(Lists.newArrayList(uid), DateUtil.stringToDate(DateUtil.getDateStart(-1)));
-        if(CollectionUtils.isNotEmpty(newUserBshoot))
-           bshoots.addAll(newUserBshoot);
 
         List<String> userIds = new ArrayList<String>();
         //2.好友共同关注的人 done
-        List<String> friendCommonBshoot = friendCommonAtt(userId, start);
+        AttentionRequest attentionRequest = new AttentionRequest(userId,null,6*start,6);
+        List<String> friendCommonBshoot = friendCommonAtt(attentionRequest);
         if(CollectionUtils.isNotEmpty(friendCommonBshoot))
             userIds.addAll(friendCommonBshoot);
 
         //3.我评论打赏过的人 done
-        List<String> comment_praise = have_comment_praise(userId, start);
+        PraiseCommentRequest praiseCommentRequest = new PraiseCommentRequest(userId,null,6*start,6);
+        List<String> comment_praise = have_comment_praise(praiseCommentRequest);
         if(CollectionUtils.isNotEmpty(comment_praise))
             userIds.addAll(comment_praise);
 
         //4.好友打赏过的人 done
-        List<String> friendPraise = friendPraise(userId, start);
+        PraiseCommentRequest praiseCommentRequest2 = new PraiseCommentRequest(userId,null,6*start,6);
+        List<String> friendPraise = friendPraise(praiseCommentRequest2);
         if(CollectionUtils.isNotEmpty(friendPraise))
             userIds.addAll(friendPraise);
 
@@ -205,7 +203,8 @@ public class RecommendService implements RecommendServiceI{
             userIds.addAll(mabyeInterestBshoot);
 
         //6.可能认识的人 done
-        List<String> maybeKnow = maybeKnow(userId,start);
+        UserMobilePersonRequest userMobilePersonRequest = new UserMobilePersonRequest(userId,6*start,6);
+        List<String> maybeKnow = maybeKnow(userMobilePersonRequest);
         if(CollectionUtils.isNotEmpty(maybeKnow))
             userIds.addAll(maybeKnow);
 
@@ -216,54 +215,55 @@ public class RecommendService implements RecommendServiceI{
         getLastBshoot(userIds,DateUtil.stringToDate(DateUtil.getDateStart(-3)));
         fillBshoot(bshoots);
         Collections.shuffle(bshoots);
+        //1.新人推荐 done
+        String uid = recommendNewUser(userId,userProfile.getFansNum(),userProfile.getLoginArea(),start);
+        List<Bshoot> newUserBshoot = getLastBshoot(Lists.newArrayList(uid), DateUtil.stringToDate(DateUtil.getDateStart(-1)));
+        if(CollectionUtils.isNotEmpty(newUserBshoot))
+            bshoots.addAll(0, newUserBshoot);//固定在第一位
         return bshoots;
     }
 
-    private List<String> friendPraise(String userId,int start){
-        List<String> userIds = bshootPraiseServiceImpl.friendHasPraisedUser(userId,6*start, 6);
+    protected List<String> friendPraise(PraiseCommentRequest praiseCommentRequest){
+        List<String> userIds = bshootPraiseServiceImpl.friendHasPraisedUser(praiseCommentRequest);
         if(CollectionUtils.isEmpty(userIds)){
-            userIds = bshootPraiseServiceImpl.singleFriendHasPraisedUser(userId, 6 * start, 6);
+            userIds = bshootPraiseServiceImpl.singleFriendHasPraisedUser(praiseCommentRequest);
         }
         return userIds;
     }
 
     //好友共同关注的人
-    private List<String> friendCommonAtt(String userId,int start){
-        List<String> userAttentionList = userAttentionServiceImpl.friendCommonAtt(userId,6*start,6);
+    protected List<String> friendCommonAtt(AttentionRequest attentionRequest){
+        List<String> userAttentionList = userAttentionServiceImpl.friendCommonAtt(attentionRequest);
         if(CollectionUtils.isEmpty(userAttentionList)){
             //显示单个好友关注的人动态
-            userAttentionList = userAttentionServiceImpl.singleFriednAtt(userId,6*start,6);
+            userAttentionList = userAttentionServiceImpl.singleFriednAtt(attentionRequest);
         }
         return userAttentionList;
     }
 
     //我评论/打赏过的人的动态
-    private List<String> have_comment_praise(String userId,int start){
-       return bshootPraiseServiceImpl.mePraiseCommentUser(userId,6*start, 6);
+    protected List<String> have_comment_praise(PraiseCommentRequest praiseCommentRequest){
+       return bshootPraiseServiceImpl.mePraiseCommentUser(praiseCommentRequest);
     }
 
     //可能认识的人
-    private List<String> maybeKnow(String userId,int start){
-        List<UserMobilePerson> userMobilePersonList = userMobilePersonServiceImpl.notAttMobilePerson(userId,6*start,6);
+    protected List<String> maybeKnow(UserMobilePersonRequest request){
+        List<String> userMobilePersonList = userMobilePersonServiceImpl.notAttMobilePerson(request);
         List<String> userIds = new ArrayList<String>();
         int rows = 6;
         if(CollectionUtils.isEmpty(userMobilePersonList)){
-            userMobilePersonList = new ArrayList<UserMobilePerson>();
+            userMobilePersonList = new ArrayList<String>();
             rows = 12;
         }else if(userMobilePersonList.size()<6){
             rows = 12-userMobilePersonList.size();
         }
-        List<UserMobilePerson> userMobilePersonList2 = userMobilePersonServiceImpl.noAttMobilePersonPerson(userId,6*start,rows);
+        List<String> userMobilePersonList2 = userMobilePersonServiceImpl.noAttMobilePersonPerson(request);
         if(CollectionUtils.isNotEmpty(userMobilePersonList2)) userMobilePersonList.addAll(userMobilePersonList2);
-
-        for(UserMobilePerson u:userMobilePersonList){
-            userIds.add(u.getFriendId());
-        }
-        return userIds;
+        return userMobilePersonList;
     }
 
     //可能感兴趣的人
-    private List<String> mabyeInterest(String userId,String loginArea,int start){
+    protected List<String> mabyeInterest(String userId,String loginArea,int start){
         UserHobby userHobby  = userHobbyServiceImpl.getUserHobby(userId);
         if(null!=userHobby&& StringUtils.isNotEmpty(userHobby.getHobbyType())){
             String[] hobbyType = userHobby.getHobbyType().split(",");
@@ -273,7 +273,7 @@ public class RecommendService implements RecommendServiceI{
             SystemUtils.combineStr(hobbyType,3,out2,"AND");
             StringBuffer sb = new StringBuffer();
             for(String s1 :out1){
-                sb/*.append("login_area:").append(loginArea).append(" AND ")*/.append("hobby:(").append(s1).append(") OR ");
+                sb.append("login_area:").append(loginArea).append(" AND ").append("hobby:(").append(s1).append(") OR ");
             }
             for(String s2:out2){
                 sb.append("hobby:(").append(s2).append(") OR ");
@@ -324,7 +324,7 @@ public class RecommendService implements RecommendServiceI{
      * @param loginArea
      * @return
      */
-    private List<String> nearbyBshoot(String userId,String loginArea ,int start){
+    protected List<String> nearbyBshoot(String userId,String loginArea ,int start){
         Criterias criterias = new Criterias();
         criterias.qc("login_area:"+loginArea);
         criterias.addField("id");
@@ -372,7 +372,7 @@ public class RecommendService implements RecommendServiceI{
         return null;
     }
 
-    private List<Bshoot> getLastBshoot(List<String> userIds,Date dateLimit){
+    protected List<Bshoot> getLastBshoot(List<String> userIds,Date dateLimit){
         if(CollectionUtils.isEmpty(userIds)) return null;
         List<Bshoot> bshoots=null;
         if(userIds.size()==1){

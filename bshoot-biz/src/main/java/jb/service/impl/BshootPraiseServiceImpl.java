@@ -7,6 +7,7 @@ import jb.model.TbshootPraise;
 import jb.pageModel.BshootPraise;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
+import jb.pageModel.PraiseCommentRequest;
 import jb.service.BshootPraiseServiceI;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,18 +140,18 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 	}
 
 	@Override
-	public List<String> mePraiseCommentUser(String userId, int start, int rows) {
-		return bshootPraiseDao.mePraiseCommentUser(userId,start,rows);
+	public List<String> mePraiseCommentUser(PraiseCommentRequest praiseCommentRequest) {
+		return bshootPraiseDao.mePraiseCommentUser(praiseCommentRequest);
 	}
 
 	@Override
-	public List<String> friendHasPraisedUser(String userId, int start, int rows) {
-		return bshootPraiseDao.friendHasPraisedUser(userId,start,rows);
+	public List<String> friendHasPraisedUser(PraiseCommentRequest praiseCommentRequest) {
+		return bshootPraiseDao.friendHasPraisedUser(praiseCommentRequest);
 	}
 
 	@Override
-	public List<String> singleFriendHasPraisedUser(String userId, int start, int rows) {
-		return bshootPraiseDao.singleFriendHasPraisedUser(userId,start,rows);
+	public List<String> singleFriendHasPraisedUser(PraiseCommentRequest praiseCommentRequest) {
+		return bshootPraiseDao.singleFriendHasPraisedUser(praiseCommentRequest);
 	}
 
 }

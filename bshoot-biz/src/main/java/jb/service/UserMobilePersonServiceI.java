@@ -3,6 +3,7 @@ package jb.service;
 import jb.pageModel.UserMobilePerson;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
+import jb.pageModel.UserMobilePersonRequest;
 
 import java.util.List;
 
@@ -55,14 +56,11 @@ public interface UserMobilePersonServiceI {
 
 	/**
 	 * 我未关注的手机联系人
-	 * @param userId
-	 * @param start
-	 * @param rows
 	 * @return
 	 */
-	public List<UserMobilePerson> notAttMobilePerson(String userId,int start,int rows);
+	public List<String> notAttMobilePerson(UserMobilePersonRequest request);
 
-	public List<UserMobilePerson> noAttMobilePersonPerson(String userId,int start,int rows);
+	public List<String> noAttMobilePersonPerson(UserMobilePersonRequest request);
 
 
 }

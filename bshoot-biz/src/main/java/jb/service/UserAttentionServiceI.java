@@ -1,9 +1,6 @@
 package jb.service;
 
-import jb.pageModel.DataGrid;
-import jb.pageModel.PageHelper;
-import jb.pageModel.UserAttention;
-import jb.pageModel.UserAttentionGroup;
+import jb.pageModel.*;
 
 import java.util.List;
 
@@ -109,10 +106,9 @@ public interface UserAttentionServiceI {
 
 	/**
 	 * 好友共同关注的人
-	 * @param userId
 	 * @return
 	 */
-	public List<String> friendCommonAtt(String userId,int start,int rows);
+	public List<String> friendCommonAtt(AttentionRequest attentionRequest);
 
-	List<String> singleFriednAtt(String userId,int start,int rows);
+	List<String> singleFriednAtt(AttentionRequest attentionRequest);
 }

@@ -3,6 +3,7 @@ package jb.service;
 import jb.pageModel.BshootPraise;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
+import jb.pageModel.PraiseCommentRequest;
 
 import java.util.List;
 
@@ -61,9 +62,9 @@ public interface BshootPraiseServiceI {
 	
 	public BshootPraise get(String bshootId, String userId) ;
 
-	List<String> mePraiseCommentUser(String userId, int start, int rows);
+	List<String> mePraiseCommentUser(PraiseCommentRequest praiseCommentRequest);
 
-	List<String> friendHasPraisedUser(String userId, int start, int rows);
+	List<String> friendHasPraisedUser(PraiseCommentRequest praiseCommentRequest);
 
-	List<String> singleFriendHasPraisedUser(String userId, int start, int rows);
+	List<String> singleFriendHasPraisedUser(PraiseCommentRequest praiseCommentRequest);
 }

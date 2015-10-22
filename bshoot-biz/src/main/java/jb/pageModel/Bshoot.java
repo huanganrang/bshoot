@@ -29,6 +29,7 @@ public class Bshoot implements java.io.Serializable {
 	private String userName;
 	private List<String> hobby;//用户兴趣
 	private String publishFrom;//发布来源
+	private Integer guideType;//引导类型 1:新人推荐 2:好友关注的人 3：我评论/打赏过的人 4：好友打赏过的人 5：可能感兴趣的人 6：可能认识的人 7：附近的人
 	private String userHeadImageAbsolute;
 	private String bsIconAbsolute;
 	private String bsStreamAbsolute;
@@ -359,6 +360,14 @@ public class Bshoot implements java.io.Serializable {
 		this.memberV = memberV;
 	}
 
+	public Integer getGuideType() {
+		return guideType;
+	}
+
+	public void setGuideType(Integer guideType) {
+		this.guideType = guideType;
+	}
+
 	@Override
 	public String toString() {
 		return "Bshoot{" +
@@ -380,6 +389,7 @@ public class Bshoot implements java.io.Serializable {
 				", userName='" + userName + '\'' +
 				", hobby=" + hobby +
 				", publishFrom='" + publishFrom + '\'' +
+				", guideType=" + guideType +
 				", userHeadImageAbsolute='" + userHeadImageAbsolute + '\'' +
 				", bsIconAbsolute='" + bsIconAbsolute + '\'' +
 				", bsStreamAbsolute='" + bsStreamAbsolute + '\'' +

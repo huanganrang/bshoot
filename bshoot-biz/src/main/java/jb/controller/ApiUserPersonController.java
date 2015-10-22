@@ -42,7 +42,7 @@ public class ApiUserPersonController extends BaseController {
         try {
             SessionInfo s = getSessionInfo(request);
             userPerson.setUserId(s.getId());
-            int r = userPersonService.addUserPerson(userPerson);
+           /* int r = userPersonService.addUserPerson(userPerson);
             if(r==-1){
                 j.setSuccess(false);
                 j.setMsg("已经存在好友");
@@ -50,7 +50,7 @@ public class ApiUserPersonController extends BaseController {
                 j.setSuccess(true);
                 j.setMsg("成功！");
                 addMessage("MT01",userPerson.getAttUserId(),userPerson.getUserId());
-            }
+            }*/
         } catch (Exception e) {
             j.setMsg(e.getMessage());
         }
@@ -71,14 +71,14 @@ public class ApiUserPersonController extends BaseController {
         try {
             SessionInfo s = getSessionInfo(request);
             userPerson.setUserId(s.getId());
-            int r = userPersonService.deleteUserPerson(userPerson);
+            /*int r = userPersonService.deleteUserPerson(userPerson);
             if(r==-1){
                 j.setSuccess(false);
                 j.setMsg("不存在此好友");
             }else{
                 j.setSuccess(true);
                 j.setMsg("成功！");
-            }
+            }*/
         } catch (Exception e) {
             j.setMsg(e.getMessage());
         }
@@ -98,14 +98,14 @@ public class ApiUserPersonController extends BaseController {
         try {
             SessionInfo s = getSessionInfo(request);
             userPerson.setUserId(s.getId());
-            int r = userPersonService.isUserPerson(userPerson);
+          /*  int r = userPersonService.isUserPerson(userPerson);
             if(r==-1){
                 j.setSuccess(false);
                 j.setMsg("不是人脉圈好友");
             }else{
                 j.setSuccess(true);
                 j.setMsg("是人脉圈好友");
-            }
+            }*/
         } catch (Exception e) {
             j.setMsg(e.getMessage());
         }
@@ -128,7 +128,7 @@ public class ApiUserPersonController extends BaseController {
                 SessionInfo s = getSessionInfo(request);
                 userPerson.setUserId(s.getId());
             }
-            j.setObj(userPersonService.dataGridUserByGroup(userPerson, ph));
+            //j.setObj(userPersonService.dataGridUserByGroup(userPerson, ph));
             j.success();
         } catch (Exception e) {
             j.setMsg(e.getMessage());
@@ -152,14 +152,14 @@ public class ApiUserPersonController extends BaseController {
                 userPerson.setUserId(s.getId());
             }
             if(!F.empty(userPerson.getPersonGroup())){
-                int r = userPersonService.editUserPersonGroup(userPerson);
+                /*int r = userPersonService.editUserPersonGroup(userPerson);
                 if(r==-1){
                     j.setSuccess(false);
                     j.setMsg("人脉圈好友分组时未带上好友关注id或者被关注用户id");
                 }else{
                     j.setSuccess(true);
                     j.setMsg("修改人脉圈好友分组成功");
-                }
+                }*/
             }
         } catch (Exception e) {
             j.setMsg(e.getMessage());
@@ -184,7 +184,7 @@ public class ApiUserPersonController extends BaseController {
                 userPerson.setUserId(s.getId());
             }
             if(!F.empty(userPerson.getPersonGroup())){
-                j.setObj(userPersonService.dataGridUserPersonTime(userPerson, userPersonTime, ph));
+               // j.setObj(userPersonService.dataGridUserPersonTime(userPerson, userPersonTime, ph));
                 j.setSuccess(true);
             }
         } catch (Exception e) {
