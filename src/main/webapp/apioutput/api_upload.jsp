@@ -55,11 +55,11 @@
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>movies(视频文件)：</label></td>
-						<td><input type="file" name="movies"></td>
+						<td><input type="file" name="movies">（支持多个文件同时上传）</td>
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>icons(图标文件)：</label></td>
-						<td><input type="file" name="icons"></td>
+						<td><input type="file" name="icons">（支持多个文件同时上传）</td>
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>lgX(坐标经度)：</label></td>

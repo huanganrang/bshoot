@@ -73,8 +73,8 @@ String path = request.getContextPath()+"/api/apiFriendController/friend_bshoots"
 					3、obj:数组格式<br/>
 					   bs_title		标题	           <br/>
 					bs_topic		主题	           <br/>
-					bs_icon		icon图标路径	     <br/>
-					bs_stream		视频文件地址	   <br/>
+					bs_icon		icon图标路径(多个以;分割)	     <br/>
+					bs_stream		视频文件地址(多个以;分割)	   <br/>
 					bs_collect		收藏数	       <br/>
 					bs_praise		赞美数	         <br/>
 					bs_type		类别	分类的       <br/>

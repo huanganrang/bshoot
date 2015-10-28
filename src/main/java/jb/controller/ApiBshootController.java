@@ -205,27 +205,37 @@ public class ApiBshootController extends BaseController {
 			if(!file.exists())
 				file.mkdir();
 			
+			String bsStream = "";
 			for(MultipartFile f : movies){
 				String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
 				String fileName = bshoot.getId()+suffix;
-				bshoot.setBsStream(s.getName()+"/"+fileName);
+				if(!"".equals(bsStream)) {
+					bsStream += ";";
+				}
+				bsStream += s.getName()+"/"+fileName;
 				 try {
 					FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
 			}
+			bshoot.setBsStream(bsStream);
 			
+			String bsIcon = "";
 			for(MultipartFile f : icons){
 				String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
 				String fileName = bshoot.getId()+suffix;
-				bshoot.setBsIcon(s.getName()+"/"+fileName);
+				if(!"".equals(bsIcon)) {
+					bsIcon += ";";
+				}
+				bsIcon += s.getName()+"/"+fileName;
 				 try {
 					FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
 			}
+			bshoot.setBsIcon(bsIcon);
 			
 			List<String> attUserIds = bshootService.addBshoot(bshoot);	
 			if(attUserIds != null && attUserIds.size() > 0) {

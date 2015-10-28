@@ -57,9 +57,9 @@ public class Tbshoot implements java.io.Serializable{
 	private java.lang.String bsTitle;
 	//@Length(max=64)
 	private java.lang.String bsTopic;
-	//@Length(max=256)
+	//@Length(max=2147483647)
 	private java.lang.String bsIcon;
-	//@Length(max=256)
+	//@Length(max=2147483647)
 	private java.lang.String bsStream;
 	//
 	private java.lang.Integer bsCollect;
@@ -135,7 +135,7 @@ public class Tbshoot implements java.io.Serializable{
 		this.bsTopic = bsTopic;
 	}
 	
-	@Column(name = "bs_icon", unique = false, nullable = true, insertable = true, updatable = true, length = 256)
+	@Column(name = "bs_icon", unique = false, nullable = true, insertable = true, updatable = true, length = 2147483647)
 	public java.lang.String getBsIcon() {
 		return this.bsIcon;
 	}
@@ -144,7 +144,7 @@ public class Tbshoot implements java.io.Serializable{
 		this.bsIcon = bsIcon;
 	}
 	
-	@Column(name = "bs_stream", unique = false, nullable = true, insertable = true, updatable = true, length = 256)
+	@Column(name = "bs_stream", unique = false, nullable = true, insertable = true, updatable = true, length = 2147483647)
 	public java.lang.String getBsStream() {
 		return this.bsStream;
 	}
