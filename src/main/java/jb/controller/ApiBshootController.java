@@ -194,7 +194,8 @@ public class ApiBshootController extends BaseController {
 	 */
 	@RequestMapping("/upload")
 	@ResponseBody
-	public Json uploadBshoot(Bshoot bshoot,@RequestParam MultipartFile[] movies,@RequestParam MultipartFile[] icons, HttpServletRequest request) {
+	public Json uploadBshoot(Bshoot bshoot,@RequestParam(required=false) MultipartFile[] movies,
+			@RequestParam(required=false) MultipartFile[] icons, HttpServletRequest request) {
 		Json j = new Json();
 		try {
 			SessionInfo s = getSessionInfo(request);
@@ -205,37 +206,43 @@ public class ApiBshootController extends BaseController {
 			if(!file.exists())
 				file.mkdir();
 			
-			String bsStream = "";
-			for(MultipartFile f : movies){
-				String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
-				String fileName = bshoot.getId()+suffix;
-				if(!"".equals(bsStream)) {
-					bsStream += ";";
+			if(movies != null) {
+				String bsStream = "";
+				for(MultipartFile f : movies){
+					if(f == null || f.isEmpty()) continue;
+					String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
+					String fileName = bshoot.getId()+suffix;
+					if(!"".equals(bsStream)) {
+						bsStream += ";";
+					}
+					bsStream += s.getName()+"/"+fileName;
+					 try {
+						FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
 				}
-				bsStream += s.getName()+"/"+fileName;
-				 try {
-					FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+				bshoot.setBsStream(bsStream);
 			}
-			bshoot.setBsStream(bsStream);
 			
-			String bsIcon = "";
-			for(MultipartFile f : icons){
-				String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
-				String fileName = bshoot.getId()+suffix;
-				if(!"".equals(bsIcon)) {
-					bsIcon += ";";
+			if(icons != null) {
+				String bsIcon = "";
+				for(MultipartFile f : icons){
+					if(f == null || f.isEmpty()) continue;
+					String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
+					String fileName = bshoot.getId()+suffix;
+					if(!"".equals(bsIcon)) {
+						bsIcon += ";";
+					}
+					bsIcon += s.getName()+"/"+fileName;
+					 try {
+						FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
 				}
-				bsIcon += s.getName()+"/"+fileName;
-				 try {
-					FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+				bshoot.setBsIcon(bsIcon);
 			}
-			bshoot.setBsIcon(bsIcon);
 			
 			List<String> attUserIds = bshootService.addBshoot(bshoot);	
 			if(attUserIds != null && attUserIds.size() > 0) {
