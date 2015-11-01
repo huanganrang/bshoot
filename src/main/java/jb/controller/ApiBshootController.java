@@ -31,6 +31,7 @@ import jb.service.BshootServiceI;
 import jb.service.UserAttentionServiceI;
 import jb.service.UserServiceI;
 import jb.util.Constants;
+import jb.util.Util;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -211,7 +212,7 @@ public class ApiBshootController extends BaseController {
 				for(MultipartFile f : movies){
 					if(f == null || f.isEmpty()) continue;
 					String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
-					String fileName = bshoot.getId()+suffix;
+					String fileName = Util.CreateNoncestr(4) + System.currentTimeMillis() + suffix;
 					if(!"".equals(bsStream)) {
 						bsStream += ";";
 					}
@@ -230,7 +231,7 @@ public class ApiBshootController extends BaseController {
 				for(MultipartFile f : icons){
 					if(f == null || f.isEmpty()) continue;
 					String suffix = f.getOriginalFilename().substring(f.getOriginalFilename().lastIndexOf("."));
-					String fileName = bshoot.getId()+suffix;
+					String fileName = Util.CreateNoncestr(4) + System.currentTimeMillis() + suffix;
 					if(!"".equals(bsIcon)) {
 						bsIcon += ";";
 					}
