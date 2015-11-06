@@ -20,4 +20,7 @@ public interface BshootDaoI extends BaseDaoI<Tbshoot> {
 	List<Tbshoot> getUserLastBshoot(List<String> userIds,Date dateLimit);
 
 	Tbshoot getUserLastBshoot(String userId,Date dateLimit);
+
+
+	List<Tbshoot> getHotBshoots(Date pubTime, int praiseNum, int start, int rows);
 }

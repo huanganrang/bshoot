@@ -51,7 +51,7 @@ public class RecommendService implements RecommendServiceI{
     public List<RecommendUser> recommendUser( String loginArea) {
         //获得6个大v,4个小v
         Criterias criterias = new Criterias();
-        criterias.qc("fans_num:[200 TO *]");
+        criterias.qc("fansNum:[200 TO *]");
         criterias.gt("month_praise","50");
         Random random = new Random();
         criterias.addOrder("rand_"+random.nextInt(1000),"asc");//随机排序字段
@@ -64,14 +64,13 @@ public class RecommendService implements RecommendServiceI{
             userList = userV.getDocs();
 
         Criterias criterias2 = new Criterias();
-        criterias.qc("fans_num:[* TO 10]");
-        criterias.eq("login_area",loginArea);
-        criterias.eq("createTime", DateUtil.convert2SolrDate(DateUtil.getDate(-3)));
-        criterias.addOrder("rand_" + random.nextInt(1000), "asc");//随机排序字段
-        criterias.addField(new String[]{"id","usex","hobby","areaCode"});
-        criterias.addField();
-        criterias.setStart(0);
-        criterias.setRows(4);
+        criterias2.qc("fansNum:[* TO 10]");
+        criterias2.eq("login_area",loginArea);
+        criterias2.ge("createTime", DateUtil.convert2SolrDate(DateUtil.getDateStart(-3)));
+        criterias2.addOrder("rand_" + random.nextInt(1000), "asc");//随机排序字段
+        criterias2.addField(new String[]{"id","usex","hobby","login_area"});
+        criterias2.setStart(0);
+        criterias2.setRows(4);
         SolrResponse<UserEntity> userv = solrUserService.query(criterias2);
         if(null!=userv&&CollectionUtils.isNotEmpty(userv.getDocs()))
             userList.addAll(userv.getDocs());
@@ -83,34 +82,35 @@ public class RecommendService implements RecommendServiceI{
             recommendUser.setNickname(u.getNickname());
             recommendUser.setHeadImage(u.getHeadImage());
             recommendUser.setBardian(u.getBardian());
-            BaseData area = basedataServiceImpl.get(userEntity.getLogin_area());
+            BaseData area = null;
+            if(null!=userEntity.getLogin_area())
+              area = basedataServiceImpl.get(userEntity.getLogin_area());
             if(null!=area)
               recommendUser.setArea(area.getName());
-            List<BaseData> hobbys = basedataServiceImpl.getBaseDatas(userEntity.getHobby());
+            List<BaseData> hobbys = null;
+            if(null!=userEntity.getHobby())
+                hobbys = basedataServiceImpl.getBaseDatas(userEntity.getHobby());
             List<String> h = Lists.newArrayList();
-            for(BaseData hobby:hobbys){
-                h.add(hobby.getName());
+            if(CollectionUtils.isNotEmpty(hobbys)){
+                for(BaseData hobby:hobbys){
+                    h.add(hobby.getName());
+                }
+                recommendUser.setHobby(h);
             }
-            recommendUser.setHobby(h);
-            BaseData sex = basedataServiceImpl.get(u.getSex());
+            BaseData sex = null;
+            if(null!=u.getSex())
+              sex = basedataServiceImpl.get(u.getSex());
             if(null!=sex)
-            recommendUser.setSex(sex.getName());
+             recommendUser.setSex(sex.getName());
             recommendUsers.add(recommendUser);
         }
         return recommendUsers;
     }
 
     @Override
-    public List<Bshoot> recommendHot() {
-        Date tenHousrago = DateUtil.getDateBeforeHours(-10);
-       List<Bshoot> bshoots =  bshootServiceImpl.getHotBshoots(tenHousrago, 200, 50);
-       if(bshoots.size()<50){
-           Date oneDayago = DateUtil.stringToDate(DateUtil.getDate(-1));
-           List<Bshoot> bs2 = bshootServiceImpl.getHotBshoots(oneDayago,200,50-bshoots.size());
-           if(CollectionUtils.isNotEmpty(bs2))
-             bshoots.addAll(bs2);
-       }
-        return bshoots;
+    public List<Bshoot> recommendHot(int start) {
+        Date oneDayago = DateUtil.stringToDate(DateUtil.getDate(-1, DateUtil.DATETIME_FORMAT));
+        return bshootServiceImpl.getHotBshoots(oneDayago, 200,start, 50);
     }
 
     @Override
@@ -119,8 +119,8 @@ public class RecommendService implements RecommendServiceI{
         UserProfile userProfile = userProfileServiceImpl.get(userId);
         List<Bshoot> bshoots = new ArrayList<Bshoot>();
         //1.新人推荐 done
-        bshoots.add(recommendNewUser(userProfile.getFansNum(),userProfile.getLoginArea(),start,DateUtil.stringToDate(DateUtil.getDate(-1))));
-        Date threeDaysAgo = DateUtil.stringToDate(DateUtil.getDate(-3));
+        bshoots.add(recommendNewUser(userProfile.getFansNum(),userProfile.getLoginArea(),start,DateUtil.stringToDate(DateUtil.getDateStart(-1))));
+        Date threeDaysAgo = DateUtil.stringToDate(DateUtil.getDateStart(-3));
         //2.好友共同关注的人 done
         List<Bshoot> friendCommonBshoot = friendCommonAtt(userId, start,threeDaysAgo);
         if(CollectionUtils.isNotEmpty(friendCommonBshoot))
@@ -223,7 +223,7 @@ public class RecommendService implements RecommendServiceI{
             }
             sb.delete(sb.lastIndexOf("OR "),sb.length());
             Criterias criterias = new Criterias();
-            criterias.lt("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0)));
+            criterias.ge("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0, DateUtil.DATETIME_FORMAT)));
             criterias.addNativeFq(sb.toString());
             criterias.addField("id");
             criterias.setStart(3*start);
@@ -237,7 +237,7 @@ public class RecommendService implements RecommendServiceI{
             SystemUtils.combineStr(hobbyType,hobbyType.length,out3,null);
             qc.append("login_area:").append(loginArea).append("^5 AND ").append("hobby:(").append(out3.get(0)).append(")^3");
             criterias2.qc(qc.toString());
-            criterias.lt("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0)));
+            criterias.ge("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0, DateUtil.DATETIME_FORMAT)));
             criterias.addField("id");
             criterias.setStart(3*start);
             criterias.setRows(3);
@@ -290,15 +290,15 @@ public class RecommendService implements RecommendServiceI{
             //当前用户粉丝量大于50则不推荐，新人推荐根据用户粉丝量，获取同城用户且当天发布了动态
             String qc = null;
             if(fansNum<10)
-                qc="fans_num:[0 TO 9]";
+                qc="fansNum:[0 TO 9]";
             else if(fansNum>10&&fansNum<30)
-                qc="fans_num:[10 TO 29]";
+                qc="fansNum:[10 TO 29]";
             else if(fansNum>30&&fansNum<50)
-                qc="fans_num:[30 TO 49]";
+                qc="fansNum:[30 TO 49]";
             Criterias criterias = new Criterias();
             criterias.qc(qc);
             criterias.eq("login_area",loginArea);
-            criterias.lt("lastPublishTime", DateUtil.convert2SolrDate(DateUtil.getDate(0)));
+            criterias.ge("lastPublishTime", DateUtil.convert2SolrDate(DateUtil.getDateStart(0)));
             criterias.addField("id");
             criterias.setStart(start*1);
             criterias.setRows(1);
@@ -320,9 +320,9 @@ public class RecommendService implements RecommendServiceI{
         return bshoots;
     }
     public static void main(String[] args){
-        //System.out.println(DateUtil.convert2SolrDate(DateUtil.getDate(0,DateUtil.DATETIME_FORMAT)));
+        System.out.println(DateUtil.convert2SolrDate(DateUtil.getDateStart(0)));
         //System.out.println(DateUtil.convert2SolrDate(DateUtil.getDateBeforeHours(-10, DateUtil.DATETIME_FORMAT)));
-        a();
+        //a();
     }
     private static void a(){
         StackTraceElement[] stack = (new Throwable()).getStackTrace();

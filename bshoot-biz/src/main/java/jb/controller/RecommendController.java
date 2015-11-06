@@ -25,8 +25,8 @@ public class RecommendController extends  BaseController{
     //热门推荐
     @RequestMapping("/hot")
     @ResponseBody
-    public List<Bshoot> recommentHost() {
-        return  recommendService.recommendHot();
+    public List<Bshoot> recommentHost(int start) {
+        return  recommendService.recommendHot(start);
     }
 
 

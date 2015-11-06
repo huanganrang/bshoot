@@ -89,4 +89,16 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 		return null;
 	}
 
+	@Override
+	public List<Tbshoot> getHotBshoots(Date pubTime, int praiseNum, int start, int rows) {
+		String hql="select * from bshoot t  where t.create_datetime >=:pubTime and t.bs_praise>=:praiseNum order by t.create_datetime desc  limit :start,:rows";
+		Query query = getCurrentSession().createSQLQuery(hql).addEntity(Tbshoot.class);
+		query.setParameter("pubTime", pubTime);
+		query.setParameter("praiseNum",praiseNum);
+		query.setParameter("start",start);
+		query.setParameter("rows",rows);
+		List<Tbshoot> l = query.list();
+		return l;
+	}
+
 }

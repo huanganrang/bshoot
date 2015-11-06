@@ -89,7 +89,7 @@ public interface BshootServiceI {
 	 * 首页热门动态获取
 	 * @return
 	 */
-	public List<Bshoot> getHotBshoots(Date pubTime,int praiseNum,int rows);
+	public List<Bshoot> getHotBshoots(Date pubTime,int praiseNum,int start,int rows);
 
 	/**
 	 * 同城视频
