@@ -1,4 +1,4 @@
-﻿package jb.service;
+package jb.service;
 
 import jb.model.TbshootComment;
 import jb.pageModel.BshootComment;

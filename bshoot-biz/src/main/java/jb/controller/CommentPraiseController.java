@@ -1,4 +1,4 @@
-﻿package jb.controller;
+package jb.controller;
 
 import com.alibaba.fastjson.JSON;
 import jb.pageModel.*;

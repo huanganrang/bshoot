@@ -1,4 +1,4 @@
-﻿package jb.service;
+package jb.service;
 
 import jb.pageModel.UserMessage;
 import jb.pageModel.DataGrid;

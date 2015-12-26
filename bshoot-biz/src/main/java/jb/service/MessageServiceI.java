@@ -1,4 +1,4 @@
-﻿package jb.service;
+package jb.service;
 
 import jb.model.TmessageCount;
 import jb.pageModel.DataGrid;

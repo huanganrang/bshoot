@@ -1,4 +1,4 @@
-﻿package jb.dao;
+package jb.dao;
 
 import java.util.List;
 import java.util.Map;

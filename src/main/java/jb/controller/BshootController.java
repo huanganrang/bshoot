@@ -1,4 +1,4 @@
-﻿package jb.controller;
+package jb.controller;
 
 import java.io.File;
 import java.io.IOException;
