@@ -26,7 +26,7 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 	@Override
 	public List<Map<String,Object>> executeNearby(final int page, final int rows,final double lgx,final double lgy) {
 		
-		List<Map<String,Object>> result = jdbcTemplate.execute(new CallableStatementCreator() {   
+		/*List<Map<String,Object>> result = jdbcTemplate.execute(new CallableStatementCreator() {
 	        public CallableStatement createCallableStatement(Connection con) throws SQLException {   
 	        	String centStr = "POINT("+lgx+" "+lgy+")";
 	            String storedProc = "{call bshootnearby (?,?,?)}";// 调用的sql   
@@ -56,8 +56,8 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 		            	result.add(temp);
 		            }
 		            return result;// 获取输出参数的值   
-		        } } );
-		return result;
+		        } } );*/
+		return null;
 	}
 	
 	
