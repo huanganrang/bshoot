@@ -6,7 +6,7 @@
         </fieldType>
         <fieldtype name="string"  class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
         <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
-        <fieldtype name="location" class="solr.LatLonType"/>
+        <fieldtype name="location" class="solr.LatLonType" subFieldSuffix="_latlon"/>
         <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0" omitNorms="true"/>
     </types>
     <fields>
@@ -27,9 +27,10 @@
         <field name="reward_num" type="long" indexed="true" stored="true"/>
         <field name="favorite_num" type="long" indexed="true" stored="true"/>
         <field name="isDelete" type="int" indexed="true" stored="true"/>
-        <dynamicField name="_square" type="string" indexed="true" stored="true"/>
-        <dynamicField name="_text" type="string" indexed="true" stored="true"/>
-        <dynamicField name="_shareNum" type="long" indexed="true" stored="true"/>
+        <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
+        <dynamicField name="*_square" type="string" indexed="true" stored="true"/>
+        <dynamicField name="*_text" type="string" indexed="true" stored="true"/>
+        <dynamicField name="*_shareNum" type="long" indexed="true" stored="true"/>
 
     </fields>
     <uniqueKey>id</uniqueKey>
