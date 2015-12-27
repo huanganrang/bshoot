@@ -16,5 +16,27 @@
             <version>0.0.1-Release</version>
         </dependency>
     </dependencies>
+    <build>
+        <finalName>job-service</finalName>
+        <defaultGoal>compile</defaultGoal>
+        <plugins>
 
+            <!-- 编译的时候使用JDK6和UTF8编码 -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- 配置Maven插件(mvn jetty:run可以运行项目) -->
+            <!-- <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+            </plugin> -->
+
+        </plugins>
+    </build>
 </project>
