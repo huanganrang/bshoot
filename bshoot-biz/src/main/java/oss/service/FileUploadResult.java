@@ -1,0 +1,44 @@
+package oss.service;
+
+/**
+ * 文件上传结果
+ * Created by zhou on 2015/12/27.
+ */
+public class FileUploadResult {
+    private String filePath;
+    private String fileName;
+    private String remotePath;
+    private String eTag;
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getRemotePath() {
+        return remotePath;
+    }
+
+    public void setRemotePath(String remotePath) {
+        this.remotePath = remotePath;
+    }
+
+    public String geteTag() {
+        return eTag;
+    }
+
+    public void seteTag(String eTag) {
+        this.eTag = eTag;
+    }
+}
