@@ -6,11 +6,11 @@
         </fieldType>
         <fieldtype name="string"  class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
         <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
-        <fieldtype name="location" class="solr.LatLonType"/>
+        <fieldtype name="location" class="solr.LatLonType" subFieldSuffix="_latlon"/>
         <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0" omitNorms="true"/>
     </types>
     <fields>
-        <!--动态基础信息-->
+        <!--用户基础信息-->
         <field name="id" type="long" indexed="true"  stored="true" required="true"/>
         <field name="utype" type="int" indexed="true" stored="true"/>
         <field name="nickname" type="string" indexed="true" stored="true"/>
@@ -30,11 +30,12 @@
         <field name="mobile" type="string" indexed="true" stored="true"  multiValued="true"/>
         <field name="is_tarento" type="int" indexed="true" stored="true"/>
         <field name="is_star" type="int" indexed="true" stored="true"/>
-        <dynamicField name="_reward" type="long" indexed="true" stored="true"/>
-        <dynamicField name="_att" type="long" indexed="true" stored="true"/>
-        <dynamicField name="_square" type="string" indexed="true" stored="true"  multiValued="true"/>
-        <dynamicField name="_job" type="string" indexed="true" stored="true"  multiValued="true"/>
-        <dynamicField name="_location" type="string" indexed="true" stored="true"/>
+        <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
+        <dynamicField name="*_reward" type="long" indexed="true" stored="true"/>
+        <dynamicField name="*_att" type="long" indexed="true" stored="true"/>
+        <dynamicField name="*_square" type="string" indexed="true" stored="true"  multiValued="true"/>
+        <dynamicField name="*_job" type="string" indexed="true" stored="true"  multiValued="true"/>
+        <dynamicField name="*_location" type="string" indexed="true" stored="true"/>
 
     </fields>
     <uniqueKey>id</uniqueKey>
