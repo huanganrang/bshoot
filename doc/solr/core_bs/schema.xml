@@ -7,6 +7,8 @@
         <fieldtype name="string"  class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
         <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
         <fieldtype name="location" class="solr.LatLonType" subFieldSuffix="_latlon"/>
+        <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0"
+                   positionIncrementGap="0" />
         <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0" omitNorms="true"/>
     </types>
     <fields>
@@ -18,8 +20,7 @@
         <field name="praise_num" type="long" indexed="true" stored="true"/>
         <field name="comment_num" type="long" indexed="true" stored="true"/>
         <field name="read_num" type="long" indexed="true" stored="true"/>
-        <field name="pub_longitude" type="location" indexed="true"/>
-        <field name="pub_latitude" type="location" indexed="true"/>
+        <field name="pub_location" type="location" indexed="true"/>
         <field name="hasVideo" type="int" indexed="true" stored="true"/>
         <field name="hasImg" type="int" indexed="true" stored="true"/>
         <field name="hasAudio" type="int" indexed="true" stored="true"/>
@@ -31,7 +32,7 @@
         <dynamicField name="*_square" type="string" indexed="true" stored="true"/>
         <dynamicField name="*_text" type="string" indexed="true" stored="true"/>
         <dynamicField name="*_shareNum" type="long" indexed="true" stored="true"/>
-
+        <dynamicField name="*_latlon" type="double" indexed="true" stored="true"/>
     </fields>
     <uniqueKey>id</uniqueKey>
     <defaultSearchField>userId</defaultSearchField>
