@@ -2,6 +2,7 @@ package oss.service;
 
 import com.aliyun.oss.model.CopyObjectResult;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,14 +34,18 @@ public class OSSService {
        OSSService ossService = new OSSService();
        ossService.init();
        try {
-           //ossService.uploadFiles(new File("E:\\temp"),"audio");
+           List<FileUploadResult> fileUploadResults = new ArrayList<FileUploadResult>();
+           ossService.uploadFiles(new File("E:\\temp"),"audio",fileUploadResults);
+           for(FileUploadResult fileUploadResult:fileUploadResults){
+               System.out.println(fileUploadResult);
+           }
            //CopyObjectResult fileCopyResult = ossService.moveFile("audio/temp/a/621717931.aac", "video/62171796.aac");
            //System.out.print(fileCopyResult);
            //CopyObjectResult fileCopyResult = ossService.copyFile("audio/temp/191769963.aac", "video/62171797.aac");
            //System.out.print(fileCopyResult);
            //ossService.deleteFile("video/62171796.aac");
            //ossService.deleteFile("audio/temp");
-           ossService.deleteDirFiles("audio");
+           //ossService.deleteDirFiles("audio");
        } catch (Exception e) {
            e.printStackTrace();
        }
@@ -52,19 +57,20 @@ public class OSSService {
      * @param directory 上传到云端的那个目录,如果上传的文件夹则会将该文件夹下所有文件上传到云端同目录下
      * @throws Exception
      */
-    public List<FileUploadResult> uploadFiles(File file,String directory) throws Exception{
+    public void uploadFiles(File file,String directory, List<FileUploadResult> fileUploadResults) throws Exception{
+           if(null==fileUploadResults) throw new NullPointerException("the filUploadResults can not be null");
            if(null==directory)  directory="";
             String path = file.getAbsolutePath();
-            List<FileUploadResult> fileUploadResults = new ArrayList<FileUploadResult>();
             if (file.isDirectory()) {
                 //1.1如果是文件夹，将文件夹下的所有文件上传，并忽略fileName,去文件的名称
                 File[] files = file.listFiles();
                 for(File ifile:files){
-                    uploadFiles(ifile,directory+"/"+file.getName());
+                    uploadFiles(ifile, directory + "/" + file.getName(), fileUploadResults);
                 }
             } else if (file.isFile()) {
                 //1.2如果是文件，则将文件上传，并将文件key命名为给定的fileName
                 String eTag = ossUtils.uploadFile(directory+"/"+file.getName(), path, OSSUtils.getFileType(file));
+                System.out.println(eTag);
                 if(StringUtils.isNotEmpty(eTag)){
                     FileUploadResult fileUploadResult = new FileUploadResult();
                     fileUploadResult.seteTag(eTag);
@@ -74,7 +80,6 @@ public class OSSService {
                     fileUploadResults.add(fileUploadResult);
                 }
             }
-        return  fileUploadResults;
     }
 
     public void deleteFile(String key) throws Exception{

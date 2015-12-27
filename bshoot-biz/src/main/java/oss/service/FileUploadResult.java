@@ -41,4 +41,14 @@ public class FileUploadResult {
     public void seteTag(String eTag) {
         this.eTag = eTag;
     }
+
+    @Override
+    public String toString() {
+        return "FileUploadResult{" +
+                "filePath='" + filePath + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", remotePath='" + remotePath + '\'' +
+                ", eTag='" + eTag + '\'' +
+                '}';
+    }
 }
