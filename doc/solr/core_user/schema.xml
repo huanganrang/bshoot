@@ -1,0 +1,42 @@
+<schema name="core_user" version="1.1">
+    <types>
+        <fieldType name="text" class="solr.TextField">
+            <analyzer type="index" isMaxWorldLength="false" class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+            <analyzer type="query" isMaxWorldLength="true" class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+        </fieldType>
+        <fieldtype name="string"  class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
+        <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldtype name="location" class="solr.LatLonType"/>
+        <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0" omitNorms="true"/>
+    </types>
+    <fields>
+        <!--动态基础信息-->
+        <field name="id" type="long" indexed="true"  stored="true" required="true"/>
+        <field name="utype" type="int" indexed="true" stored="true"/>
+        <field name="nickname" type="string" indexed="true" stored="true"/>
+        <field name="usex" type="int" indexed="true" stored="true"/>
+        <field name="areaCode" type="int" indexed="true" stored="true"/>
+        <field name="areaName" type="string" indexed="true" stored="true"/>
+        <field name="birthday" type="long" indexed="true" stored="true"/>
+        <field name="bardian" type="text" indexed="true" stored="true"/>
+        <field name="member_v" type="int" indexed="true" stored="true"/>
+        <field name="createTime" type="long" indexed="true" stored="true"/>
+        <field name="hobby" type="string" indexed="true" stored="true" multiValued="true"/>
+        <field name="lastLoginTime" type="long" indexed="true" stored="true"/>
+        <field name="lastPublishTime" type="long" indexed="true" stored="true"/>
+        <field name="fansNum" type="long" indexed="true" stored="true"/>
+        <field name="login_longitude" type="location" indexed="true"/>
+        <field name="login_latitude" type="location" indexed="true"/>
+        <field name="mobile" type="string" indexed="true" stored="true"  multiValued="true"/>
+        <field name="is_tarento" type="int" indexed="true" stored="true"/>
+        <field name="is_star" type="int" indexed="true" stored="true"/>
+        <dynamicField name="_reward" type="long" indexed="true" stored="true"/>
+        <dynamicField name="_att" type="long" indexed="true" stored="true"/>
+        <dynamicField name="_square" type="string" indexed="true" stored="true"  multiValued="true"/>
+        <dynamicField name="_job" type="string" indexed="true" stored="true"  multiValued="true"/>
+        <dynamicField name="_location" type="string" indexed="true" stored="true"/>
+
+    </fields>
+    <uniqueKey>id</uniqueKey>
+    <defaultSearchField>nickname</defaultSearchField>
+</schema>
