@@ -11,6 +11,7 @@ public class BshootPraise implements java.io.Serializable {
 	private String bshootId;
 	private Date praiseDatetime;
 
+	private Integer praiseNum;
 
 
 	public void setId(String value) {
@@ -44,6 +45,12 @@ public class BshootPraise implements java.io.Serializable {
 	public void setPraiseDatetime(Date praiseDatetime) {
 		this.praiseDatetime = praiseDatetime;
 	}
-	
 
+	public Integer getPraiseNum() {
+		return praiseNum;
+	}
+
+	public void setPraiseNum(Integer praiseNum) {
+		this.praiseNum = praiseNum;
+	}
 }

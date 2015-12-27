@@ -46,6 +46,8 @@ public class TuserHobby implements java.io.Serializable,IEntity{
 	private java.util.Date createDatetime;
 	//
 	private java.util.Date updateDatetime;
+	private java.lang.Integer isDelete;
+
 	//columns END
 
 
@@ -103,8 +105,17 @@ public class TuserHobby implements java.io.Serializable,IEntity{
 	public void setUpdateDatetime(java.util.Date updateDatetime) {
 		this.updateDatetime = updateDatetime;
 	}
-	
-	
+
+	@Column(name = "is_delete", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public java.lang.Integer getIsDelete() {
+		return this.isDelete;
+	}
+
+	public void setIsDelete(java.lang.Integer isDelete) {
+		this.isDelete = isDelete;
+	}
+
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

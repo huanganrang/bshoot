@@ -10,8 +10,15 @@ public class UserAttention implements java.io.Serializable {
 	private String userId;
 	private String attUserId;
 	private Date attentionDatetime;
+	private Integer isDelete;
 
+	public Integer getIsDelete() {
+		return isDelete;
+	}
 
+	public void setIsDelete(Integer isDelete) {
+		this.isDelete = isDelete;
+	}
 
 	public void setId(String value) {
 		this.id = value;

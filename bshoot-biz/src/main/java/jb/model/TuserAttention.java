@@ -42,6 +42,8 @@ public class TuserAttention implements java.io.Serializable{
 	private String attUserId;
 	//
 	private java.util.Date attentionDatetime;
+	private java.lang.Integer isDelete;
+
 	//columns END
 
 
@@ -89,8 +91,16 @@ public class TuserAttention implements java.io.Serializable{
 	public void setAttentionDatetime(java.util.Date attentionDatetime) {
 		this.attentionDatetime = attentionDatetime;
 	}
-	
-	
+
+	@Column(name = "is_delete", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public java.lang.Integer getIsDelete() {
+		return this.isDelete;
+	}
+
+	public void setIsDelete(java.lang.Integer isDelete) {
+		this.isDelete = isDelete;
+	}
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

@@ -42,6 +42,9 @@ public class TbshootPraise implements java.io.Serializable{
 	private String bshootId;
 	//
 	private java.util.Date praiseDatetime;
+
+	private Integer praiseNum;
+
 	//columns END
 
 
@@ -89,9 +92,15 @@ public class TbshootPraise implements java.io.Serializable{
 	public void setPraiseDatetime(java.util.Date praiseDatetime) {
 		this.praiseDatetime = praiseDatetime;
 	}
-	
-	
-	/*
+	@Column(name = "is_delete", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public int getPraiseNum() {
+		return praiseNum;
+	}
+
+	public void setPraiseNum(int praiseNum) {
+		this.praiseNum = praiseNum;
+	}
+/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
 			.append("Id",getId())
