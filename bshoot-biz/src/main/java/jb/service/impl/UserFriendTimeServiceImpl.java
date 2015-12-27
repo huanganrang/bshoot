@@ -57,18 +57,7 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 				whereHql += " and t.bsId = :bsId";
 				params.put("bsId", userFriendTime.getBsId());
 			}		
-			if (!F.empty(userFriendTime.getIsDelete())) {
-				whereHql += " and t.isDelete = :isDelete";
-				params.put("isDelete", userFriendTime.getIsDelete());
-			}		
-			if (!F.empty(userFriendTime.getIsRead())) {
-				whereHql += " and t.isRead = :isRead";
-				params.put("isRead", userFriendTime.getIsRead());
-			}		
-			if (!F.empty(userFriendTime.getIsPraise())) {
-				whereHql += " and t.isPraise = :isPraise";
-				params.put("isPraise", userFriendTime.getIsPraise());
-			}		
+
 		}	
 		return whereHql;
 	}

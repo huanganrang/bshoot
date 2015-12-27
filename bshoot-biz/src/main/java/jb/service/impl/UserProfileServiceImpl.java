@@ -53,18 +53,7 @@ public class UserProfileServiceImpl extends BaseServiceImpl<UserProfile> impleme
 				whereHql += " and t.memberV = :memberV";
 				params.put("memberV", userProfile.getMemberV());
 			}		
-			if (!F.empty(userProfile.getAttNum())) {
-				whereHql += " and t.attNum = :attNum";
-				params.put("attNum", userProfile.getAttNum());
-			}		
-			if (!F.empty(userProfile.getFansNum())) {
-				whereHql += " and t.fansNum = :fansNum";
-				params.put("fansNum", userProfile.getFansNum());
-			}		
-			if (!F.empty(userProfile.getPraiseNum())) {
-				whereHql += " and t.praiseNum = :praiseNum";
-				params.put("praiseNum", userProfile.getPraiseNum());
-			}		
+
 		}	
 		return whereHql;
 	}

@@ -57,10 +57,7 @@ public class UserPersonServiceImpl extends BaseServiceImpl<UserPerson> implement
 				whereHql += " and t.attUserId = :attUserId";
 				params.put("attUserId", userPerson.getAttUserId());
 			}		
-			if (!F.empty(userPerson.getIsDelete())) {
-				whereHql += " and t.isDelete = :isDelete";
-				params.put("isDelete", userPerson.getIsDelete());
-			}		
+
 		}	
 		return whereHql;
 	}

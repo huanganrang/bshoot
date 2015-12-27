@@ -1,6 +1,7 @@
 package jb.dao.impl;
 
 import jb.dao.BaseDaoI;
+import jb.model.IEntity;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +35,9 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
 	@Override
 	public Serializable save(T o) {
 		if (o != null) {
-			
+			if(o instanceof IEntity){
+				((IEntity) o).setCreateDatetime(new Date());
+			}
 			return this.getCurrentSession().save(o);
 		}
 		return null;

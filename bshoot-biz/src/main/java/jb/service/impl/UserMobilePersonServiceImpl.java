@@ -61,10 +61,7 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 				whereHql += " and t.mobile = :mobile";
 				params.put("mobile", userMobilePerson.getMobile());
 			}		
-			if (!F.empty(userMobilePerson.getIsDelete())) {
-				whereHql += " and t.isDelete = :isDelete";
-				params.put("isDelete", userMobilePerson.getIsDelete());
-			}		
+
 		}	
 		return whereHql;
 	}

@@ -57,18 +57,7 @@ public class UserPersonTimeServiceImpl extends BaseServiceImpl<UserPersonTime> i
 				whereHql += " and t.bsId = :bsId";
 				params.put("bsId", userPersonTime.getBsId());
 			}		
-			if (!F.empty(userPersonTime.getIsRead())) {
-				whereHql += " and t.isRead = :isRead";
-				params.put("isRead", userPersonTime.getIsRead());
-			}		
-			if (!F.empty(userPersonTime.getIsPraise())) {
-				whereHql += " and t.isPraise = :isPraise";
-				params.put("isPraise", userPersonTime.getIsPraise());
-			}		
-			if (!F.empty(userPersonTime.getIsDelete())) {
-				whereHql += " and t.isDelete = :isDelete";
-				params.put("isDelete", userPersonTime.getIsDelete());
-			}		
+
 		}	
 		return whereHql;
 	}

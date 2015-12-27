@@ -17,7 +17,10 @@ public interface Constants {
 	 * 全局异常提示
 	 */
 	public static String SYSTEM_GLOBAL_MESSAGE = "EX0001";
-	
+
+	public static final String DATE_FORMAT_FOR_ENTITY = "yyyy-MM-dd HH:mm:ss";
+
+
 	/**
 	 * 短格式日期
 	 */

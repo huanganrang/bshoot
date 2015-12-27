@@ -61,18 +61,12 @@ public class UserPraiseRecordServiceImpl extends BaseServiceImpl<UserPraiseRecor
 				whereHql += " and t.relationChannel = :relationChannel";
 				params.put("relationChannel", userPraiseRecord.getRelationChannel());
 			}		
-			if (!F.empty(userPraiseRecord.getAmount())) {
-				whereHql += " and t.amount = :amount";
-				params.put("amount", userPraiseRecord.getAmount());
-			}		
+
 			if (!F.empty(userPraiseRecord.getPraiseType())) {
 				whereHql += " and t.praiseType = :praiseType";
 				params.put("praiseType", userPraiseRecord.getPraiseType());
 			}		
-			if (!F.empty(userPraiseRecord.getPraiseNum())) {
-				whereHql += " and t.praiseNum = :praiseNum";
-				params.put("praiseNum", userPraiseRecord.getPraiseNum());
-			}		
+
 		}	
 		return whereHql;
 	}
