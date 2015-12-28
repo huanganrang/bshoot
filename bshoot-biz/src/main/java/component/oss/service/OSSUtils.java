@@ -1,4 +1,4 @@
-package oss.service;
+package component.oss.service;
 
 
 import com.aliyun.oss.ClientException;
