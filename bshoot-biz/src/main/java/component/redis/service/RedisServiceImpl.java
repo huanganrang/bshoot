@@ -1,4 +1,4 @@
-package jb.dao;
+package component.redis.service;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @author guxin
  * @date 2015-12-27
  */
-public class BaseRedisDaoI {
+public class RedisServiceImpl {
 	
 	@Resource
 	private RedisTemplate<Serializable, Serializable> redisTemplate;
