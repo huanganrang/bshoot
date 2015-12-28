@@ -11,6 +11,18 @@
     <artifactId>bshoot-biz</artifactId>
     <packaging>jar</packaging>
     <version>0.0.1-Release</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         <!-- 加入spring mvc依赖包  -->
         <dependency>
@@ -308,6 +320,17 @@
             </exclusions>
         </dependency>
         <!-- androidpn server 依赖的jar 结束 -->
+        <!-- spring-redis -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>1.2.1.RELEASE</version>
+        </dependency>
         <!--aliyun oss-->
         <dependency>
             <groupId>com.aliyun.oss</groupId>
@@ -330,7 +353,7 @@
             <artifactId>solr-solrj</artifactId>
             <version>4.9.0</version>
         </dependency>
-       <!--quartz定时任务包-->
+        <!--quartz定时任务包-->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
