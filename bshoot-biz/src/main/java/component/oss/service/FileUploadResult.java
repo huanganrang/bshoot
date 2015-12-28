@@ -1,4 +1,4 @@
-package oss.service;
+package component.oss.service;
 
 /**
  * 文件上传结果
