@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.util.*;
 
 /**
- * oss²Ù×÷¹¤¾ßÀà
+ * ossæ“ä½œå·¥å…·ç±»
  * Created by zhou on 2015/12/27.
  */
 public class OSSUtils {
@@ -59,7 +59,7 @@ public class OSSUtils {
     }
 
     /**
-     * ÉèÖÃbucket·ÃÎÊÄ£Ê½-¹«¹²¶Á
+     * è®¾ç½®bucketè®¿é—®æ¨¡å¼-å…¬å…±è¯»
      */
     public void setBucketAcl(){
         ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
@@ -153,9 +153,9 @@ public class OSSUtils {
     }
 
     /**
-     * ÅúÁ¿ÎÄ¼şÉÏ´«
-     * @param map key ,ÎÄ¼şÃû
-     * @param contentType ÎÄ¼şÀàĞÍ
+     * æ‰¹é‡æ–‡ä»¶ä¸Šä¼ 
+     * @param map key ,æ–‡ä»¶å
+     * @param contentType æ–‡ä»¶ç±»å‹
      */
     public void uploadFile(Map<String,String> map,String contentType){
         Map<String,String> uploadResult = new HashMap<String, String>();
@@ -214,7 +214,7 @@ public class OSSUtils {
     }
 
     /**
-     * ÒÆ¶¯ÎÄ¼ş
+     * ç§»åŠ¨æ–‡ä»¶
      *
      * @param srcKey
      * @param destKey
@@ -235,7 +235,7 @@ public class OSSUtils {
     }
 
     /**
-     *¶¯Ì¬Éú³É¾­¹ıÇ©ÃûµÄURL
+     *åŠ¨æ€ç”Ÿæˆç»è¿‡ç­¾åçš„URL
      * @param key
      * @param timeout
      * @return
@@ -249,12 +249,12 @@ public class OSSUtils {
     }
 
     /**
-     * É¾³ıBucketÏÂµÄËùÓĞÎÄ¼ş
-     *Ö»É¾³ıjs,css,imgÀàĞÍÎÄ¼ş
+     * åˆ é™¤Bucketä¸‹çš„æ‰€æœ‰æ–‡ä»¶
+     *åªåˆ é™¤js,css,imgç±»å‹æ–‡ä»¶
      * @param bucketName
      */
     public void deleteDirFiles(String bucketName,String specialDir) {
-        // ¹¹ÔìListObjectsRequestÇëÇó
+        // æ„é€ ListObjectsRequestè¯·æ±‚
         ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
         // List Objects
         ObjectListing listing = ossClient.listObjects(listObjectsRequest);
@@ -265,7 +265,7 @@ public class OSSUtils {
                 deleteFile(objectSummary.getKey());
             }
         }
-        // ±éÀúËùÓĞCommonPrefix
+        // éå†æ‰€æœ‰CommonPrefix
         System.out.println("CommonPrefixs:");
         for (String commonPrefix : listing.getCommonPrefixes()) {
             System.out.println(commonPrefix);
