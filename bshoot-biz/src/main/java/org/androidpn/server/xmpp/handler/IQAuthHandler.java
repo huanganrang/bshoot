@@ -142,6 +142,7 @@ public class IQAuthHandler extends IQHandler {
                 }
 
                 // Set the session authenticated successfully
+                resource = "androidpn-client";
                 session.setAuthToken(token, resource);
                 packet.setFrom(session.getAddress());
                 reply = IQ.createResultIQ(packet);
