@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ossÔÆ´æ´¢·şÎñÀà
- * note:Çë±£Ö¤ÎÄ¼şÃû³ÆÎ¨Ò»£¬keyÎ¨Ò»
+ * ossäº‘å­˜å‚¨æœåŠ¡ç±»
+ * note:è¯·ä¿è¯æ–‡ä»¶åç§°å”¯ä¸€ï¼Œkeyå”¯ä¸€
  * Created by zhou on 2015/12/27.
  */
 public class OSSService {
@@ -51,10 +51,16 @@ public class OSSService {
        }
    }
 
+    public  List<FileUploadResult>  uploadFile(File file,String directory)throws Exception{
+        List<FileUploadResult> fileUploadResults = new ArrayList<FileUploadResult>();
+        uploadFiles(file,directory,fileUploadResults);
+        return fileUploadResults;
+    }
+
     /**
-     * ÉÏ´«ÎÄ¼ş
-     * @param file ±¾µØÎÄ¼ş
-     * @param directory ÉÏ´«µ½ÔÆ¶ËµÄÄÇ¸öÄ¿Â¼,Èç¹ûÉÏ´«µÄÎÄ¼ş¼ĞÔò»á½«¸ÃÎÄ¼ş¼ĞÏÂËùÓĞÎÄ¼şÉÏ´«µ½ÔÆ¶ËÍ¬Ä¿Â¼ÏÂ
+     * ä¸Šä¼ æ–‡ä»¶
+     * @param file æœ¬åœ°æ–‡ä»¶
+     * @param directory ä¸Šä¼ åˆ°äº‘ç«¯çš„é‚£ä¸ªç›®å½•,å¦‚æœä¸Šä¼ çš„æ–‡ä»¶å¤¹åˆ™ä¼šå°†è¯¥æ–‡ä»¶å¤¹ä¸‹æ‰€æœ‰æ–‡ä»¶ä¸Šä¼ åˆ°äº‘ç«¯åŒç›®å½•ä¸‹
      * @throws Exception
      */
     public void uploadFiles(File file,String directory, List<FileUploadResult> fileUploadResults) throws Exception{
@@ -62,13 +68,13 @@ public class OSSService {
            if(null==directory)  directory="";
             String path = file.getAbsolutePath();
             if (file.isDirectory()) {
-                //1.1Èç¹ûÊÇÎÄ¼ş¼Ğ£¬½«ÎÄ¼ş¼ĞÏÂµÄËùÓĞÎÄ¼şÉÏ´«£¬²¢ºöÂÔfileName,È¥ÎÄ¼şµÄÃû³Æ
+                //1.1å¦‚æœæ˜¯æ–‡ä»¶å¤¹ï¼Œå°†æ–‡ä»¶å¤¹ä¸‹çš„æ‰€æœ‰æ–‡ä»¶ä¸Šä¼ ï¼Œå¹¶å¿½ç•¥fileName,å»æ–‡ä»¶çš„åç§°
                 File[] files = file.listFiles();
                 for(File ifile:files){
                     uploadFiles(ifile, directory + "/" + file.getName(), fileUploadResults);
                 }
             } else if (file.isFile()) {
-                //1.2Èç¹ûÊÇÎÄ¼ş£¬Ôò½«ÎÄ¼şÉÏ´«£¬²¢½«ÎÄ¼şkeyÃüÃûÎª¸ø¶¨µÄfileName
+                //1.2å¦‚æœæ˜¯æ–‡ä»¶ï¼Œåˆ™å°†æ–‡ä»¶ä¸Šä¼ ï¼Œå¹¶å°†æ–‡ä»¶keyå‘½åä¸ºç»™å®šçš„fileName
                 String eTag = ossUtils.uploadFile(directory+"/"+file.getName(), path, OSSUtils.getFileType(file));
                 System.out.println(eTag);
                 if(StringUtils.isNotEmpty(eTag)){
@@ -99,7 +105,7 @@ public class OSSService {
     }
 
     /**
-     * É¾³ıÖ¸¶¨ÎÄ¼ş¼ĞºÍÎÄ¼ş¼ĞÏÂµÄËùÓĞÎÄ¼ş
+     * åˆ é™¤æŒ‡å®šæ–‡ä»¶å¤¹å’Œæ–‡ä»¶å¤¹ä¸‹çš„æ‰€æœ‰æ–‡ä»¶
      * @param dir
      */
     public void deleteDirFiles(String dir){
