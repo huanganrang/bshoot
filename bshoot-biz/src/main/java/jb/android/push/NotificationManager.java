@@ -17,6 +17,7 @@
  */
 package jb.android.push;
 
+import org.androidpn.server.xmpp.XmppServer;
 import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.SessionManager;
 import org.apache.commons.logging.Log;
@@ -25,6 +26,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.QName;
 import org.xmpp.packet.IQ;
+import org.xmpp.packet.JID;
 
 import java.util.Random;
 
@@ -88,7 +90,18 @@ public class NotificationManager {
             }
         }
     }
-    
+    public void sendNotifcationToUser(String username,String message) {
+        log.debug("sendNotifcationToUser()...");
+        IQ notificationIQ = createNotificationIQ("1234567890", "title",message, "uri");
+        JID jid = new JID(username, XmppServer.getInstance().getServerName(), "androidpn-client", true);
+        ClientSession session = sessionManager.getSession(jid);
+        if (session != null) {
+            if (session.getPresence().isAvailable()) {
+                notificationIQ.setTo(session.getAddress());
+                session.deliver(notificationIQ);
+            }
+        }
+    }
     public void sendNotifcationToSession(String apiKey, String username,
             String title, String message, String uri,ClientSession[] sessions) {
         log.debug("sendNotifcationToUser()...");

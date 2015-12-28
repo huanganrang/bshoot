@@ -38,13 +38,7 @@ public class MessageCenterController extends BaseController {
         try {
             NotificationManager notificationManager = (NotificationManager) XmppServer
                     .getInstance().getBean("notificationManager");
-            JID jid = new JID(userId, XmppServer.getInstance().getServerName(), "androidpn-client", true);
-            ClientSession clientSession = SessionManager.getInstance().getSession(jid);
-            Set<ClientSession> sessions = new HashSet<ClientSession>();
-            sessions.add(clientSession);
-            notificationManager.sendNotifcationToSession("1234567890", "test", "title", content,
-                    "uri",
-                    sessions.toArray(new ClientSession[sessions.size()]));
+            notificationManager.sendNotifcationToUser(userId,content);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
