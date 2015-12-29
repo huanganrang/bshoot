@@ -1,7 +1,6 @@
 package solr.common;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.log4j.Logger;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -9,12 +8,12 @@ import java.net.NetworkInterface;
 import java.util.*;
 
 /**
- * 
+ *
  */
 public class SystemUtils {
 	/**
 	 * 打印异常的堆栈信息
-	 * 
+	 *
 	 * @param exception
 	 *            异常
 	 * @return 异常的堆栈信息
@@ -56,7 +55,7 @@ public class SystemUtils {
 
 	/**
 	 * solr值规范化
-	 * 
+	 *
 	 * @param value
 	 * @return
 	 */
@@ -68,7 +67,7 @@ public class SystemUtils {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param list
 	 * @param pageSize
 	 * @return
@@ -78,7 +77,7 @@ public class SystemUtils {
 		int page = (listSize + (pageSize - 1)) / pageSize; // 页数
 
 		List<List<T>> listArray = new LinkedList<List<T>>(); // 创建list数组
-																// ,用来保存分割后的list
+		// ,用来保存分割后的list
 		for (int i = 0; i < page; i++) { // 按照数组大小遍历
 			List<T> subList = new LinkedList<T>(); // 数组每一位放入一个分割后的list
 			for (int j = 0; j < listSize; j++) { // 遍历待分割的list
@@ -117,7 +116,7 @@ public class SystemUtils {
 
 	/**
 	 * 判断是用户index的还是search的中间件
-	 * 
+	 *
 	 * @return
 	 */
 	public static boolean forQuery(String forQuery) {
@@ -128,7 +127,7 @@ public class SystemUtils {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param json
 	 */
 	public static String wrapSolrClusterJson(String json) {

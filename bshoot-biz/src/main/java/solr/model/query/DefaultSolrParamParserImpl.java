@@ -1,9 +1,8 @@
-package solr.model;
+package solr.model.query;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
-import solr.query.FakeSolrParam;
 
 /**
  * solr查询参数解析类
@@ -29,18 +28,19 @@ public class DefaultSolrParamParserImpl implements SolrParamParser{
 
         if(CollectionUtils.isNotEmpty(param.getFq())){
             String[] fq = new String[param.getFq().size()];
-            solrQuery.addFilterQuery();
+            solrQuery.addFilterQuery(fq);
         }
 
         if(param.getLocation()!=null){
             FakeSolrParam.Location location = param.getLocation();
-            solrQuery.setParam("pt",location.getLocate());
+            solrQuery.setParam("pt",location.getVale());
             solrQuery.setParam("sfield",location.getField());
-            if(location.getDistance()>0){
-                solrQuery.setParam("fq","{!geofilt}");//设置距离过滤函数
+
+            if (location.getDistance() > 0) {
+                solrQuery.setParam("fq", "{!geofilt}");// 距离过滤函数
                 solrQuery.setParam("d",String.valueOf(location.getDistance()));
             }
-            solrQuery.setParam("sort","geodist()"+location.getSortType());//设置距离排序
+            solrQuery.setParam("sort", "geodist() " + location.getSort());// 根据距离排序
         }
 
         if(param.getOt()==1){

@@ -1,4 +1,6 @@
-package solr.query;
+package solr.model.query;
+
+import solr.model.criteria.Restrictions;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class FakeSolrParam implements Serializable{
     private int ot;// 默认排序条件 1:自定义排序 0:默认排序
     private int start=0;//开始位置
     private int rows = 20;//返回记录数
-    private Map<String,Object> location;//地理位置
+    private Location location;//地理位置
     private List<String> facetFieldList = new ArrayList<String>();//统计字段
     private List<String> facetSearchList = new ArrayList<String>();//统计查询条件
     private List<String> groupDesc = new ArrayList<String>();
@@ -117,14 +119,6 @@ public class FakeSolrParam implements Serializable{
         this.rows = rows;
     }
 
-    public Map<String, Object> getLocation() {
-        return location;
-    }
-
-    public void setLocation(Map<String, Object> location) {
-        this.location = location;
-    }
-
     public List<String> getFacetFieldList() {
         return facetFieldList;
     }
@@ -139,5 +133,93 @@ public class FakeSolrParam implements Serializable{
 
     public void setFacetSearchList(List<String> facetSearchList) {
         this.facetSearchList = facetSearchList;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public Restrictions createRestrictions(){
+        return new Restrictions(this);
+    }
+
+    @Override
+    public String toString() {
+        return "FakeSolrParam{" +
+                "fq=" + fq +
+                ", sortAsc=" + sortAsc +
+                ", sortDesc=" + sortDesc +
+                ", format='" + format + '\'' +
+                ", fl=" + fl +
+                ", qc='" + qc + '\'' +
+                ", qt='" + qt + '\'' +
+                ", ot=" + ot +
+                ", start=" + start +
+                ", rows=" + rows +
+                ", location=" + location +
+                ", facetFieldList=" + facetFieldList +
+                ", facetSearchList=" + facetSearchList +
+                ", groupDesc=" + groupDesc +
+                '}';
+    }
+
+   public static class Location{
+        private String field;//距离字段
+        private String vale;//经纬度(维度-经度)，如：23.156,113.25
+        private float distance=1;//该经纬度附件多少公里,默认1公里
+        private String sort = SORT_ASC;//距离排序字段，默认升序
+
+       public Location(String field, String vale, float distance, String sort) {
+           this.field = field;
+           this.vale = vale;
+           this.distance = distance;
+           this.sort = sort;
+       }
+
+       public String getField() {
+            return field;
+        }
+
+        public void setField(String field) {
+            this.field = field;
+        }
+
+        public String getVale() {
+            return vale;
+        }
+
+        public void setVale(String vale) {
+            this.vale = vale;
+        }
+
+       public float getDistance() {
+           return distance;
+       }
+
+       public void setDistance(float distance) {
+           this.distance = distance;
+       }
+
+       public String getSort() {
+            return sort;
+        }
+
+        public void setSort(String sort) {
+            this.sort = sort;
+        }
+
+        @Override
+        public String toString() {
+            return "Location{" +
+                    "field='" + field + '\'' +
+                    ", vale='" + vale + '\'' +
+                    ", distance=" + distance +
+                    ", sort='" + sort + '\'' +
+                    '}';
+        }
     }
 }

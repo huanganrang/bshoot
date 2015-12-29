@@ -22,75 +22,52 @@
  * Boston, MA  02110-1301  USA
  *
  */
-package solr.query.criterion;
+package solr.model.criteria;
 
 import org.apache.commons.lang.StringUtils;
 import solr.Exception.SearchException;
-import solr.query.FakeSolrParam;
+import solr.model.query.FakeSolrParam;
 
 /**
  * 排序
  */
-public class Order implements Criterion {
+public class Group implements Expression {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2572216777384185737L;
-	private String ascending;
 	private String field;
 
 	@Override
 	public String toString() {
-		return "Order [ascending=" + ascending + ", field=" + field + "]";
+		return "Group [field=" + field + "]";
 	}
 
 	/**
 	 * Constructor for Order.
 	 */
-	protected Order(String field, String ascending) {
+	protected Group(String field) {
 		if (StringUtils.isBlank(field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
 		this.field = field;
-		this.ascending = ascending;
 	}
 
-	/**
-	 * Ascending order
-	 *
-	 * @param field
-	 * @return Order
-	 */
-	public static Order asc(String field) {
-		return new Order(field, "asc");
-	}
-
-	/**
-	 * Descending order
-	 *
-	 * @param field
-	 * @return Order
-	 */
-	public static Order desc(String field) {
-		return new Order(field, "desc");
-	}
-
-	public String getAscending() {
-		return ascending;
+	public static Group addGroupField(String field) {
+		return new Group(field);
 	}
 
 	public String getField() {
 		return field;
 	}
 
-	public String toQueryString(FakeSolrParam param) throws SearchException {
-		if (StringUtils.equalsIgnoreCase(this.ascending, "asc")) {
-			param.getSortAsc().add(this.field);
-		} else if (StringUtils.equalsIgnoreCase(this.ascending, "desc")) {
-			param.getSortDesc().add(this.field);
-		}
-		String query = this.field + " " + this.ascending;
-		return query;
+	public String setField() {
+		return field;
+	}
+
+	public String parse(FakeSolrParam param) throws SearchException {
+		param.getGroupDesc().add(field);
+		return field;
 	}
 }

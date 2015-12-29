@@ -1,7 +1,7 @@
-package solr.query.criterion;
+package solr.model.criteria;
 import solr.Exception.SearchException;
 import solr.common.SystemUtils;
-import solr.query.FakeSolrParam;
+import solr.model.query.FakeSolrParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,19 +9,19 @@ import java.util.List;
 /**
  * 各种逻辑查询的组合
  */
-public class LogicalExpression extends DefaultCriterionImpl {
+public class LogicalExpression implements Expression {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -9172408676695825541L;
 	private final LogicalExpEnum op; // 符合 OR 或者其他
-	private List<Criterion> criterions = new ArrayList<Criterion>();
+	private List<Expression> criterions = new ArrayList<Expression>();
 	boolean isSameField = false; //是否为同意field的多逻辑组合
 	private String field;
 	private List<String> values;
 
-	protected LogicalExpression(List<Criterion> criterions, LogicalExpEnum op, boolean isSameField) {
+	protected LogicalExpression(List<Expression> criterions, LogicalExpEnum op, boolean isSameField) {
 		this.criterions = criterions;
 		this.op = op;
 		this.isSameField = isSameField;
@@ -37,11 +37,11 @@ public class LogicalExpression extends DefaultCriterionImpl {
 	}
 
 	@Override
-	public String toQueryString(FakeSolrParam param) throws SearchException {
+	public String parse(FakeSolrParam param) throws SearchException {
 		StringBuilder query = new StringBuilder("");
 		if (isSameField) {// 如果是同一filed的话 就对value进行or组合
 			int count = 0;
-			query.append(this.noCacheStat(this.field) + this.field + ":(");
+			query.append(this.field + ":(");
 			for (String v : values) {
 				query.append(SystemUtils.solrStringTrasfer(v));
 				if (count < (values.size() - 1)) {
@@ -52,8 +52,8 @@ public class LogicalExpression extends DefaultCriterionImpl {
 			query.append(")");
 		} else {// 如果是不同field的组合的话要分开出来
 			int count = 0;
-			for (Criterion cr : criterions) {
-				query.append("(" + cr.toQueryString(new FakeSolrParam()) + ")");
+			for (Expression cr : criterions) {
+				query.append("(" + cr.parse(new FakeSolrParam()) + ")");
 				if (count < (criterions.size() - 1)) {
 					query.append(op.getQop());
 				}

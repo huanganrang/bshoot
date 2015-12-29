@@ -1,5 +1,8 @@
-package solr.query.criterion;
+package solr.model.criteria;
+
+
 import org.apache.commons.lang.StringUtils;
+import solr.model.query.FakeSolrParam;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +14,12 @@ import java.util.List;
  */
 public class Restrictions {
 
+	private FakeSolrParam fakeSolrParam;
+
+	public Restrictions(FakeSolrParam fakeSolrParam) {
+		this.fakeSolrParam = fakeSolrParam;
+	}
+
 	/**
 	 * equal
 	 * 
@@ -18,11 +27,13 @@ public class Restrictions {
 	 * @param value
 	 * @return Criterion
 	 */
-	public static SimpleExpression eq(String Field, String value) {
+	public Expression eq(String Field, String value) {
 		if (StringUtils.isBlank(Field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
-		return new SimpleExpression(Field, value, "=");
+		Expression expression = new SimpleExpression(Field, value, "=");
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
@@ -32,11 +43,13 @@ public class Restrictions {
 	 * @param value
 	 * @return Criterion
 	 */
-	public static SimpleExpression ne(String Field, String value) {
+	public Expression ne(String Field, String value) {
 		if (StringUtils.isBlank(Field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
-		return new SimpleExpression(Field, value, "<>");
+		Expression expression =new SimpleExpression(Field, value, "<>");
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
@@ -46,11 +59,13 @@ public class Restrictions {
 	 * @param value
 	 * @return Criterion
 	 */
-	public static SimpleExpression gt(String Field, String value) {
+	public Expression gt(String Field, String value) {
 		if (StringUtils.isBlank(Field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
-		return new SimpleExpression(Field, value, ">");
+		Expression expression =  new SimpleExpression(Field, value, ">");
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
@@ -60,11 +75,13 @@ public class Restrictions {
 	 * @param value
 	 * @return Criterion
 	 */
-	public static SimpleExpression lt(String Field, String value) {
+	public Expression lt(String Field, String value) {
 		if (StringUtils.isBlank(Field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
-		return new SimpleExpression(Field, value, "<");
+		Expression expression = new SimpleExpression(Field, value, "<");
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
@@ -74,11 +91,13 @@ public class Restrictions {
 	 * @param value
 	 * @return Criterion
 	 */
-	public static SimpleExpression le(String Field, String value) {
+	public Expression le(String Field, String value) {
 		if (StringUtils.isBlank(Field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
-		return new SimpleExpression(Field, value, "<=");
+		Expression expression = new SimpleExpression(Field, value, "<=");
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
@@ -88,11 +107,13 @@ public class Restrictions {
 	 * @param value
 	 * @return Criterion
 	 */
-	public static SimpleExpression ge(String Field, String value) {
+	public Expression ge(String Field, String value) {
 		if (StringUtils.isBlank(Field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
-		return new SimpleExpression(Field, value, ">=");
+		Expression expression = new SimpleExpression(Field, value, ">=");
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
@@ -102,11 +123,13 @@ public class Restrictions {
 	 * @param value
 	 * @return
 	 */
-	public static SimpleExpression sl(String Field, String value) {
+	public Expression sl(String Field, String value) {
 		if (StringUtils.isBlank(Field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
-		return new SimpleExpression(Field, value, "v%");
+		Expression expression = new SimpleExpression(Field, value, "v%");
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
@@ -116,11 +139,13 @@ public class Restrictions {
 	 * @param value
 	 * @return
 	 */
-	public static SimpleExpression pl(String Field, String value) {
+	public Expression pl(String Field, String value) {
 		if (StringUtils.isBlank(Field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
-		return new SimpleExpression(Field, value, "%v");
+		Expression expression =  new SimpleExpression(Field, value, "%v");
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
@@ -130,11 +155,13 @@ public class Restrictions {
 	 * @param value
 	 * @return
 	 */
-	public static SimpleExpression ml(String Field, String value) {
+	public Expression ml(String Field, String value) {
 		if (StringUtils.isBlank(Field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
-		return new SimpleExpression(Field, value, "%v%");
+		Expression expression = new SimpleExpression(Field, value, "%v%");
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
@@ -142,18 +169,22 @@ public class Restrictions {
 	 *
 	 * @return Criterion
 	 */
-	public static NotExpression not(Criterion c) {
-		return new NotExpression(c);
+	public Expression not(Expression c) {
+		Expression expression = new NotExpression(c);
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
 	 * 全文搜索
-	 *
+	 * 
 	 * @param value
 	 * @return Criterion
 	 */
-	public static QCExpression ftr(String value) {
-		return new QCExpression(value);
+	public Expression ftr(String value) {
+		Expression expression = new QCExpression(value);
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
@@ -166,11 +197,13 @@ public class Restrictions {
 	 *            value
 	 * @return Criterion
 	 */
-	public static Criterion between(String Field, String lo, String hi) {
+	public  Expression between(String Field, String lo, String hi) {
 		if (StringUtils.isBlank(Field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
-		return new BetweenExpression(Field, lo, hi);
+		Expression expression = new BetweenExpression(Field, lo, hi);
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
@@ -179,24 +212,28 @@ public class Restrictions {
 	 * @param l
 	 * @return
 	 */
-	public static LogicalExpression or(Criterion... l) {
+	public Expression or(Expression... l) {
 		if (l == null || l.length <= 1) {
 			throw new IllegalArgumentException(
 					"'Criterion' can not be null! and size of Criterion must be great than 1!");
 		}
-		List<Criterion> list = new ArrayList<Criterion>();
-		for (Criterion criterion : l) {
+		List<Expression> list = new ArrayList<Expression>();
+		for (Expression criterion : l) {
 			list.add(criterion);
 		}
-		return new LogicalExpression(list, LogicalExpEnum.OR, false);
+		Expression expression = new LogicalExpression(list, LogicalExpEnum.OR, false);
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
-	public static LogicalExpression or(List<Criterion> list) {
+	public Expression or(List<Expression> list) {
 		if (list == null || list.size() <= 1) {
 			throw new IllegalArgumentException(
 					"'Criterion' can not be null! and size of Criterion must be great than 1!");
 		}
-		return new LogicalExpression(list, LogicalExpEnum.OR, false);
+		Expression expression = new LogicalExpression(list, LogicalExpEnum.OR, false);
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
@@ -204,7 +241,7 @@ public class Restrictions {
 	 *
 	 * @return Criterion
 	 */
-	public static LogicalExpression or(String field, String... values) {
+	public Expression or(String field, String... values) {
 		if (StringUtils.isBlank(field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
@@ -217,14 +254,17 @@ public class Restrictions {
 				list.add(v);
 			}
 		}
-		return new LogicalExpression(field, list, LogicalExpEnum.OR, true);
+		Expression expression = new LogicalExpression(field, list, LogicalExpEnum.OR, true);
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
 	/**
 	 * field1:v1 OR v2 OR......)
+	 *
 	 * @return Criterion
 	 */
-	public static LogicalExpression or(String field, Collection<String> values) {
+	public Expression or(String field, Collection<String> values) {
 		if (StringUtils.isBlank(field)) {
 			throw new IllegalArgumentException("'Field' can not be empty!");
 		}
@@ -237,26 +277,32 @@ public class Restrictions {
 				list.add(v);
 			}
 		}
-		return new LogicalExpression(field, list, LogicalExpEnum.OR, true);
+		Expression expression = new LogicalExpression(field, list, LogicalExpEnum.OR, true);
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
-	public static LogicalExpression and(Criterion... l) {
+	public Expression and(Expression... l) {
 		if (l == null || l.length <= 1) {
 			throw new IllegalArgumentException(
 					"'Criterion' can not be null! and size of Criterion must be great than 1!");
 		}
-		List<Criterion> list = new ArrayList<Criterion>();
-		for (Criterion criterion : l) {
+		List<Expression> list = new ArrayList<Expression>();
+		for (Expression criterion : l) {
 			list.add(criterion);
 		}
-		return new LogicalExpression(list, LogicalExpEnum.AND, false);
+		Expression expression = new LogicalExpression(list, LogicalExpEnum.AND, false);
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 
-	public static LogicalExpression and(List<Criterion> list) {
+	public Expression and(List<Expression> list) {
 		if (list == null || list.size() <= 1) {
 			throw new IllegalArgumentException(
 					"'Criterion' can not be null! and size of Criterion must be great than 1!");
 		}
-		return new LogicalExpression(list, LogicalExpEnum.AND, false);
+		Expression expression = new LogicalExpression(list, LogicalExpEnum.AND, false);
+		expression.parse(fakeSolrParam);
+		return expression;
 	}
 }

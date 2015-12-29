@@ -22,19 +22,13 @@
  * Boston, MA  02110-1301  USA
  *
  */
-package solr.query.criterion;
+package solr.model.criteria;
 
 import org.apache.commons.lang.StringUtils;
 import solr.Exception.SearchException;
-import solr.query.FakeSolrParam;
+import solr.model.query.FakeSolrParam;
 
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * 地理位置
- */
-public class Location implements Criterion {
+public class Location implements Expression {
 
 	/**
 	 * 
@@ -143,14 +137,9 @@ public class Location implements Criterion {
 		this.sort = sort;
 	}
 
-	public String toQueryString(FakeSolrParam param) throws SearchException {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("field", this.field);
-		map.put("value", this.value);
-		map.put("distance", this.distance);
-		map.put("sort", this.sort);
-		param.setLocation(map);
-
+	public String parse(FakeSolrParam param) throws SearchException {
+		FakeSolrParam.Location location = new FakeSolrParam.Location(this.field,this.value,this.distance,this.sort);
+		param.setLocation(location);
 		return "sfield:" + field + " pt:" + value + " " + " d:" + distance + " " + " sort:" + sort;
 	}
 }
