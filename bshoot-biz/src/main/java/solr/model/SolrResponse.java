@@ -14,7 +14,7 @@ public class SolrResponse<T> {
     private long qTime;//耗时
     private long numFound;//找到多少个文档
 
-    public List<T> getDocs() {
+    public List getDocs() {
         return docs;
     }
 

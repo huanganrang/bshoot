@@ -11,4 +11,7 @@ public enum  CoreEnum {
     CoreEnum(String coreName) {
         this.coreName = coreName;
     }
+    public String getValue(){
+        return coreName;
+    }
 }
