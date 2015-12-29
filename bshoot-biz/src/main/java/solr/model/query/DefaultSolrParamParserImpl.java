@@ -3,11 +3,13 @@ package solr.model.query;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.springframework.stereotype.Service;
 
 /**
  * solr查询参数解析类
  * Created by zhou on 2015/12/28.
  */
+@Service
 public class DefaultSolrParamParserImpl implements SolrParamParser{
     public SolrQuery parser(FakeSolrParam param) {
         SolrQuery solrQuery = new SolrQuery();
@@ -35,7 +37,12 @@ public class DefaultSolrParamParserImpl implements SolrParamParser{
                 solrQuery.setParam("fq", "{!geofilt}");// 距离过滤函数
                 solrQuery.setParam("d",String.valueOf(location.getDistance()));
             }
-            solrQuery.setParam("sort", "geodist() " + location.getSort());// 根据距离排序
+            if(null!=location.getSort()) {
+                if (location.getSort().equals(SolrQuery.ORDER.asc.name()))
+                    solrQuery.addSort("geodist() ", SolrQuery.ORDER.asc);// 根据距离排序
+                else if (location.getSort().equals(SolrQuery.ORDER.desc.name()))
+                    solrQuery.addSort("geodist() ", SolrQuery.ORDER.desc);
+            }
         }
 
         if(CollectionUtils.isNotEmpty(param.getFq())){
@@ -72,6 +79,7 @@ public class DefaultSolrParamParserImpl implements SolrParamParser{
         solrQuery.setParam("wt",param.getFormat());
         solrQuery.setStart(param.getStart());
         solrQuery.setRows(param.getRows());
+        System.out.println("the solr query is:"+solrQuery);
         return solrQuery;
     }
 }

@@ -172,7 +172,7 @@ public class FakeSolrParam implements Serializable{
         private String field;//距离字段
         private String vale;//经纬度(维度-经度)，如：23.156,113.25
         private float distance=1;//该经纬度附件多少公里,默认1公里
-        private String sort = SORT_ASC;//距离排序字段，默认升序
+        private String sort;//距离排序字段
 
        public Location(String field, String vale, float distance, String sort) {
            this.field = field;

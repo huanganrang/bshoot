@@ -31,7 +31,7 @@ public class BetweenExpression implements Expression{
     public String parse(FakeSolrParam fakeSolrParam) throws SearchException {
         lo = SystemUtils.solrStringTrasfer(this.lo);
         hi = SystemUtils.solrStringTrasfer(this.hi);
-        String query = this.field+"["+lo+" TO "+hi+"]";
+        String query = this.field+":["+lo+" TO "+hi+"]";
         fakeSolrParam.getFq().add(query);
         return query;
     }
