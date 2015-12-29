@@ -11,7 +11,7 @@ public class QCExpression implements Expression{
     private String value;
 
     public QCExpression(String value) {
-        value = value;
+        this.value = value;
     }
 
     public String getValue() {

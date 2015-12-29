@@ -26,11 +26,6 @@ public class DefaultSolrParamParserImpl implements SolrParamParser{
             solrQuery.setFields(fl);
         }
 
-        if(CollectionUtils.isNotEmpty(param.getFq())){
-            String[] fq = new String[param.getFq().size()];
-            solrQuery.addFilterQuery(fq);
-        }
-
         if(param.getLocation()!=null){
             FakeSolrParam.Location location = param.getLocation();
             solrQuery.setParam("pt",location.getVale());
@@ -41,6 +36,12 @@ public class DefaultSolrParamParserImpl implements SolrParamParser{
                 solrQuery.setParam("d",String.valueOf(location.getDistance()));
             }
             solrQuery.setParam("sort", "geodist() " + location.getSort());// 根据距离排序
+        }
+
+        if(CollectionUtils.isNotEmpty(param.getFq())){
+            String[] fq = new String[param.getFq().size()];
+            param.getFq().toArray(fq);
+            solrQuery.addFilterQuery(fq);
         }
 
         if(param.getOt()==1){
@@ -68,7 +69,7 @@ public class DefaultSolrParamParserImpl implements SolrParamParser{
                 solrQuery.setParam("group.field", f);
             }
         }
-
+        solrQuery.setParam("wt",param.getFormat());
         solrQuery.setStart(param.getStart());
         solrQuery.setRows(param.getRows());
         return solrQuery;

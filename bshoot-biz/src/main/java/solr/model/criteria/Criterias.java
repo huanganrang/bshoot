@@ -12,11 +12,11 @@ import java.util.List;
  * 限制条件辅助类
  * 
  */
-public class Restrictions {
+public class Criterias {
 
 	private FakeSolrParam fakeSolrParam;
 
-	public Restrictions(FakeSolrParam fakeSolrParam) {
+	public Criterias(FakeSolrParam fakeSolrParam) {
 		this.fakeSolrParam = fakeSolrParam;
 	}
 
@@ -197,11 +197,11 @@ public class Restrictions {
 	 *            value
 	 * @return Criterion
 	 */
-	public  Expression between(String Field, String lo, String hi) {
-		if (StringUtils.isBlank(Field)) {
-			throw new IllegalArgumentException("'Field' can not be empty!");
+	public  Expression between(String field, String lo, String hi) {
+		if (StringUtils.isBlank(field)) {
+			throw new IllegalArgumentException("'field' can not be empty!");
 		}
-		Expression expression = new BetweenExpression(Field, lo, hi);
+		Expression expression = new BetweenExpression(field, lo, hi);
 		expression.parse(fakeSolrParam);
 		return expression;
 	}
@@ -308,6 +308,7 @@ public class Restrictions {
 
 	public Expression addOrder(String field,String ascending){
 		Expression expression = new Order(field,ascending);
+		fakeSolrParam.setOt(1);//设置为自定义排序
 		expression.parse(fakeSolrParam);
 		return expression;
 	}
@@ -322,5 +323,14 @@ public class Restrictions {
 		Expression expression = new Location(field,value,distance,sort);
 		expression.parse(fakeSolrParam);
 		return expression;
+	}
+
+	public void addField(String... fields){
+		for(String f:fields)
+			fakeSolrParam.getFl().add(f);
+	}
+
+	public void setFormat(String format){
+		fakeSolrParam.setFormat(format);
 	}
 }

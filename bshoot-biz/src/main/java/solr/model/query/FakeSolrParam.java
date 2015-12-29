@@ -1,12 +1,10 @@
 package solr.model.query;
 
-import solr.model.criteria.Restrictions;
+import solr.model.criteria.Criterias;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * solr参数包装类
@@ -15,12 +13,15 @@ import java.util.Map;
 public class FakeSolrParam implements Serializable{
     public static final String SORT_ASC="asc";
     public static final String SORT_DESC="desc";
+    public static final String FORMAT_JSON="json";
+    public static final String FORMAT_XML="xml";
+    public static final String FORMAT_CSV="csv";
 
     private List<String> fq = new ArrayList<String>();//过滤查询条件
     private List<String> sortAsc = new ArrayList<String>();//升序字段
     private List<String> sortDesc = new ArrayList<String>();//降序字段
-    private String format;//返回数据格式，json/xml/ruby..
-    private List<String> fl;//查询返回的字段
+    private String format="json";//返回数据格式，json/xml/ruby..
+    private List<String> fl = new ArrayList<String>();//查询返回的字段
     private String qc;//查询条件
     private String qt;//查询类型，默认stanard
     private int ot;// 默认排序条件 1:自定义排序 0:默认排序
@@ -143,8 +144,8 @@ public class FakeSolrParam implements Serializable{
         this.location = location;
     }
 
-    public Restrictions createRestrictions(){
-        return new Restrictions(this);
+    public Criterias createCriterias(){
+        return new Criterias(this);
     }
 
     @Override
