@@ -181,7 +181,7 @@ public class Restrictions {
 	 * @param value
 	 * @return Criterion
 	 */
-	public Expression ftr(String value) {
+	public Expression qc(String value) {
 		Expression expression = new QCExpression(value);
 		expression.parse(fakeSolrParam);
 		return expression;
@@ -302,6 +302,24 @@ public class Restrictions {
 					"'Criterion' can not be null! and size of Criterion must be great than 1!");
 		}
 		Expression expression = new LogicalExpression(list, LogicalExpEnum.AND, false);
+		expression.parse(fakeSolrParam);
+		return expression;
+	}
+
+	public Expression addOrder(String field,String ascending){
+		Expression expression = new Order(field,ascending);
+		expression.parse(fakeSolrParam);
+		return expression;
+	}
+
+	public Expression addGroup(String field){
+		Expression expression = new Group(field);
+		expression.parse(fakeSolrParam);
+		return expression;
+	}
+
+	public Expression addLocation(String field,String value,float distance,String sort){
+		Expression expression = new Location(field,value,distance,sort);
 		expression.parse(fakeSolrParam);
 		return expression;
 	}
