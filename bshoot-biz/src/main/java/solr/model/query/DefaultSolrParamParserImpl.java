@@ -79,7 +79,7 @@ public class DefaultSolrParamParserImpl implements SolrParamParser{
         solrQuery.setParam("wt",param.getFormat());
         solrQuery.setStart(param.getStart());
         solrQuery.setRows(param.getRows());
-        System.out.println("the solr service is:"+solrQuery);
+        System.out.println("the solr query is:"+solrQuery);
         return solrQuery;
     }
 }

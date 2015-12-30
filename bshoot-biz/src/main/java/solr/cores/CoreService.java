@@ -1,9 +1,11 @@
 package solr.cores;
 
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
 import solr.model.SolrResponse;
 import solr.model.query.FakeSolrParam;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,4 +31,9 @@ public interface CoreService {
 
     public<T> SolrResponse addEntity(T entity);
     public<T> SolrResponse addEntities(List<T> entities);
+
+    public SolrResponse deleteByQuery(String param);
+    public SolrResponse deleteById(String... ids);
+
+    public void commit(boolean isAutoCommit) throws IOException, SolrServerException;
 }

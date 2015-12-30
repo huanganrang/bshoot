@@ -2,29 +2,22 @@ package solr.cores;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
-import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import solr.Exception.SearchException;
-import solr.common.SearchClient;
-import solr.model.BsEntity;
 import solr.model.CoreEnum;
 import solr.model.SolrDocConvertor;
 import solr.model.SolrResponse;
 import solr.model.query.FakeSolrParam;
 import solr.model.query.SolrParamParser;
-
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -84,8 +77,7 @@ public class AbstractCoreService implements   CoreService{
         }
         try {
             UpdateResponse response = solrServer.add(document);
-            if(isAutoCommit)
-            solrServer.commit();
+            commit(isAutoCommit);
             return this.updateResponse(response);
         } catch (SolrServerException e) {
             e.printStackTrace();
@@ -103,8 +95,7 @@ public class AbstractCoreService implements   CoreService{
         }
         try {
             UpdateResponse response = solrServer.add(documents.iterator());
-            if(isAutoCommit)
-            solrServer.commit();
+            commit(isAutoCommit);
             return this.updateResponse(response);
         } catch (SolrServerException e) {
             e.printStackTrace();
@@ -152,6 +143,46 @@ public class AbstractCoreService implements   CoreService{
             e.printStackTrace();
         }
         return addDocs(solrInputDocuments);
+    }
+
+    @Override
+    public SolrResponse deleteByQuery(String param) {
+        if(StringUtils.isEmpty(param)){
+            logger.error("the param fakeSolrParam is null");
+            return null;
+        }
+        try {
+            solrServer.deleteByQuery(param);
+            commit(isAutoCommit);
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public SolrResponse deleteById(String... id) {
+        if(null==id||id.length==0){
+            logger.error("the param id is null");
+            return null;
+        }
+        try {
+            solrServer.deleteById(Lists.newArrayList(id));
+            commit(isAutoCommit);
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void commit(boolean isAutoCommit) throws IOException, SolrServerException {
+            if(isAutoCommit)
+            solrServer.commit();
     }
 
     private SolrResponse updateResponse(UpdateResponse updateResponse){

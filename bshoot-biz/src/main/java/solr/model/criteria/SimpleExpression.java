@@ -13,10 +13,10 @@ public class SimpleExpression implements Expression{
     private String op;
     private String value;
 
-    public SimpleExpression(String field, String op, String value) {
+    public SimpleExpression(String field,String value,String op) {
         this.field = field;
-        this.op = op;
         this.value = value;
+        this.op = op;
     }
 
     public String getField() {
