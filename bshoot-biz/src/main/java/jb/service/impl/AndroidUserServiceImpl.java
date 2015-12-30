@@ -1,5 +1,6 @@
 package jb.service.impl;
 
+import component.redis.service.RedisServiceImpl;
 import jb.service.UserServiceI;
 import org.androidpn.server.model.User;
 import org.androidpn.server.service.UserExistsException;
@@ -17,11 +18,12 @@ import java.util.List;
 public class AndroidUserServiceImpl implements UserService {
 	private UserServiceI userService;
 	protected SessionManager sessionManager;
-	
+	private RedisServiceImpl redisService;
 	public AndroidUserServiceImpl(){
 		sessionManager = SessionManager.getInstance();
 		WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
 		userService = wac.getBean(UserServiceI.class);
+		redisService = wac.getBean(RedisServiceImpl.class);
 	}
 
 	@Override
