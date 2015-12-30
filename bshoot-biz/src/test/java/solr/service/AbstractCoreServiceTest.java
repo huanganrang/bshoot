@@ -38,6 +38,6 @@ public class AbstractCoreServiceTest extends TestConfig {
         criterias.addField(new String[]{"id","numFound","provinceId","city","estate","suggestion"});*/
         criterias.addField(new String[]{"id","hobby","nickname"});
 
-        abstractCoreService.query(fakeSolrParam, UserEntity.class);
+        abstractCoreService.query(fakeSolrParam);
     }
 }

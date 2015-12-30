@@ -18,10 +18,10 @@ public class UserCoreServiceTest extends TestConfig{
     @Test
     public void testAddUser(){
         UserEntity userEntity  = new UserEntity();
-        userEntity.setId(8998);
+        userEntity.setId(2);
         userEntity.setNickname("234");
         userEntity.setBardian("23432");
         userEntity.setHobby(Lists.newArrayList(new String[]{"234","432","23432"}));
-        userCoreService.addUser(userEntity);
+        userCoreService.addEntity(userEntity);
     }
 }
