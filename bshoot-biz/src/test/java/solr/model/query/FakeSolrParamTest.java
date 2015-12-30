@@ -10,8 +10,7 @@ public class FakeSolrParamTest {
 
     @Test
     public void  testRestriction(){
-        FakeSolrParam fakeSolrParam = new FakeSolrParam();
-        Criterias criterias = fakeSolrParam.createCriterias();
+        Criterias criterias = new Criterias();
         criterias.qc("provinceId:2");
         criterias.between("rentPrice","3000","6000");
         criterias.or("town",new String[]{"ÕÅ½­","Ðìãþ"});
@@ -22,6 +21,6 @@ public class FakeSolrParamTest {
         criterias.setFormat(FakeSolrParam.FORMAT_CSV);
         criterias.addField(new String[]{"provinceId","city","estate","suggestion"});
         SolrParamParser solrParamParser = new DefaultSolrParamParserImpl();
-        System.out.println(solrParamParser.parser(fakeSolrParam));
+        System.out.println(solrParamParser.parser(criterias.getFakeSolrParam()));
     }
 }
