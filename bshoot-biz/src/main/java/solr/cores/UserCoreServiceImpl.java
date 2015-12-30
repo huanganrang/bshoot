@@ -20,34 +20,7 @@ import java.util.List;
 public class UserCoreServiceImpl extends AbstractCoreService implements  CoreService{
 
     public UserCoreServiceImpl() {
-        collection=CoreEnum.user.getValue();
+        coreEnum=CoreEnum.user;
         init();
-    }
-
-    public SolrResponse addUser(UserEntity userEntity){
-        try {
-            return super.addDoc(SolrDocConvertor.convert(userEntity));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public SolrResponse addUsers(List<UserEntity> userEntities){
-        List<SolrInputDocument> solrInputDocuments = Lists.newArrayList();
-        try {
-            for(UserEntity userEntity:userEntities){
-                SolrInputDocument solrInputDocument = SolrDocConvertor.convert(userEntity);
-                if(null!=solrInputDocument)
-                    solrInputDocuments.add(solrInputDocument);
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return addDoc(solrInputDocuments);
-    }
-
-    public SolrResponse<UserEntity> queryUser(FakeSolrParam solrParams){
-        return super.query(solrParams, UserEntity.class);
     }
 }

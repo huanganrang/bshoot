@@ -5,6 +5,7 @@ import solr.model.SolrResponse;
 import solr.model.query.FakeSolrParam;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * solr core操作服务类
@@ -14,15 +15,18 @@ public interface CoreService {
     /**
      * 检索
      * @param fakeSolrParam
-     * @param clazz
      * @return
      */
-    public SolrResponse query(FakeSolrParam fakeSolrParam,Class clazz);
+    public SolrResponse query(FakeSolrParam fakeSolrParam);
 
     /**
      * 增加文档
      * @param documents
      * @return
      */
-    public SolrResponse addDoc(Collection<SolrInputDocument> documents);
+    public SolrResponse addDocs(Collection<SolrInputDocument> documents);
+    public SolrResponse addDoc(SolrInputDocument document);
+
+    public<T> SolrResponse addEntity(T entity);
+    public<T> SolrResponse addEntities(List<T> entities);
 }
