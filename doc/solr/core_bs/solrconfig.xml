@@ -36,7 +36,12 @@
          affect both how text is indexed and queried.
     -->
     <luceneMatchVersion>4.9</luceneMatchVersion>
-
+    <requestHandler name="/dataimport"
+                    class="org.apache.solr.handler.dataimport.DataImportHandler">
+        <lst name="defaults">
+            <str name="config">data-config.xml</str>
+        </lst>
+    </requestHandler>
     <!-- <lib/> directives can be used to instruct Solr to load an Jars
          identified and use them to resolve any "plugins" specified in
          your solrconfig.xml or schema.xml (ie: Analyzers, Request
