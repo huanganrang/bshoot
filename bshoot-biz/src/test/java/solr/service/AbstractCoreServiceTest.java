@@ -22,13 +22,12 @@ public class AbstractCoreServiceTest extends TestConfig {
         SolrInputDocument solrInputDocument = new SolrInputDocument();
         solrInputDocument.addField("id","112");
         solrInputDocument.addField("nickname","dfsdf");
-        abstractCoreService.addDoc(solrInputDocument);
+        //abstractCoreService.addDoc(solrInputDocument);
     }
 
     @Test
     public void testQuery(){
-        FakeSolrParam fakeSolrParam = new FakeSolrParam();
-        Criterias criterias = fakeSolrParam.createCriterias();
+        Criterias criterias = new Criterias();
         criterias.qc("ida:2");
       /*  criterias.between("rentPrice","3000","6000");
         //criterias.or("town",new String[]{"张江","徐泾"});
@@ -38,6 +37,6 @@ public class AbstractCoreServiceTest extends TestConfig {
         criterias.addField(new String[]{"id","numFound","provinceId","city","estate","suggestion"});*/
         criterias.addField(new String[]{"id","hobby","nickname"});
 
-        abstractCoreService.query(fakeSolrParam);
+        abstractCoreService.query(criterias.getFakeSolrParam());
     }
 }
