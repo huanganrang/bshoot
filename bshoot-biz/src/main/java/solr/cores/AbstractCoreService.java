@@ -12,6 +12,7 @@ import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import solr.model.CoreEnum;
 import solr.model.SolrDocConvertor;
@@ -26,7 +27,7 @@ import java.util.ResourceBundle;
 /**
  * Created by zhou on 2015/12/28.
  */
-@Service
+@Component
 public class AbstractCoreService implements   CoreService{
     private Logger logger = LoggerFactory.getLogger(getClass());
     public static final String OP_SELECT="select";
@@ -70,42 +71,6 @@ public class AbstractCoreService implements   CoreService{
     }
 
     @Override
-    public SolrResponse addDoc(SolrInputDocument document){
-        if(null==document){
-            logger.error("the param document is null.");
-            return null;
-        }
-        try {
-            UpdateResponse response = solrServer.add(document);
-            commit(isAutoCommit);
-            return this.updateResponse(response);
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public SolrResponse addDocs(Collection<SolrInputDocument> documents){
-        if(CollectionUtils.isEmpty(documents)){
-            logger.error("the param documents is null.");
-            return null;
-        }
-        try {
-            UpdateResponse response = solrServer.add(documents.iterator());
-            commit(isAutoCommit);
-            return this.updateResponse(response);
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
     public SolrResponse query(FakeSolrParam fakeSolrParam){
         if(null==fakeSolrParam){
             logger.error("the param fakeSolrParam is null");
@@ -122,9 +87,17 @@ public class AbstractCoreService implements   CoreService{
 
     @Override
     public <T> SolrResponse addEntity(T entity){
+        if(null==entity){
+            logger.error("the param entity is null.");
+            return null;
+        }
         try {
-            return this.addDoc(SolrDocConvertor.convert(entity));
-        } catch (IllegalAccessException e) {
+            UpdateResponse response = solrServer.addBean(entity);
+            commit(isAutoCommit);
+            return this.updateResponse(response);
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -132,17 +105,20 @@ public class AbstractCoreService implements   CoreService{
 
     @Override
     public <T> SolrResponse addEntities(List<T> entities){
-        List<SolrInputDocument> solrInputDocuments = Lists.newArrayList();
+        if(CollectionUtils.isEmpty(entities)){
+            logger.error("the param documents is null.");
+            return null;
+        }
         try {
-            for(T entity:entities){
-                SolrInputDocument solrInputDocument = SolrDocConvertor.convert(entity);
-                if(null!=solrInputDocument)
-                    solrInputDocuments.add(solrInputDocument);
-            }
-        } catch (IllegalAccessException e) {
+            UpdateResponse response = solrServer.addBeans(entities.iterator());
+            commit(isAutoCommit);
+            return this.updateResponse(response);
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return addDocs(solrInputDocuments);
+        return null;
     }
 
     @Override
@@ -203,13 +179,8 @@ public class AbstractCoreService implements   CoreService{
             tSolrResponse.setqTime(queryResponse.getQTime());
             tSolrResponse.setStatus(queryResponse.getStatus());
             SolrDocumentList solrDocuments =  queryResponse.getResults();
-            try {
-                tSolrResponse.setDocs(SolrDocConvertor.convert(queryResponse.getResults(),coreEnum.getClazz()));
-            } catch (IllegalAccessException e) {
-               tSolrResponse.setMsg(e.getMessage());
-            } catch (InstantiationException e) {
-                tSolrResponse.setMsg(e.getMessage());
-            }
+            List list = queryResponse.getBeans(coreEnum.getClazz());
+            tSolrResponse.setDocs(list);
             tSolrResponse.setNumFound(solrDocuments.getNumFound());
             return tSolrResponse;
         }

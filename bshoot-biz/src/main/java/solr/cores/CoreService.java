@@ -21,16 +21,10 @@ public interface CoreService {
      */
     public SolrResponse query(FakeSolrParam fakeSolrParam);
 
-    /**
-     * 增加文档
-     * @param documents
-     * @return
-     */
-    public SolrResponse addDocs(Collection<SolrInputDocument> documents);
-    public SolrResponse addDoc(SolrInputDocument document);
-
     public<T> SolrResponse addEntity(T entity);
     public<T> SolrResponse addEntities(List<T> entities);
+
+    //public<T> SolrResponse update(FakeSolrParam fakeSolrParam,T... entity);
 
     public SolrResponse deleteByQuery(String param);
     public SolrResponse deleteById(String... ids);

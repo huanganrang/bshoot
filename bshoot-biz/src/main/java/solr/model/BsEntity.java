@@ -1,5 +1,6 @@
 package solr.model;
 
+import org.apache.solr.client.solrj.beans.Field;
 import org.apache.solr.common.SolrDocumentList;
 
 import java.util.List;
@@ -10,23 +11,41 @@ import java.util.List;
  */
 public class BsEntity {
 
+    @Field
     private long id;
+    @Field
     private long publishTime;
+    @Field
     private long userId;
+    @Field
     private String nickname;
+    @Field
     private long praise_num;
+    @Field
     private long comment_num;
+    @Field
     private long read_num;
+    @Field
     private String pub_location;
+    @Field
     private int hasVideo;
+    @Field
     private int hasImg;
+    @Field
     private int hasAudio;
+    @Field
     private long forward_num;
+    @Field
     private String _square;
+    @Field
     private String _text;
+    @Field
     private long reward_num;
+    @Field
     private long _shareNum;
+    @Field
     private long favorigte_num;
+    @Field
     private int isDelete;
 
     public long getId() {

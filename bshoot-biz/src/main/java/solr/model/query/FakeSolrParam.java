@@ -1,7 +1,5 @@
 package solr.model.query;
 
-import solr.model.criteria.Criterias;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -142,10 +140,6 @@ public class FakeSolrParam implements Serializable{
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public Criterias createCriterias(){
-        return new Criterias(this);
     }
 
     @Override

@@ -16,8 +16,13 @@ public class Criterias {
 
 	private FakeSolrParam fakeSolrParam;
 
+	public Criterias(){fakeSolrParam = new FakeSolrParam();}
 	public Criterias(FakeSolrParam fakeSolrParam) {
 		this.fakeSolrParam = fakeSolrParam;
+	}
+
+	public FakeSolrParam getFakeSolrParam() {
+		return fakeSolrParam;
 	}
 
 	/**
@@ -190,7 +195,7 @@ public class Criterias {
 	/**
 	 * between
 	 * 
-	 * @param Field
+	 * @param field
 	 * @param lo
 	 *            value
 	 * @param hi

@@ -1,11 +1,6 @@
 package solr.model;
 
-import com.google.common.collect.Lists;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
-
-import java.lang.reflect.Field;
+import org.apache.solr.client.solrj.beans.Field;
 import java.util.List;
 
 /**
@@ -13,27 +8,49 @@ import java.util.List;
  * Created by Zhou Yibing on 2015/12/29.
  */
 public class UserEntity {
+    @Field
     private long id;
+    @Field
     private int utype;
+    @Field
     private String nickname;
+    @Field
     private int usex;
+    @Field
     private int areaCode;
+    @Field
     private String areaName;
+    @Field
     private long birthday;
+    @Field
     private String bardian;
+    @Field
     private int member_v;
+    @Field
     private long createTime;
+    @Field
     private List<String> hobby;
+    @Field
     private long lastLoginTime;
+    @Field
     private long lastPublishTime;
+    @Field
     private long fansNum;
+    @Field
     private String login_location;
+    @Field
     private List<String> mobile;
+    @Field
     private int is_star;
+    @Field
     private long _reward;
+    @Field
     private long _att;
+    @Field
     private List<String> _square;
+    @Field
     private List<String> job;
+    @Field
     private String _location;
 
     public long getId() {
