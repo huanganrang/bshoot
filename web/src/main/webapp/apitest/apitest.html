@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<!-- saved from url=(0034)http://115.28.33.93:9000/test/test -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>api在线调试</title>
+        <meta charset="utf-8">
+        
+        <script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+        <script src="jquery.form.min.js" type="text/javascript" charset="utf-8"></script>
+    </head>
+    <body>
+        <form action="" method="post" id="test_form">
+		<table border="1" style="width: 100%; height: 100%;">
+			<tbody><tr>
+				<td width="20%" valign="top">
+					<div style="height: 100%;overflow-y: auto;">
+						
+						<table border="1" style="width: 100%;">
+							<tbody><tr><th colspan="2">接口列表</th></tr>
+							<tr height="40"><th colspan="2"><input type="text" name="search" style="width: 190px; height: 25px;" value=""><input type="submit" value="查询" id="search" style="height: 30px; cursor: pointer;"></th></tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('10');" id="td_10" style="background: red;">
+									产品列表-产品列表(OPT=10)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('10', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('12');" id="td_12" style="background: red;">
+									产品列表-产品详情-已投标人数(OPT=12)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('12', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('603');" id="td_603" style="background: red;">
+									产品列表-产品详情-立即投标-首次绑卡充值(OPT=603)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('603', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('177');" id="td_177" style="">
+									产品列表-产品详情-项目描述(OPT=177)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('177', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('22');" id="td_22" style="background: red;">
+									产品列表-产品详情-预估收益(OPT=22)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('22', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('178');" id="td_178" style="">
+									产品列表-产品详情-风险措施(OPT=178)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('178', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('11');" id="td_11" style="background: red;">
+									产品列表-普通标详情(OPT=11)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('11', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('97');" id="td_97" style="">
+									我的柚美-交易记录(OPT=97)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('97', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('502');" id="td_502" style="">
+									我的柚美-优惠券(OPT=502)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('502', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('171');" id="td_171" style="background: red;">
+									我的柚美-充值-充值记录(OPT=171)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('171', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('500');" id="td_500" style="">
+									我的柚美-充值-限额说明(OPT=500)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('500', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('605');" id="td_605" style="">
+									我的柚美-卡bin信息查询(OPT=605)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('605', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('我的柚美-实名认证');" id="td_我的柚美-实名认证" style="">
+									我的柚美-实名认证(OPT=我的柚美-实名认证)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('我的柚美-实名认证', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('602');" id="td_602" style="background: red;">
+									我的柚美-开户行-支行信息(OPT=602)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('602', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('601');" id="td_601" style="">
+									我的柚美-开户行市列表(OPT=601)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('601', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('600');" id="td_600" style="">
+									我的柚美-开户行省列表(OPT=600)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('600', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('172');" id="td_172" style="">
+									我的柚美-持有资产-U理财(OPT=172)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('172', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('173');" id="td_173" style="">
+									我的柚美-持有资产-回款记录(OPT=173)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('173', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('604');" id="td_604" style="">
+									我的柚美-支持银行列表查询(OPT=604)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('604', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('165');" id="td_165" style="background: red;">
+									我的柚美-昨日收益(OPT=165)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('165', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('81');" id="td_81" style="">
+									我的柚美-消息中心(OPT=81)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('81', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('82');" id="td_82" style="">
+									我的柚美-消息中心-删除系统消息(OPT=82)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('82', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('85');" id="td_85" style="">
+									我的柚美-消息中心-标记为已读(OPT=85)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('85', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('86');" id="td_86" style="background: red;">
+									我的柚美-消息中心-标记为未读(OPT=86)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('86', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('我的柚美-账户中心-设置头像');" id="td_我的柚美-账户中心-设置头像" style="background: red;">
+									我的柚美-账户中心-设置头像(OPT=我的柚美-账户中心-设置头像)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('我的柚美-账户中心-设置头像', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('308');" id="td_308" style="background: red;">
+									我的柚美-账户中心-银行卡列表(OPT=308)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('308', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('146');" id="td_146" style="background: red;">
+									我的柚美-账户余额-提现记录(OPT=146)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('146', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('我的柚美-退出登录');" id="td_我的柚美-退出登录" style="">
+									我的柚美-退出登录(OPT=我的柚美-退出登录)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('我的柚美-退出登录', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('149');" id="td_149" style="">
+									更多-活动中心(OPT=149)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('149', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('129');" id="td_129" style="">
+									更多-活动中心-活动详情(OPT=129)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('129', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('更多-转发好友-面对面邀请');" id="td_更多-转发好友-面对面邀请" style="">
+									更多-转发好友-面对面邀请(OPT=更多-转发好友-面对面邀请)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('更多-转发好友-面对面邀请', this)">
+									X
+								</td>
+							</tr>
+							
+							<tr height="30" style="cursor: pointer;">
+								<td onclick="getResultBy('1');" id="td_1" style="">
+									登录注册-登录(OPT=1)
+								</td>
+								<td width="15%" align="center" title="删除" onclick="del('1', this)">
+									X
+								</td>
+							</tr>
+							
+						</tbody></table>
+						
+					</div>
+				</td>
+				<td width="80%">
+					<table border="1" style="width: 100%;">
+						<tbody><tr>
+							<td width="30%">
+								<label style="font-weight: bolder;">OPT：</label>
+								<input type="text" name="api_url" style="width: 320px; height: 20px;" id="api_url"> 
+							</td>
+							<td width="70%">
+								<label style="font-weight: bolder;">接口描述<font style="color: blue;">(名称按两级手工填写，接口列表order by接口描述,OPT）</font>：</label>
+								<input type="text" name="api_desc" style="width: 700px;height: 20px;" id="api_desc"> 
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label style="font-weight: bolder;">参数<font style="color: blue;">(参数之间以英文分号隔开)</font>：</label>
+								<textarea name="api_param" style="width: 320px; height: 80px;" id="api_param"></textarea>
+							</td>
+							<td>
+								<label style="font-weight: bolder;">参数描述<font style="color: blue;">(这是手工填写上去的，保存之后，下次会自动读取出来)</font>：</label>
+								<textarea name="api_param_desc" style="width: 700px; height: 80px;" id="api_param_desc"></textarea>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label style="font-weight: bolder;">返回结果：</label>
+								<textarea id="api_result" name="api_result" style="width: 320px; height: 240px;" readonly="readonly"></textarea>
+							</td>
+							<td>
+								<label style="font-weight: bolder;">返回结果描述<font style="color: blue;">(这里也是手工填写上去，保存之后，下次会自动读取出来)</font>：</label>
+								<textarea name="api_result_desc" style="width: 700px; height: 240px;" id="api_result_desc"></textarea>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="checkbox" name="api_status" value="1" id="api_status">
+								<label for="api_status" style="font-weight: bolder; color: blue;">是否调试失败(调试失败则勾选)</label>
+							</td>
+							<td>
+								<label style="font-weight: bolder;">备注<font style="color: blue;">(这里补充测试结果)</font>：</label>
+								<textarea name="api_remark" style="width: 700px; height: 50px;" id="api_remark"></textarea>
+							</td>
+						</tr>
+						<tr height="55">
+							<td colspan="2">
+								<label style="font-weight: bolder;">返回Url:</label>
+								<div style="width: 800px;height: 30px;overflow-y: auto; overflow-x: hidden;">
+									<a id="test_result_url" target="_blank"></a>
+								</div>
+								<input type="hidden" name="api_result_url" id="api_result_url">
+							</td>
+						</tr>
+					</tbody></table>
+					<input type="button" value="在线测试" id="btn" style="height: 30px; cursor: pointer;">&nbsp;&nbsp;
+					<input type="button" value="保存" id="save" style="height: 30px; cursor: pointer;">
+				</td>
+			</tr>
+		</tbody></table>
+		
+		
+		<script type="text/javascript">
+			var testAction = function(options) {var pattern = '/test/testapi?api_url=:api_url&api_param=:api_param'; for(var key in options) { pattern = pattern.replace(':'+key, options[key] || ''); } return pattern }
+;
+			var url = function(options) {var pattern = '/test/getresult?api_url=:api_url'; for(var key in options) { pattern = pattern.replace(':'+key, options[key] || ''); } return pattern }
+;
+			var saveAction = function(options) {var pattern = '/test/save'; for(var key in options) { pattern = pattern.replace(':'+key, options[key] || ''); } return pattern }
+;
+			var is_test = false;
+			$(function() {
+				$("#btn").click(function() {
+					var api_url = $.trim($("#api_url").val());
+					if(api_url == '') {
+						$("#api_url").focus();
+						return;
+					}
+					$.getJSON(testAction({api_url:$("#api_url").val(),api_param:$("#api_param").val()}),function(data){
+						//$("#test_result").html(data.result);
+						try {
+							$("#api_result").val(JSON.stringify(JSON.parse(data.result), null, 4));
+						} catch(e) {
+							$("#api_result").val(data.result);
+						}
+						$("#test_result_url").attr("href", data.url).html(data.url);
+						$("#api_result_url").val(data.url);
+						is_test = true;
+				 	});
+				});
+				
+				$("#save").click(function() {
+					if(!is_test) {
+						alert("请先在线测试后再保存");
+						return;
+					}
+					var api_url = $.trim($("#api_url").val());
+					if(api_url == '') {
+						$("#api_url").focus();
+						return;
+					}
+					$("#test_form").ajaxSubmit({
+						url : saveAction(),
+						success : function(data) { 
+							alert("保存成功！");
+							is_test = false;
+							if($("#api_status").is(':checked')) {
+								$("#td_" + api_url).css("background", "red");
+							} else {
+								$("#td_" + api_url).css("background", "");
+							}
+						} 
+					});
+				});
+		
+		
+			});
+			
+			function getResultBy(api_url) {
+				if(is_test && !confirm("调试数据未保存是否继续？")) {
+					return;
+				}
+					
+				$.getJSON(url({api_url:api_url}),function(data){
+					$("#api_url").val(data.api_url);
+					$("#api_desc").val(data.api_desc);
+					$("#api_param").val(data.api_param);
+					$("#api_param_desc").val(data.api_param_desc);
+					$("#api_result").val(data.api_result);
+					$("#api_result_desc").val(data.api_result_desc);
+					$("#test_result_url").attr("href", data.api_result_url).html(data.api_result_url);
+					$("#api_result_url").val(data.api_result_url);
+					$("#api_remark").val(data.api_remark);
+					if(data.api_status == 1) {
+						document.getElementById("api_status").checked = true;
+						//$("#api_status").attr("checked", "true");
+					} else {
+						$("#api_status").removeAttr("checked");
+					}
+					is_test = false;
+			 	});
+			}
+			
+			function del(api_url, obj) {
+				if(!confirm("是否删除此接口？")) {
+					return;
+				}
+					
+				var url = function(options) {var pattern = '/test/del?api_url=:api_url'; for(var key in options) { pattern = pattern.replace(':'+key, options[key] || ''); } return pattern }
+;
+				$.getJSON(url({api_url:api_url}),function(data){
+					alert("删除成功！");
+					$(obj).parent().remove();
+			 	});
+			}
+		</script>
+    
+
+ 
+
+</form></body></html>
