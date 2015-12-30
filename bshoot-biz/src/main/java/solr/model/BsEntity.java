@@ -12,11 +12,11 @@ import java.util.List;
 public class BsEntity {
 
     @Field
-    private long id;
+    private String id;
     @Field
     private long publishTime;
     @Field
-    private long userId;
+    private String userId;
     @Field
     private String nickname;
     @Field
@@ -48,12 +48,20 @@ public class BsEntity {
     @Field
     private int isDelete;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public long getPublishTime() {
@@ -62,14 +70,6 @@ public class BsEntity {
 
     public void setPublishTime(long publishTime) {
         this.publishTime = publishTime;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public String getNickname() {

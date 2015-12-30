@@ -7,6 +7,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
+import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import solr.model.SolrResponse;
 import solr.model.query.FakeSolrParam;
 import solr.model.query.SolrParamParser;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -28,7 +30,7 @@ import java.util.ResourceBundle;
  * Created by zhou on 2015/12/28.
  */
 @Component
-public class AbstractCoreService implements   CoreService{
+public abstract class AbstractCoreService implements   CoreService{
     private Logger logger = LoggerFactory.getLogger(getClass());
     public static final String OP_SELECT="select";
     public static final String OP_UPDATE="update";

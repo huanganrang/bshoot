@@ -1,8 +1,8 @@
 package solr.model.criteria;
 
 import org.apache.commons.lang.StringUtils;
-import solr.Exception.SearchException;
 import solr.common.SystemUtils;
+import solr.exception.SearchException;
 import solr.model.query.FakeSolrParam;
 
 /**

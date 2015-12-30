@@ -24,7 +24,8 @@ public interface CoreService {
     public<T> SolrResponse addEntity(T entity);
     public<T> SolrResponse addEntities(List<T> entities);
 
-    //public<T> SolrResponse update(FakeSolrParam fakeSolrParam,T... entity);
+    @Deprecated
+    public<T> SolrResponse update(FakeSolrParam fakeSolrParam,T... entity);
 
     public SolrResponse deleteByQuery(String param);
     public SolrResponse deleteById(String... ids);

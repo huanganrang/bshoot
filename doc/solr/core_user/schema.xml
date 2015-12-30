@@ -10,16 +10,17 @@
         <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0"
                    positionIncrementGap="0" />
         <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0" omitNorms="true"/>
+        <fieldType name="random" class="solr.RandomSortField"/>
     </types>
     <fields>
         <!--用户基础信息-->
-        <field name="id" type="long" indexed="true"  stored="true" required="true"/>
-        <field name="utype" type="int" indexed="true" stored="true"/>
+        <field name="id" type="string" indexed="true"  stored="true" required="true"/>
+        <field name="utype" type="string" indexed="true" stored="true"/>
         <field name="nickname" type="string" indexed="true" stored="true"/>
-        <field name="usex" type="int" indexed="true" stored="true"/>
-        <field name="areaCode" type="int" indexed="true" stored="true"/>
+        <field name="usex" type="string" indexed="true" stored="true"/>
+        <field name="areaCode" type="string" indexed="true" stored="true"/>
         <field name="areaName" type="string" indexed="true" stored="true"/>
-        <field name="birthday" type="long" indexed="true" stored="true"/>
+        <field name="birthday" type="string" indexed="true" stored="true"/>
         <field name="bardian" type="text" indexed="true" stored="true"/>
         <field name="member_v" type="int" indexed="true" stored="true"/>
         <field name="createTime" type="long" indexed="true" stored="true"/>
@@ -38,6 +39,7 @@
         <dynamicField name="*_job" type="string" indexed="true" stored="true"  multiValued="true"/>
         <dynamicField name="*_location" type="string" indexed="true" stored="true"/>
         <dynamicField name="*_latlon" type="double" indexed="true" stored="true"/>
+        <dynamicField name="rand*" type="random" indexed="true" stored="false"/>
     </fields>
     <uniqueKey>id</uniqueKey>
     <defaultSearchField>nickname</defaultSearchField>

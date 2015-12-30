@@ -9,23 +9,23 @@ import java.util.List;
  */
 public class UserEntity {
     @Field
-    private long id;
+    private String id;
     @Field
-    private int utype;
+    private String utype;
     @Field
     private String nickname;
     @Field
-    private int usex;
+    private String usex;
     @Field
-    private int areaCode;
+    private String areaCode;
     @Field
     private String areaName;
     @Field
-    private long birthday;
+    private String birthday;
     @Field
     private String bardian;
     @Field
-    private int member_v;
+    private String member_v;
     @Field
     private long createTime;
     @Field
@@ -43,6 +43,8 @@ public class UserEntity {
     @Field
     private int is_star;
     @Field
+    private int is_tarento;
+    @Field
     private long _reward;
     @Field
     private long _att;
@@ -53,19 +55,19 @@ public class UserEntity {
     @Field
     private String _location;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getUtype() {
+    public String getUtype() {
         return utype;
     }
 
-    public void setUtype(int utype) {
+    public void setUtype(String utype) {
         this.utype = utype;
     }
 
@@ -77,19 +79,19 @@ public class UserEntity {
         this.nickname = nickname;
     }
 
-    public int getUsex() {
+    public String getUsex() {
         return usex;
     }
 
-    public void setUsex(int usex) {
+    public void setUsex(String usex) {
         this.usex = usex;
     }
 
-    public int getAreaCode() {
+    public String getAreaCode() {
         return areaCode;
     }
 
-    public void setAreaCode(int areaCode) {
+    public void setAreaCode(String areaCode) {
         this.areaCode = areaCode;
     }
 
@@ -101,11 +103,11 @@ public class UserEntity {
         this.areaName = areaName;
     }
 
-    public long getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(long birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
@@ -117,11 +119,11 @@ public class UserEntity {
         this.bardian = bardian;
     }
 
-    public int getMember_v() {
+    public String getMember_v() {
         return member_v;
     }
 
-    public void setMember_v(int member_v) {
+    public void setMember_v(String member_v) {
         this.member_v = member_v;
     }
 
@@ -131,6 +133,14 @@ public class UserEntity {
 
     public void setCreateTime(long createTime) {
         this.createTime = createTime;
+    }
+
+    public List<String> getHobby() {
+        return hobby;
+    }
+
+    public void setHobby(List<String> hobby) {
+        this.hobby = hobby;
     }
 
     public long getLastLoginTime() {
@@ -165,12 +175,28 @@ public class UserEntity {
         this.login_location = login_location;
     }
 
+    public List<String> getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(List<String> mobile) {
+        this.mobile = mobile;
+    }
+
     public int getIs_star() {
         return is_star;
     }
 
     public void setIs_star(int is_star) {
         this.is_star = is_star;
+    }
+
+    public int getIs_tarento() {
+        return is_tarento;
+    }
+
+    public void setIs_tarento(int is_tarento) {
+        this.is_tarento = is_tarento;
     }
 
     public long get_reward() {
@@ -187,22 +213,6 @@ public class UserEntity {
 
     public void set_att(long _att) {
         this._att = _att;
-    }
-
-    public List<String> getHobby() {
-        return hobby;
-    }
-
-    public void setHobby(List<String> hobby) {
-        this.hobby = hobby;
-    }
-
-    public List<String> getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(List<String> mobile) {
-        this.mobile = mobile;
     }
 
     public List<String> get_square() {
@@ -232,27 +242,28 @@ public class UserEntity {
     @Override
     public String toString() {
         return "UserEntity{" +
-                "id=" + id +
-                ", utype=" + utype +
+                "id='" + id + '\'' +
+                ", utype='" + utype + '\'' +
                 ", nickname='" + nickname + '\'' +
-                ", usex=" + usex +
-                ", areaCode=" + areaCode +
+                ", usex='" + usex + '\'' +
+                ", areaCode='" + areaCode + '\'' +
                 ", areaName='" + areaName + '\'' +
-                ", birthday=" + birthday +
+                ", birthday='" + birthday + '\'' +
                 ", bardian='" + bardian + '\'' +
-                ", member_v=" + member_v +
+                ", member_v='" + member_v + '\'' +
                 ", createTime=" + createTime +
-                ", hobby='" + hobby + '\'' +
+                ", hobby=" + hobby +
                 ", lastLoginTime=" + lastLoginTime +
                 ", lastPublishTime=" + lastPublishTime +
                 ", fansNum=" + fansNum +
                 ", login_location='" + login_location + '\'' +
-                ", mobile='" + mobile + '\'' +
+                ", mobile=" + mobile +
                 ", is_star=" + is_star +
+                ", is_tarento=" + is_tarento +
                 ", _reward=" + _reward +
                 ", _att=" + _att +
-                ", _square='" + _square + '\'' +
-                ", job='" + job + '\'' +
+                ", _square=" + _square +
+                ", job=" + job +
                 ", _location='" + _location + '\'' +
                 '}';
     }

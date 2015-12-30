@@ -25,9 +25,9 @@ public class UserCoreServiceTest extends TestConfig{
     @Test
     public void testAddUser() throws IOException, SolrServerException {
         List<UserEntity> userEntities  = Lists.newArrayList();
-        for(int i=1;i<1000;i++) {
+        for(int i=1;i<100;i++) {
             UserEntity userEntity = new UserEntity();
-            userEntity.setId(i);
+            userEntity.setId(i+"");
             userEntity.setNickname("zhangsan"+i);
             userEntity.setBardian("23432");
             userEntity.setFansNum(120);
