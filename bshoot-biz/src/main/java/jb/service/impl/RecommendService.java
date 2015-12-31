@@ -213,7 +213,7 @@ public class RecommendService implements RecommendServiceI{
             SystemUtils.combineStr(hobbyType,3,out2,"AND");
             StringBuffer sb = new StringBuffer();
             for(String s1 :out1){
-                sb.append("(")/*.append("login_area:").append(loginArea).append(" AND ")*/.append("hobby:").append(s1).append(") OR ");
+                sb/*.append("login_area:").append(loginArea).append(" AND ")*/.append("hobby:(").append(s1).append(") OR ");
             }
             for(String s2:out2){
                 sb.append("hobby:(").append(s2).append(") OR ");
@@ -235,12 +235,12 @@ public class RecommendService implements RecommendServiceI{
             SystemUtils.combineStr(hobbyType,hobbyType.length,out3,null);
             qc.append("login_area:").append(loginArea).append("^5 AND ").append("hobby:(").append(out3.get(0)).append(")^3");
             criterias2.qc(qc.toString());
-            criterias.ge("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0, DateUtil.DATETIME_FORMAT)));
-            criterias.addField("id");
-            criterias.ne("id",userId);
-            criterias.setStart(3*start);
-            criterias.setRows(3);
-            SolrResponse<UserEntity> solrResponse2 = solrUserService.query(criterias);
+            criterias2.ge("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0, DateUtil.DATETIME_FORMAT)));
+            criterias2.addField("id");
+            criterias2.ne("id", userId);
+            criterias2.setStart(3*start);
+            criterias2.setRows(3);
+            SolrResponse<UserEntity> solrResponse2 = solrUserService.query(criterias2);
             List<String> userIds = new ArrayList<String>();
             if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
                 List<UserEntity> users = solrResponse.getDocs();

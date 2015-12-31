@@ -36,6 +36,7 @@
         <field name="is_star" type="int" indexed="true" stored="true"/>
         <field name="month_praise" type="int" indexed="true" stored="true"/>
         <field name="login_area" type="string" indexed="true" stored="true"/>
+        <field name="suggestion" type="string" indexed="true" stored="true"/>
         <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
         <dynamicField name="*_reward" type="long" indexed="true" stored="true"/>
         <dynamicField name="*_att" type="long" indexed="true" stored="true"/>

@@ -82,7 +82,7 @@ public class SystemUtils {
 			for (int j = 0; j < nCnt; j++) {
 				if ((1<<j & i ) != 0) {
 					counter++;
-					sb.append("\"").append(str[j]).append("\" ").append(connStr);
+					sb.append(" \"").append(str[j]).append("\" ").append(connStr);
 				}
 			}
 			if(counter==matchFactor){
@@ -90,7 +90,7 @@ public class SystemUtils {
 				out.add(sb.toString());
 			}
 			counter=0;
-			sb.delete(0,sb.length()-1);
+			sb.delete(0,sb.length());
 		}
 	}
 
