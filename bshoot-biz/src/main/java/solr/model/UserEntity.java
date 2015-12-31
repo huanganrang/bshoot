@@ -1,6 +1,8 @@
 package solr.model;
 
 import org.apache.solr.client.solrj.beans.Field;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,13 +29,13 @@ public class UserEntity {
     @Field
     private String member_v;
     @Field
-    private long createTime;
+    private Date createTime;
     @Field
     private List<String> hobby;
     @Field
-    private long lastLoginTime;
+    private Date lastLoginTime;
     @Field
-    private long lastPublishTime;
+    private Date lastPublishTime;
     @Field
     private long fansNum;
     @Field
@@ -127,14 +129,6 @@ public class UserEntity {
         this.member_v = member_v;
     }
 
-    public long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
     public List<String> getHobby() {
         return hobby;
     }
@@ -143,19 +137,27 @@ public class UserEntity {
         this.hobby = hobby;
     }
 
-    public long getLastLoginTime() {
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getLastLoginTime() {
         return lastLoginTime;
     }
 
-    public void setLastLoginTime(long lastLoginTime) {
+    public void setLastLoginTime(Date lastLoginTime) {
         this.lastLoginTime = lastLoginTime;
     }
 
-    public long getLastPublishTime() {
+    public Date getLastPublishTime() {
         return lastPublishTime;
     }
 
-    public void setLastPublishTime(long lastPublishTime) {
+    public void setLastPublishTime(Date lastPublishTime) {
         this.lastPublishTime = lastPublishTime;
     }
 

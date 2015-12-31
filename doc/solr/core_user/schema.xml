@@ -7,6 +7,8 @@
         <fieldtype name="string"  class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
         <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
         <fieldtype name="location" class="solr.LatLonType" subFieldSuffix="_latlon"/>
+        <fieldType name="date" class="solr.TrieDateField" precisionStep="0"
+                   positionIncrementGap="0" omitNorms="true" />
         <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0"
                    positionIncrementGap="0" />
         <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0" omitNorms="true"/>
@@ -22,11 +24,11 @@
         <field name="areaName" type="string" indexed="true" stored="true"/>
         <field name="birthday" type="string" indexed="true" stored="true"/>
         <field name="bardian" type="text" indexed="true" stored="true"/>
-        <field name="member_v" type="int" indexed="true" stored="true"/>
-        <field name="createTime" type="long" indexed="true" stored="true"/>
+        <field name="member_v" type="string" indexed="true" stored="true"/>
+        <field name="createTime" type="date" indexed="true" stored="true"/>
         <field name="hobby" type="string" indexed="true" stored="true" multiValued="true"/>
-        <field name="lastLoginTime" type="long" indexed="true" stored="true"/>
-        <field name="lastPublishTime" type="long" indexed="true" stored="true"/>
+        <field name="lastLoginTime" type="date" indexed="true" stored="true"/>
+        <field name="lastPublishTime" type="date" indexed="true" stored="true"/>
         <field name="fansNum" type="long" indexed="true" stored="true"/>
         <field name="login_location" type="location" indexed="true"/>
         <field name="mobile" type="string" indexed="true" stored="true"  multiValued="true"/>

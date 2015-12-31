@@ -1,0 +1,19 @@
+<dataConfig>
+    <dataSource name="bphote" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://123.57.74.154:3306/bphoto?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;tinyInt1isBit=false" user="bphoto" password="123456" />
+    <document name="users">
+        <entity name="tuser" pk="ID"
+                query="select ID,nickname,birthday,utype,isStar,isTarento,sex,bardian,CREATEDATETIME from tuser"
+                deltaImportQuery="select ID,nickname,birthday,utype,isStar,isTarento,sex,bardian,CREATEDATETIME from tuser where ID='${dataimporter.delta.clai_idn}'"
+                deltaQuery="select ID from tuser where MODIFYDATETIME &gt; '${dih.last_index_time}'" transformer="DateFormatTransformer">
+        <field column="ID" name="id"/>
+		<field column="CREATEDATETIME" name="createTime"/>
+		<field column="nickname" name="nickname"/>
+		<field column="birthday" name="birthday"/>
+		<field column="utype" name="utype"/>
+		<field column="isStar" name="is_star"/>
+		<field column="isTarento" name="is_tarento"/>
+		<field column="sex" name="usex"/>
+		<field column="bardian" name="bardian"/>
+		</entity>
+    </document>
+</dataConfig>
