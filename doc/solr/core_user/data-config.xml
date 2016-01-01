@@ -60,7 +60,7 @@ month_parise                 month_parise(int,table:user_profile)
             <field column="last_logintime" name="lastLoginTime"/>
             <field column="last_pubtime" name="lastPublishTime"/>
             <field column="login_location" name="login_location"/>
-            <field column="month_parise" name="month_parise"/>
+            <field column="month_praise" name="month_praise"/>
             <field column="login_area" name="login_area"/>
         </entity>
 		</entity>
