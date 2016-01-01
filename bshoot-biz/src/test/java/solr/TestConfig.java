@@ -9,6 +9,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:springTest.xml"})
+@ContextConfiguration(locations = {"classpath:spring.xml","classpath:spring-druid.xml","classpath:spring-ehcache.xml","classpath:spring-hibernate.xml","classpath:spring-redis.xml","classpath:spring-mvc.xml"})
 public class TestConfig {
 }

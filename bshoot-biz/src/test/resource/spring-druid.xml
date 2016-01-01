@@ -12,22 +12,18 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-	<!-- 引入项目配置文件 -->
-	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations">
+	<!-- 配置druid监控spring jdbc -->
+	<bean id="druid-stat-interceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor" />
+
+	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut" scope="prototype">
+		<property name="patterns">
 			<list>
-				<value>classpath:config.properties</value>
-				<value>classpath:redis.properties</value>
-				<value>classpath:solr.properties</value>
-				<value>classpath:oss.properties</value>
+				<value>jb.service.*</value>
 			</list>
 		</property>
 	</bean>
-
-	<!-- 自动扫描dao和service包(自动注入) -->
-	<context:component-scan base-package="solr.model.query,solr.service,solr.cores,solr.controller" />
-
-	<!-- 引入同文件夹下的redis配置文件 -->
-	<import resource="spring-redis.xml"/>
+	<aop:config>
+		<aop:advisor advice-ref="druid-stat-interceptor" pointcut-ref="druid-stat-pointcut" />
+	</aop:config>
 
 </beans>
