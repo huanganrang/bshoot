@@ -51,8 +51,8 @@ month_parise                 month_parise(int,table:user_profile)
             <field column="hobby_type" name="hobby" splitBy =","/><!--需要转换-->
         </entity>
         <entity name="user_profile" pk="id"
-                query="select id,fans_num,praise_num,att_num,last_logintime,last_pubtime,CONCAT(lg_y,',',lg_x) as login_location from user_profile where id='${tuser.ID}'"
-                deltaQuery="select id,fans_num,praise_num,att_num,last_logintime,last_pubtime,CONCAT(lg_y,',',lg_x) as login_location from user_profile where update_datetime>'${dih.last_index_time}'"
+                query="select id,fans_num,praise_num,att_num,last_logintime,last_pubtime,CONCAT(lg_y,',',lg_x) as login_location,month_praise,login_area from user_profile where id='${tuser.ID}'"
+                deltaQuery="select id,fans_num,praise_num,att_num,last_logintime,last_pubtime,CONCAT(lg_y,',',lg_x) as login_location,month_praise,login_area from user_profile where update_datetime>'${dih.last_index_time}'"
                 parentDeltaQuery="select ID from tuser where ID='${user_profile.id}'">
             <field column="fans_num" name="fansNum"/>
             <field column="praise_num" name="_reward"/>
