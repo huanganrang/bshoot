@@ -1,0 +1,39 @@
+<dataConfig>
+<dataSource name="bphote" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://123.57.74.154:3306/bphoto?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;tinyInt1isBit=false" user="bphoto" password="123456" />
+<document name="bss">
+    <!--
+id(string)                      id(varchar,table:bshoot)
+publishTime(date)             	create_datetime(datetime,bshoot)
+userId(string)                	user_id(varchar,table:bshoot)
+nickname(string)               	nickname(varchar,table:tuser)
+comment_num(long)             	bs_comment(int,table:bshoot)
+read_num(long)                	bs_read(int,table:bshoot)
+pub_location(location)         	location(poiny,table:bshoot)
+file_type(int)              	bs_file_type(tinyint,table:bshoot)
+forward_num（long）            	bs_forward(int,table:bshoot)
+_square(string)                	暂预留
+_text(string)                  	暂预留
+reward_num(long)              	bs_praise(varchar,table:bshoot)
+_shareNum(long)               	bs_share(int,table:bshoot)
+favorite_num(long)           	bs_collect(int,table:bshoot)
+isDelete(int)                 	isDelete(tinyint,table:bshoot)
+    -->
+    <entity name="bshoot" pk="id"
+            query="select id,create_datetime,user_id,bs_comment,bs_read,CONCAT(lg_y,',',lg_x) as location,bs_file_type,bs_forward,bs_praise,bs_share,bs_collect,isDelete from bshoot"
+            deltaImportQuery="select id,create_datetime,user_id,bs_comment,bs_read,CONCAT(lg_y,',',lg_x) as location,bs_file_type,bs_forward,bs_praise,bs_share,bs_collect,isDelete from bshoot where id='${dih.delta.id}'"
+            deltaQuery="select id from bshoot where update_datetime &gt; '${dih.last_index_time}'" transformer="DateFormatTransformer">
+        <field column="id" name="id"/>
+        <field column="create_datetime" name="publishTime"/>
+        <field column="user_id" name="userId"/>
+        <field column="bs_comment" name="comment_num"/>
+        <field column="bs_read" name="read_num"/>
+        <field column="location" name="pub_location"/>
+        <field column="bs_file_type" name="file_type"/>
+        <field column="bs_forward" name="forward_num"/>
+        <field column="bs_praise" name="reward_num"/>
+        <field column="bs_share" name="_shareNum"/>
+        <field column="bs_collect" name="favorite_num"/>
+        <field column="isDelete" name="isDelete"/>
+    </entity>
+    </document>
+ </dataConfig>

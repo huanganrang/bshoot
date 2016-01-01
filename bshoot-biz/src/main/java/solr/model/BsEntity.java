@@ -18,8 +18,6 @@ public class BsEntity {
     @Field
     private String userId;
     @Field
-    private String nickname;
-    @Field
     private long praise_num;
     @Field
     private long comment_num;
@@ -28,11 +26,7 @@ public class BsEntity {
     @Field
     private String pub_location;
     @Field
-    private int hasVideo;
-    @Field
-    private int hasImg;
-    @Field
-    private int hasAudio;
+    private int file_type;
     @Field
     private long forward_num;
     @Field
@@ -72,14 +66,6 @@ public class BsEntity {
         this.publishTime = publishTime;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
     public long getPraise_num() {
         return praise_num;
     }
@@ -112,28 +98,12 @@ public class BsEntity {
         this.pub_location = pub_location;
     }
 
-    public int getHasVideo() {
-        return hasVideo;
+    public int getFile_type() {
+        return file_type;
     }
 
-    public void setHasVideo(int hasVideo) {
-        this.hasVideo = hasVideo;
-    }
-
-    public int getHasImg() {
-        return hasImg;
-    }
-
-    public void setHasImg(int hasImg) {
-        this.hasImg = hasImg;
-    }
-
-    public int getHasAudio() {
-        return hasAudio;
-    }
-
-    public void setHasAudio(int hasAudio) {
-        this.hasAudio = hasAudio;
+    public void setFile_type(int file_type) {
+        this.file_type = file_type;
     }
 
     public long getForward_num() {
@@ -195,17 +165,14 @@ public class BsEntity {
     @Override
     public String toString() {
         return "BsEntity{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", publishTime=" + publishTime +
-                ", userId=" + userId +
-                ", nickname='" + nickname + '\'' +
+                ", userId='" + userId + '\'' +
                 ", praise_num=" + praise_num +
                 ", comment_num=" + comment_num +
                 ", read_num=" + read_num +
                 ", pub_location='" + pub_location + '\'' +
-                ", hasVideo=" + hasVideo +
-                ", hasImg=" + hasImg +
-                ", hasAudio=" + hasAudio +
+                ", file_type=" + file_type +
                 ", forward_num=" + forward_num +
                 ", _square='" + _square + '\'' +
                 ", _text='" + _text + '\'' +

@@ -1,19 +1,65 @@
 <dataConfig>
     <dataSource name="bphote" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://123.57.74.154:3306/bphoto?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;tinyInt1isBit=false" user="bphoto" password="123456" />
     <document name="users">
+		<!--
+id(string)                 	ID(varchar,table:tuser)
+utype(string)              	utype(varchar,table:tuser)
+nickname(string)           	nickname(varchar,table:tuser)
+usex(string)               	sex(varchar,table:tuser)
+areaCode(string)           	area(varchar,table:tuser)
+areaName(string)           	暂预留
+birthday(string)           	birthday(varchar,table:tuser)
+bardian(string)            	bardian(varchar,table:tuser)
+member_v(varchar)          	member_v(varchar,table:tuser)
+createTime(date)           	CREATEDATETIME(datetime,table:tuser)
+hobby(string,multiValued)  	hobby_type(varchar,table:user_hobby,comma separate)
+lastLoginTime(date)        	last_logintime(datetime,table:user_profile)
+lastPublishTime(date)      	last_pubtime(datetime,table:user_profile)
+fansNum(long)              	fans_num(int,table:user_profile)
+login_location(location)   	login_location(point,table:user_profile)
+mobile(string,multiValue)  	mobile(varchar,table:tuser)
+is_tarento(int)            	 isTarento(tinyint,table:tuser)
+is_star(int)               	 isStar(tinyint,table:tuser)
+_reward(long)              	praise_num(int,table:user_profile)
+_att(long)                 	att_num(int,table:user_profile)
+_square(string,multiValued)	 暂预留
+_job(string,multiValued)   	 job(varchar,table:tuser)
+_location(string)          	 暂预留
+-->
         <entity name="tuser" pk="ID"
-                query="select ID,nickname,birthday,utype,isStar,isTarento,sex,bardian,CREATEDATETIME from tuser"
-                deltaImportQuery="select ID,nickname,birthday,utype,isStar,isTarento,sex,bardian,CREATEDATETIME from tuser where ID='${dataimporter.delta.clai_idn}'"
-                deltaQuery="select ID from tuser where MODIFYDATETIME &gt; '${dih.last_index_time}'" transformer="DateFormatTransformer">
+                query="select ID,utype,nickname,sex,area,birthday,bardian,member_v,CREATEDATETIME,isStar,isTarento,mobile,job from tuser"
+                deltaImportQuery="select ID,utype,nickname,sex,area,birthday,bardian,member_v,CREATEDATETIME,isStar,isTarento,mobile,job from tuser where ID='${dih.delta.ID}'"
+                deltaQuery="select ID from tuser where MODIFYDATETIME &gt; '${dih.last_index_time}'" transformer="DateFormatTransformer,RegexTransformer">
         <field column="ID" name="id"/>
+        <field column="utype" name="utype"/>
+        <field column="nickname" name="nickname"/>
+        <field column="sex" name="usex"/>
+        <field column="area" name="areaCode"/>
+        <field column="birthday" name="birthday"/>
+        <field column="bardian" name="bardian"/>
+        <field column="member_v" name="member_v"/>
 		<field column="CREATEDATETIME" name="createTime"/>
-		<field column="nickname" name="nickname"/>
-		<field column="birthday" name="birthday"/>
-		<field column="utype" name="utype"/>
 		<field column="isStar" name="is_star"/>
 		<field column="isTarento" name="is_tarento"/>
-		<field column="sex" name="usex"/>
-		<field column="bardian" name="bardian"/>
+		<field column="mobile" name="mobile" splitBy =","/>
+		<field column="job" name="_job" splitBy =","/>
+		<entity name="user_hobby" pk="id"
+                query="select hobby_type from user_hobby where user_id='${tuser.ID}'"
+                deltaQuery="select user_id,hobby_type from user_hobby where update_datetime>'${dih.last_index_time}'"
+                parentDeltaQuery="select ID from tuser where ID='${user_hobby.user_id}'" transformer="RegexTransformer">
+            <field column="hobby_type" name="hobby" splitBy =","/><!--需要转换-->
+        </entity>
+        <entity name="user_profile" pk="id"
+                query="select id,fans_num,praise_num,att_num,last_logintime,last_pubtime,CONCAT(lg_y,',',lg_x) as login_location from user_profile where id='${tuser.ID}'"
+                deltaQuery="select id,fans_num,praise_num,att_num,last_logintime,last_pubtime,CONCAT(lg_y,',',lg_x) as login_location from user_profile where update_datetime>'${dih.last_index_time}'"
+                parentDeltaQuery="select ID from tuser where ID='${user_profile.id}'">
+            <field column="fans_num" name="fansNum"/>
+            <field column="praise_num" name="_reward"/>
+            <field column="att_num" name="_att"/>
+            <field column="last_logintime" name="lastLoginTime"/>
+            <field column="last_pubtime" name="lastPublishTime"/>
+            <field column="login_location" name="login_location"/>
+        </entity>
 		</entity>
     </document>
 </dataConfig>
