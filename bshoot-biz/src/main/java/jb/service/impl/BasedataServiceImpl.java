@@ -8,14 +8,12 @@ import jb.pageModel.BaseData;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.service.BasedataServiceI;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class BasedataServiceImpl implements BasedataServiceI {
@@ -32,6 +30,26 @@ public class BasedataServiceImpl implements BasedataServiceI {
 		bd.setBaseType(basetypeDao.getById(baseData.getBasetypeCode()));
 		basedataDao.save(bd);
 		refeshAppVariable(bd);
+	}
+
+	@Override
+	public List<BaseData> getBaseDatas(List<String> ids) {
+		if(CollectionUtils.isEmpty(ids)) return null;
+		Map<String,Object> parmas = new HashMap<String, Object>();
+		List<String> uniqueIds = new ArrayList<String>();
+		for(String id:ids){
+			if(!uniqueIds.contains(id))
+				uniqueIds.add(id);
+		}
+		parmas.put("alist", uniqueIds);
+		List<Tbasedata> t = basedataDao.find("from Tbasedata t where t.id in (:alist)",parmas);
+		List<BaseData> baseDatas = new ArrayList<BaseData>();
+		for(Tbasedata tbasedata:t){
+			BaseData u = new BaseData();
+			BeanUtils.copyProperties(tbasedata, u);
+			baseDatas.add(u);
+		}
+		return baseDatas;
 	}
 
 	private void refeshAppVariable(Tbasedata bd){

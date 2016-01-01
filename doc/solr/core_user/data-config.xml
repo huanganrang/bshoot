@@ -25,6 +25,7 @@ _att(long)                 	att_num(int,table:user_profile)
 _square(string,multiValued)	 暂预留
 _job(string,multiValued)   	 job(varchar,table:tuser)
 _location(string)          	 暂预留
+month_parise                 month_parise(int,table:user_profile)
 -->
         <entity name="tuser" pk="ID"
                 query="select ID,utype,nickname,sex,area,birthday,bardian,member_v,CREATEDATETIME,isStar,isTarento,mobile,job from tuser"
@@ -59,6 +60,8 @@ _location(string)          	 暂预留
             <field column="last_logintime" name="lastLoginTime"/>
             <field column="last_pubtime" name="lastPublishTime"/>
             <field column="login_location" name="login_location"/>
+            <field column="month_parise" name="month_parise"/>
+            <field column="login_area" name="login_area"/>
         </entity>
 		</entity>
     </document>

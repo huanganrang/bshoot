@@ -47,7 +47,7 @@ public class IQAuthHandler extends IQHandler {
      * Constructor.
      */
     public IQAuthHandler() {
-        probeResponse = DocumentHelper.createElement(QName.get("query",
+        probeResponse = DocumentHelper.createElement(QName.get("service",
                 NAMESPACE));
         probeResponse.addElement("username");
         if (AuthManager.isPlainSupported()) {
@@ -80,10 +80,10 @@ public class IQAuthHandler extends IQHandler {
 
         try {
             Element iq = packet.getElement();
-            Element query = iq.element("query");
+            Element query = iq.element("service");
             Element queryResponse = probeResponse.createCopy();
 
-            if (IQ.Type.get == packet.getType()) { // get query
+            if (IQ.Type.get == packet.getType()) { // get service
                 String username = query.elementText("username");
                 if (username != null) {
                     queryResponse.element("username").setText(username);
@@ -93,7 +93,7 @@ public class IQAuthHandler extends IQHandler {
                 if (session.getStatus() != Session.STATUS_AUTHENTICATED) {
                     reply.setTo((JID) null);
                 }
-            } else { // set query
+            } else { // set service
                 String resource = query.elementText("resource");
                 String username = query.elementText("username");
                 String password = query.elementText("password");

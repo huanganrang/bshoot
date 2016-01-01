@@ -338,4 +338,12 @@ public class Criterias {
 	public void setFormat(String format){
 		fakeSolrParam.setFormat(format);
 	}
+
+	public void setStart(int start){
+		fakeSolrParam.setStart(start);
+	}
+
+	public void setRows(int rows){
+		fakeSolrParam.setRows(rows);
+	}
 }

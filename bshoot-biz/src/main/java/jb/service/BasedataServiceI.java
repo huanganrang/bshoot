@@ -23,6 +23,13 @@ public interface BasedataServiceI {
 	public void add(BaseData baseData);
 
 	/**
+	 * 根据多个id查找baseData
+	 * @param ids
+	 * @return
+	 * @author zhouyibing
+	 */
+	public List<BaseData> getBaseDatas(List<String> ids);
+	/**
 	 * 获得基础数据
 	 * 
 	 * @param id

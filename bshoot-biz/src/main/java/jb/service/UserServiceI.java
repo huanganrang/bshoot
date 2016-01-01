@@ -101,6 +101,13 @@ public interface UserServiceI {
 	public User get(User user);
 
 	/**
+	 * 根据多个用户id获得用户信息
+	 * @param userIds
+	 * @return
+	 */
+	public List<User> getUsers(List<String> userIds);
+
+	/**
 	 * 编辑用户
 	 * 
 	 * @param user

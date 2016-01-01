@@ -18,6 +18,7 @@ import jb.util.Constants;
 import jb.util.MD5Util;
 import jb.util.MyBeanUtils;
 import jb.util.PathUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -245,6 +246,26 @@ public class UserServiceImpl implements UserServiceI {
 		}
 		
 		return null;
+	}
+
+	@Override
+	public List<User> getUsers(List<String> userIds) {
+		if(CollectionUtils.isEmpty(userIds)) return null;
+		Map<String,Object> parmas = new HashMap<String, Object>();
+		List<String> uniqueIds = new ArrayList<String>();
+		for(String id:userIds){
+			if(!uniqueIds.contains(id))
+				uniqueIds.add(id);
+		}
+		parmas.put("alist", uniqueIds);
+		List<Tuser> t = userDao.find("from Tuser t where t.id in (:alist)",parmas);
+		List<User> userList = new ArrayList<User>();
+		for(Tuser tUser:t){
+			User u = new User();
+			BeanUtils.copyProperties(tUser, u);
+			userList.add(u);
+		}
+		return userList;
 	}
 
 	@Override

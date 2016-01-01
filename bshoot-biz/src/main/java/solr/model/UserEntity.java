@@ -56,6 +56,10 @@ public class UserEntity {
     private List<String> job;
     @Field
     private String _location;
+    @Field
+    private long month_praise;
+    @Field
+    private String login_area;
 
     public String getId() {
         return id;
@@ -241,6 +245,22 @@ public class UserEntity {
         this._location = _location;
     }
 
+    public long getMonth_praise() {
+        return month_praise;
+    }
+
+    public void setMonth_praise(long month_praise) {
+        this.month_praise = month_praise;
+    }
+
+    public String getLogin_area() {
+        return login_area;
+    }
+
+    public void setLogin_area(String login_area) {
+        this.login_area = login_area;
+    }
+
     @Override
     public String toString() {
         return "UserEntity{" +
@@ -267,6 +287,8 @@ public class UserEntity {
                 ", _square=" + _square +
                 ", job=" + job +
                 ", _location='" + _location + '\'' +
+                ", month_praise=" + month_praise +
+                ", login_area='" + login_area + '\'' +
                 '}';
     }
 }
