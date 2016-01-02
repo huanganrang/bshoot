@@ -3,10 +3,13 @@ package jb.service.impl;
 import com.google.common.collect.Lists;
 import jb.bizmodel.RecommendUser;
 import jb.pageModel.BaseData;
+import jb.pageModel.Bshoot;
 import jb.pageModel.User;
 import jb.service.BasedataServiceI;
+import jb.service.BshootServiceI;
 import jb.service.RecommendServiceI;
 import jb.service.UserServiceI;
+import jb.util.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,8 @@ public class RecommendService implements RecommendServiceI{
     private SolrUserService solrUserService;
     @Autowired
     private BasedataServiceI basedataServiceImpl;
+    @Autowired
+    private BshootServiceI bshootServiceImpl;
 
     @Override
     public List<RecommendUser> recommendUser( String loginArea) {
@@ -36,7 +41,8 @@ public class RecommendService implements RecommendServiceI{
         Criterias criterias = new Criterias();
         criterias.qc("fans_num:[200 TO *]");
         criterias.gt("month_praise","50");
-        criterias.addOrder("rand_","asc");//随机排序字段
+        Random random = new Random();
+        criterias.addOrder("rand_"+random.nextInt(1000),"asc");//随机排序字段
         criterias.addField(new String[]{"id","usex","hobby","login_area"});
         criterias.setStart(0);
         criterias.setRows(6);
@@ -48,8 +54,8 @@ public class RecommendService implements RecommendServiceI{
         Criterias criterias2 = new Criterias();
         criterias.qc("fans_num:[* TO 10]");
         criterias.eq("login_area",loginArea);
-        criterias.between("createTime","","");
-        criterias.addOrder("rand_","asc");//随机排序字段
+        criterias.between("createTime","", DateUtil.convert2SolrDate(DateUtil.getDate(-3,DateUtil.DATETIME_FORMAT)));
+        criterias.addOrder("rand_" + random.nextInt(1000), "asc");//随机排序字段
         criterias.addField(new String[]{"id","usex","hobby","areaCode"});
         criterias.addField();
         criterias.setStart(0);
@@ -80,5 +86,28 @@ public class RecommendService implements RecommendServiceI{
             recommendUsers.add(recommendUser);
         }
         return recommendUsers;
+    }
+
+    @Override
+    public void recommendHot() {
+        Date tenHousrago = DateUtil.getDateBeforeHours(-10);
+       List<Bshoot> bshoots =  bshootServiceImpl.getHotBshoots(tenHousrago, 200, 50);
+       if(bshoots.size()<50){
+           Date oneDayago = DateUtil.stringToDate(DateUtil.getDate(-1));
+           List<Bshoot> bs2 = bshootServiceImpl.getHotBshoots(oneDayago,200,50-bshoots.size());
+           if(CollectionUtils.isNotEmpty(bs2))
+             bshoots.addAll(bs2);
+       }
+        //TODO
+    }
+
+    @Override
+    public void recommend() {
+
+    }
+
+    public static void main(String[] args){
+        System.out.println(DateUtil.convert2SolrDate(DateUtil.getDate(-3,DateUtil.DATETIME_FORMAT)));
+        System.out.println(DateUtil.convert2SolrDate(DateUtil.getDateBeforeHours(-10, DateUtil.DATETIME_FORMAT)));
     }
 }

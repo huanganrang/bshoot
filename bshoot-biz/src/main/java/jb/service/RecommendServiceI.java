@@ -14,4 +14,16 @@ public interface RecommendServiceI {
      * @param  loginArea 当前用户登录区域
      */
     public List<RecommendUser> recommendUser(String loginArea);
+
+    /**
+     * 首页热门动态推荐
+     * 1按一天以内的发布的动态（当前时间前10小时以内）2按获得打赏200以上的3这些动态按时间排序）（若没有满足规则用户50以上）
+     *比如显示一天内获得打赏200以上的（按时间排序）
+     */
+    public  void recommendHot();
+
+    /**
+     * 首页推荐
+     */
+    public void recommend();
 }

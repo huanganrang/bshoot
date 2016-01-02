@@ -627,7 +627,26 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		dg.setRows(ol);
 		return dg;
 	}
-	
+
+	@Override
+	public List<Bshoot> getHotBshoots(Date pubTime, int praiseNum, int rows) {
+		List<Bshoot> ol = new ArrayList<Bshoot>();
+		DataGrid dg = new DataGrid();
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("pubTime",pubTime);
+		params.put("praiseNum",praiseNum);
+		params.put("rows",rows);
+		String hql = " from Tbshoot t  where t.createDatetime >=:pubTime and t.bsPraise>=:praiseNum order by t.createDatetime desc  limit 0,:rows";
+		List<Tbshoot> l = bshootDao.find(hql,params);
+		List<Bshoot> bshoots = new ArrayList<Bshoot>();
+		for(Tbshoot t:l){
+			Bshoot bs = new Bshoot();
+			BeanUtils.copyProperties(t,bs);
+			bshoots.add(bs);
+		}
+		return bshoots;
+	}
+
 	@Override
 	public DataGrid dataGridCity(Bshoot bshoot, PageHelper ph, String userId, int type) {
 		List<Bshoot> ol = new ArrayList<Bshoot>();

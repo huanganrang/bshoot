@@ -4,6 +4,7 @@ import jb.pageModel.Bshoot;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -76,7 +77,13 @@ public interface BshootServiceI {
 	 * @return
 	 */
 	public DataGrid dataGridSearch(Bshoot bshoot, PageHelper ph, String userId);
-	
+
+	/**
+	 * 首页热门动态获取
+	 * @return
+	 */
+	public List<Bshoot> getHotBshoots(Date pubTime,int praiseNum,int rows);
+
 	/**
 	 * 同城视频
 	 * @param bshoot
