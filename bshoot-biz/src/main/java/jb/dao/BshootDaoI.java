@@ -15,4 +15,8 @@ public interface BshootDaoI extends BaseDaoI<Tbshoot> {
 	public List<Map<String,Object>> executeNearby(int page, int rows, double lgx, double lgy);
 
 	public List<Tbshoot> getTbshoots(String[] bshootIds);
+
+	List<Tbshoot> getUserLastBshoot(List<String> userIds);
+
+	Tbshoot getUserLastBshoot(String userId);
 }

@@ -346,10 +346,26 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	}
 
 	@Override
+	public List<Bshoot> getUserLastBshoot(List<String> userIds) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userIds);
+		List<Tbshoot> tbshoots = bshootDao.getUserLastBshoot(userIds);
+		if(tbshoots==null) return null;
+		Bshoot o = null;
+		List<Bshoot> bshootList = new ArrayList<Bshoot>();
+		for(Tbshoot tbshoot:tbshoots){
+			o = new Bshoot();
+			BeanUtils.copyProperties(tbshoot, o);
+            bshootList.add(o);
+		}
+		return bshootList;
+	}
+
+	@Override
 	public Bshoot getUserLastBshoot(String userId) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
-		Tbshoot t = bshootDao.get("from Tbshoot t  where t.user_id = :userId order by create_datetime", params);
+		Tbshoot t = bshootDao.getUserLastBshoot(userId);
 		if(t==null) return null;
 		Bshoot o = new Bshoot();
 		BeanUtils.copyProperties(t, o);
