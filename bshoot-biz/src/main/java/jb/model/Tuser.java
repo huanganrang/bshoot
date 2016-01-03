@@ -53,6 +53,10 @@ public class Tuser implements java.io.Serializable {
 	private String email;
 	//@Length(max=36)
 	private String recommend;
+	//@Length(max=30)
+	private String job;
+	//@Length(max=50)
+	private String mobile;
 
 	@Column(name = "is_star")
 	@org.hibernate.annotations.Type(type="yes_no")
@@ -252,5 +256,21 @@ public class Tuser implements java.io.Serializable {
 		this.isTarento = isTarento;
 	}
 
-	
+	@Column(name = "job", unique = false, nullable = true, insertable = true, updatable = true, length = 30)
+	public String getJob() {
+		return job;
+	}
+
+	public void setJob(String job) {
+		this.job = job;
+	}
+
+	@Column(name = "mobile", unique = false, nullable = true, insertable = true, updatable = true, length = 50)
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
 }

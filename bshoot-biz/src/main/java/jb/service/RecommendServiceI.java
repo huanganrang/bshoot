@@ -1,6 +1,7 @@
 package jb.service;
 
 import jb.bizmodel.RecommendUser;
+import jb.pageModel.Bshoot;
 
 import java.util.List;
 
@@ -20,10 +21,12 @@ public interface RecommendServiceI {
      * 1按一天以内的发布的动态（当前时间前10小时以内）2按获得打赏200以上的3这些动态按时间排序）（若没有满足规则用户50以上）
      *比如显示一天内获得打赏200以上的（按时间排序）
      */
-    public  void recommendHot();
+    public  List<Bshoot> recommendHot();
 
     /**
      * 首页推荐
+     * @param  userId 当前登录用户id
+     * @param start 第几页 从0开始
      */
-    public void recommend();
+    public  List<Bshoot> recommend(String userId,int start);
 }

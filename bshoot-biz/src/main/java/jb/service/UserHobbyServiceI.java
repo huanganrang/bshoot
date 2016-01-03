@@ -23,6 +23,13 @@ public interface UserHobbyServiceI {
 	public DataGrid dataGrid(UserHobby userHobby, PageHelper ph);
 
 	/**
+	 * 获得用户兴趣
+	 * @param userId
+	 * @return
+	 */
+	public UserHobby getUserHobby(String userId);
+
+	/**
 	 * 添加UserHobby
 	 * 
 	 * @param userHobby

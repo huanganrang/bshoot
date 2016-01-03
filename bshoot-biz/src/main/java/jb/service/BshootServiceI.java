@@ -55,6 +55,13 @@ public interface BshootServiceI {
 	 * @return
 	 */
 	public DataGrid dataGridBySquare(PageHelper ph, String squareId);
+
+	/**
+	 * 获得用户最近一条动态
+	 * @param userId
+	 * @return
+	 */
+	public Bshoot getUserLastBshoot(String userId);
 	
 	/**
 	 * 获取Bshoot数据表格

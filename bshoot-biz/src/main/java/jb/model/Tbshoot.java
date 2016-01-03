@@ -99,6 +99,9 @@ public class Tbshoot implements java.io.Serializable{
 	private String status;
 	//@Length(max=256)
 	private String bsArea;
+	private java.lang.Integer bsForward;
+	private java.lang.Integer bsShare;
+	private java.lang.Integer isDelete;
 
 		public Tbshoot(){
 		}
@@ -316,6 +319,34 @@ public class Tbshoot implements java.io.Serializable{
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	@Column(name = "isDelete", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getIsDelete() {
+		return isDelete;
+	}
+
+	public void setIsDelete(Integer isDelete) {
+		this.isDelete = isDelete;
+	}
+
+	@Column(name = "bs_share", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getBsShare() {
+		return bsShare;
+	}
+
+	public void setBsShare(Integer bsShare) {
+		this.bsShare = bsShare;
+	}
+
+	@Column(name = "bs_forward", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getBsForward() {
+		return bsForward;
+	}
+
+	public void setBsForward(Integer bsForward) {
+		this.bsForward = bsForward;
+	}
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

@@ -52,6 +52,12 @@ public class TuserProfile implements java.io.Serializable,IEntity{
 	private java.util.Date createDatetime;
 	//
 	private java.util.Date updateDatetime;
+	private java.util.Date lastLoginTime;
+	private java.util.Date lastPubTime;
+	private java.lang.Integer monthPraise;
+	private java.lang.String loginArea;
+	private java.lang.String lgX;
+	private java.lang.String lgY;
 	//columns END
 
 
@@ -123,12 +129,64 @@ public class TuserProfile implements java.io.Serializable,IEntity{
 	public java.util.Date getUpdateDatetime() {
 		return this.updateDatetime;
 	}
-	
+
 	public void setUpdateDatetime(java.util.Date updateDatetime) {
 		this.updateDatetime = updateDatetime;
 	}
-	
-	
+
+	@Column(name = "last_logintime", unique = false, nullable = true, insertable = true, updatable = true, length = 19)
+	public Date getLastLoginTime() {
+		return lastLoginTime;
+	}
+
+	public void setLastLoginTime(Date lastLoginTime) {
+		this.lastLoginTime = lastLoginTime;
+	}
+
+	@Column(name = "last_pubtime", unique = false, nullable = true, insertable = true, updatable = true, length = 19)
+	public Date getLastPubTime() {
+		return lastPubTime;
+	}
+
+	public void setLastPubTime(Date lastPubTime) {
+		this.lastPubTime = lastPubTime;
+	}
+
+	@Column(name = "month_praise", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getMonthPraise() {
+		return monthPraise;
+	}
+
+	public void setMonthPraise(Integer monthPraise) {
+		this.monthPraise = monthPraise;
+	}
+
+	@Column(name = "login_area", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
+	public String getLoginArea() {
+		return loginArea;
+	}
+
+	public void setLoginArea(String loginArea) {
+		this.loginArea = loginArea;
+	}
+
+	@Column(name = "lg_x", unique = false, nullable = true, insertable = true, updatable = true, length = 18)
+	public String getLgX() {
+		return lgX;
+	}
+
+	public void setLgX(String lgX) {
+		this.lgX = lgX;
+	}
+
+	@Column(name = "lg_y", unique = false, nullable = true, insertable = true, updatable = true, length = 18)
+	public String getLgY() {
+		return lgY;
+	}
+
+	public void setLgY(String lgY) {
+		this.lgY = lgY;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

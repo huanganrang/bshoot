@@ -43,7 +43,17 @@ public class UserHobbyServiceImpl extends BaseServiceImpl<UserHobby> implements 
 		dg.setRows(ol);
 		return dg;
 	}
-	
+
+	@Override
+	public UserHobby getUserHobby(String userId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		TuserHobby t = userHobbyDao.get("from TuserHobby t  where t.user_id = :userId", params);
+		UserHobby o = new UserHobby();
+		BeanUtils.copyProperties(t, o);
+		return o;
+	}
+
 
 	protected String whereHql(UserHobby userHobby, Map<String, Object> params) {
 		String whereHql = "";	

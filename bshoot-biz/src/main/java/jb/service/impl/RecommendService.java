@@ -2,15 +2,11 @@ package jb.service.impl;
 
 import com.google.common.collect.Lists;
 import jb.bizmodel.RecommendUser;
-import jb.pageModel.BaseData;
-import jb.pageModel.Bshoot;
-import jb.pageModel.User;
-import jb.service.BasedataServiceI;
-import jb.service.BshootServiceI;
-import jb.service.RecommendServiceI;
-import jb.service.UserServiceI;
+import jb.pageModel.*;
+import jb.service.*;
 import jb.util.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import solr.model.SolrResponse;
@@ -34,6 +30,10 @@ public class RecommendService implements RecommendServiceI{
     private BasedataServiceI basedataServiceImpl;
     @Autowired
     private BshootServiceI bshootServiceImpl;
+    @Autowired
+    private UserProfileServiceI userProfileServiceImpl;
+    @Autowired
+    private UserHobbyServiceI userHobbyServiceImpl;
 
     @Override
     public List<RecommendUser> recommendUser( String loginArea) {
@@ -54,7 +54,7 @@ public class RecommendService implements RecommendServiceI{
         Criterias criterias2 = new Criterias();
         criterias.qc("fans_num:[* TO 10]");
         criterias.eq("login_area",loginArea);
-        criterias.between("createTime","", DateUtil.convert2SolrDate(DateUtil.getDate(-3,DateUtil.DATETIME_FORMAT)));
+        criterias.eq("createTime", DateUtil.convert2SolrDate(DateUtil.getDate(-3)));
         criterias.addOrder("rand_" + random.nextInt(1000), "asc");//随机排序字段
         criterias.addField(new String[]{"id","usex","hobby","areaCode"});
         criterias.addField();
@@ -89,7 +89,7 @@ public class RecommendService implements RecommendServiceI{
     }
 
     @Override
-    public void recommendHot() {
+    public List<Bshoot> recommendHot() {
         Date tenHousrago = DateUtil.getDateBeforeHours(-10);
        List<Bshoot> bshoots =  bshootServiceImpl.getHotBshoots(tenHousrago, 200, 50);
        if(bshoots.size()<50){
@@ -98,16 +98,84 @@ public class RecommendService implements RecommendServiceI{
            if(CollectionUtils.isNotEmpty(bs2))
              bshoots.addAll(bs2);
        }
-        //TODO
+        return bshoots;
     }
 
     @Override
-    public void recommend() {
+    public List<Bshoot> recommend(String userId,int start) {
+        //获得当前用户画像
+        UserProfile userProfile = userProfileServiceImpl.get(userId);
+        List<Bshoot> bshoots = new ArrayList<Bshoot>();
+        //1.新人推荐
+        bshoots.add(recommendNewUser(userId,start));
+        //2.好友共同关注的人
+        //3.我评论打赏过的人
+        //4.好友打赏过的人
+        //5、可能感兴趣的人
+        //6.可能认识的人
+        //7.附近的人
+        return null;
+    }
 
+    //我评论/打赏过的人的动态
+    private List<Bshoot> have_comment_praise(String userId,int start){
+        return null;
+    }
+
+    //可能感兴趣的人
+    private List<Bshoot> mabyeInterest(String userId,String logintArea,int start){
+        UserHobby userHobby  = userHobbyServiceImpl.getUserHobby(userId);
+        if(null!=userHobby&& StringUtils.isNotEmpty(userHobby.getHobbyType())){
+            String[] hobbyType = userHobby.getHobbyType().split(",");
+            StringBuffer qc = new StringBuffer();
+            for(String hobby:hobbyType){
+
+            }
+            Criterias criterias = new Criterias();
+            criterias.qc("");
+            criterias.lt("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0)));
+            criterias.addField("id");
+            criterias.setStart(start);
+            criterias.setRows((start==0?1:start)*1);
+            SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
+            if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
+                List<UserEntity> user = solrResponse.getDocs();
+                //return bshootServiceImpl.getUserLastBshoot(user.get(0).getId());
+            }
+        }
+        return  null;
+    }
+
+    private Bshoot recommendNewUser(String userId,int start){
+        UserProfile userProfile = userProfileServiceImpl.get(userId);
+        //1.新人推荐
+        if(null!=userProfile&&userProfile.getFansNum()<50) {
+            //当前用户粉丝量大于50则不推荐，新人推荐根据用户粉丝量，获取同城用户且当天发布了动态
+            String qc = null;
+            if(userProfile.getFansNum()<10)
+                qc="fans_num:[0 TO 9]";
+            else if(userProfile.getFansNum()>10&&userProfile.getFansNum()<30)
+                qc="fans_num:[10 TO 29]";
+            else if(userProfile.getFansNum()>30&&userProfile.getFansNum()<50)
+                qc="fans_num:[30 TO 49]";
+            Criterias criterias = new Criterias();
+            criterias.qc(qc);
+            criterias.eq("login_area",userProfile.getLoginArea());
+            criterias.lt("lastPublishTime", DateUtil.convert2SolrDate(DateUtil.getDate(0)));
+            criterias.addField("id");
+            criterias.setStart(start);
+            criterias.setRows((start==0?1:start)*1);
+            SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
+            if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
+                List<UserEntity> user = solrResponse.getDocs();
+                return bshootServiceImpl.getUserLastBshoot(user.get(0).getId());
+            }
+        }
+        return null;
     }
 
     public static void main(String[] args){
-        System.out.println(DateUtil.convert2SolrDate(DateUtil.getDate(-3,DateUtil.DATETIME_FORMAT)));
+        System.out.println(DateUtil.convert2SolrDate(DateUtil.getDate(0,DateUtil.DATETIME_FORMAT)));
         System.out.println(DateUtil.convert2SolrDate(DateUtil.getDateBeforeHours(-10, DateUtil.DATETIME_FORMAT)));
     }
 }
