@@ -9,6 +9,7 @@ public class UserAttention implements java.io.Serializable {
 	private String id;
 	private String userId;
 	private String attUserId;
+	private String attentionGroup;
 	private Date attentionDatetime;
 	private Integer isDelete;
 
@@ -38,6 +39,14 @@ public class UserAttention implements java.io.Serializable {
 	}
 	public void setAttUserId(String attUserId) {
 		this.attUserId = attUserId;
+	}
+
+	public String getAttentionGroup() {
+		return attentionGroup;
+	}
+
+	public void setAttentionGroup(String attentionGroup) {
+		this.attentionGroup = attentionGroup;
 	}
 
 	public String getAttUserId() {
