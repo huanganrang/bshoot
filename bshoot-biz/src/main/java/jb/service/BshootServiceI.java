@@ -51,7 +51,6 @@ public interface BshootServiceI {
 	/**
 	 * 根据广场Code查询
 	 * @param ph
-	 * @param code
 	 * @return
 	 */
 	public DataGrid dataGridBySquare(PageHelper ph, String squareId);
@@ -61,9 +60,9 @@ public interface BshootServiceI {
 	 * @param userIds
 	 * @return
 	 */
-	public List<Bshoot> getUserLastBshoot(List<String> userIds);
+	public List<Bshoot> getUserLastBshoot(List<String> userIds,Date dateLimit);
 
-	public Bshoot getUserLastBshoot(String userId);
+	public Bshoot getUserLastBshoot(String userId,Date dateLimit);
 	
 	/**
 	 * 获取Bshoot数据表格
@@ -82,7 +81,6 @@ public interface BshootServiceI {
 	 * 首页搜索
 	 * @param bshoot
 	 * @param ph
-	 * @param id
 	 * @return
 	 */
 	public DataGrid dataGridSearch(Bshoot bshoot, PageHelper ph, String userId);

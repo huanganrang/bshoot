@@ -48,6 +48,8 @@ public class TuserMobilePerson implements java.io.Serializable,IEntity{
 	private java.lang.Integer isDelete;
 	//
 	private java.util.Date createDatetime;
+
+	private java.lang.String friendId;
 	//columns END
 
 
@@ -113,7 +115,15 @@ public class TuserMobilePerson implements java.io.Serializable,IEntity{
 	public void setCreateDatetime(java.util.Date createDatetime) {
 		this.createDatetime = createDatetime;
 	}
-	
+
+	@Column(name = "friend_id", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
+	public String getFriendId() {
+		return friendId;
+	}
+
+	public void setFriendId(String friendId) {
+		this.friendId = friendId;
+	}
 	
 	/*
 	public String toString() {

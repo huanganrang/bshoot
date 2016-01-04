@@ -99,4 +99,30 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 		userMobilePersonDao.delete(userMobilePersonDao.get(TuserMobilePerson.class, id));
 	}
 
+	@Override
+	public List<UserMobilePerson> notAttMobilePerson(String userId, int start, int rows) {
+		List<TuserMobilePerson> tuserMobilePersons = userMobilePersonDao.notAttMobilePerson(userId,start,rows);
+		UserMobilePerson userMobilePerson = null;
+		List<UserMobilePerson> userMobilePersonList = new ArrayList<UserMobilePerson>();
+		for(TuserMobilePerson u:tuserMobilePersons){
+			userMobilePerson = new UserMobilePerson();
+			BeanUtils.copyProperties(u,userMobilePerson);
+			userMobilePersonList.add(userMobilePerson);
+		}
+		return userMobilePersonList;
+	}
+
+	@Override
+	public List<UserMobilePerson> noAttMobilePersonPerson(String userId, int start, int rows) {
+		List<TuserMobilePerson> tuserMobilePersons = userMobilePersonDao.noAttMobilePersonPerson(userId,start,rows);
+		UserMobilePerson userMobilePerson = null;
+		List<UserMobilePerson> userMobilePersonList = new ArrayList<UserMobilePerson>();
+		for(TuserMobilePerson u:tuserMobilePersons){
+			userMobilePerson = new UserMobilePerson();
+			BeanUtils.copyProperties(u,userMobilePerson);
+			userMobilePersonList.add(userMobilePerson);
+		}
+		return userMobilePersonList;
+	}
+
 }

@@ -4,6 +4,8 @@ import jb.pageModel.BshootPraise;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -59,4 +61,9 @@ public interface BshootPraiseServiceI {
 	
 	public BshootPraise get(String bshootId, String userId) ;
 
+	List<String> mePraiseCommentUser(String userId, int start, int rows);
+
+	List<String> friendHasPraisedUser(String userId, int start, int rows);
+
+	List<String> singleFriendHasPraisedUser(String userId, int start, int rows);
 }

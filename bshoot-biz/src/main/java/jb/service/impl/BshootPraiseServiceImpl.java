@@ -138,4 +138,19 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		return o;
 	}
 
+	@Override
+	public List<String> mePraiseCommentUser(String userId, int start, int rows) {
+		return bshootPraiseDao.mePraiseCommentUser(userId,start,rows);
+	}
+
+	@Override
+	public List<String> friendHasPraisedUser(String userId, int start, int rows) {
+		return bshootPraiseDao.friendHasPraisedUser(userId,start,rows);
+	}
+
+	@Override
+	public List<String> singleFriendHasPraisedUser(String userId, int start, int rows) {
+		return bshootPraiseDao.singleFriendHasPraisedUser(userId,start,rows);
+	}
+
 }
