@@ -58,9 +58,11 @@ public interface BshootServiceI {
 
 	/**
 	 * 获得用户最近一条动态
-	 * @param userId
+	 * @param userIds
 	 * @return
 	 */
+	public List<Bshoot> getUserLastBshoot(List<String> userIds);
+
 	public Bshoot getUserLastBshoot(String userId);
 	
 	/**

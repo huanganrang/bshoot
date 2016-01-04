@@ -96,7 +96,41 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}
-	
+
+	@Override
+	public List<UserAttention> friendCommonAtt(String userId,int start,int rows) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		List<TuserAttention> userAttentions = userAttentionDao.friendCommonAtt(userId,start,rows);
+		if(userAttentions==null)
+			return null;
+		UserAttention o = null;
+		List<UserAttention> userAttentionList = new ArrayList<UserAttention>();
+		for(TuserAttention userAttention:userAttentions){
+			o = new UserAttention();
+			BeanUtils.copyProperties(userAttention,o);
+			userAttentionList.add(o);
+		}
+		return userAttentionList;
+	}
+
+	@Override
+	public List<UserAttention> singleFriednAtt(String userId, int start, int rows) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		List<TuserAttention> userAttentions = userAttentionDao.singleFriednAtt(userId,start,rows);
+		if(userAttentions==null)
+			return null;
+		UserAttention o = null;
+		List<UserAttention> userAttentionList = new ArrayList<UserAttention>();
+		for(TuserAttention userAttention:userAttentions){
+			o = new UserAttention();
+			BeanUtils.copyProperties(userAttention,o);
+			userAttentionList.add(o);
+		}
+		return userAttentionList;
+	}
+
 	@Override
 	public void edit(UserAttention userAttention) {
 		TuserAttention t = userAttentionDao.get(TuserAttention.class, userAttention.getId());

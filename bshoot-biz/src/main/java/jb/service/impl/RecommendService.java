@@ -34,6 +34,8 @@ public class RecommendService implements RecommendServiceI{
     private UserProfileServiceI userProfileServiceImpl;
     @Autowired
     private UserHobbyServiceI userHobbyServiceImpl;
+    @Autowired
+    private UserAttentionServiceI userAttentionServiceImpl;
 
     @Override
     public List<RecommendUser> recommendUser( String loginArea) {
@@ -107,13 +109,40 @@ public class RecommendService implements RecommendServiceI{
         UserProfile userProfile = userProfileServiceImpl.get(userId);
         List<Bshoot> bshoots = new ArrayList<Bshoot>();
         //1.新人推荐
-        bshoots.add(recommendNewUser(userId,start));
-        //2.好友共同关注的人
+        bshoots.add(recommendNewUser(userProfile.getFansNum(),userProfile.getLoginArea(),start));
+        //2.好友共同关注的人 done
+        List<Bshoot> friendCommonBshoot = friendCommonAtt(userId, start);
+        if(CollectionUtils.isNotEmpty(friendCommonBshoot))
+            bshoots.addAll(friendCommonBshoot);
         //3.我评论打赏过的人
         //4.好友打赏过的人
         //5、可能感兴趣的人
+        List<Bshoot> mabyeInterestBshoot = mabyeInterest(userId,userProfile.getLoginArea(), start);
+        if(CollectionUtils.isNotEmpty(mabyeInterestBshoot))
+            bshoots.addAll(mabyeInterestBshoot);
+
         //6.可能认识的人
-        //7.附近的人
+        //7.附近的人 done
+        List<Bshoot> nearbyBshoot = nearbyBshoot(userProfile.getLoginArea(), start);
+        if(CollectionUtils.isNotEmpty(nearbyBshoot))
+           bshoots.addAll(nearbyBshoot);
+        return null;
+    }
+
+    //好友共同关注的人
+    private List<Bshoot> friendCommonAtt(String useId,int start){
+        List<UserAttention> userAttentionList = userAttentionServiceImpl.friendCommonAtt(useId,6*start,6);
+        if(CollectionUtils.isEmpty(userAttentionList)){
+            //显示单个好友关注的人动态
+            userAttentionList = userAttentionServiceImpl.singleFriednAtt(useId,6*start,6);
+        }
+        if(CollectionUtils.isNotEmpty(userAttentionList)) {
+            List<String> userIds = new ArrayList<String>();
+            for (UserAttention userAttention : userAttentionList) {
+                userIds.add(userAttention.getAttUserId());
+            }
+            return bshootServiceImpl.getUserLastBshoot(userIds);
+        }
         return null;
     }
 
@@ -123,7 +152,7 @@ public class RecommendService implements RecommendServiceI{
     }
 
     //可能感兴趣的人
-    private List<Bshoot> mabyeInterest(String userId,String logintArea,int start){
+    private List<Bshoot> mabyeInterest(String userId,String loginArea,int start){
         UserHobby userHobby  = userHobbyServiceImpl.getUserHobby(userId);
         if(null!=userHobby&& StringUtils.isNotEmpty(userHobby.getHobbyType())){
             String[] hobbyType = userHobby.getHobbyType().split(",");
@@ -135,40 +164,64 @@ public class RecommendService implements RecommendServiceI{
             criterias.qc("");
             criterias.lt("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0)));
             criterias.addField("id");
-            criterias.setStart(start);
-            criterias.setRows((start==0?1:start)*1);
+            criterias.setStart(6*start);
+            criterias.setRows(6);
             SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
             if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
                 List<UserEntity> user = solrResponse.getDocs();
                 //return bshootServiceImpl.getUserLastBshoot(user.get(0).getId());
+                //bshootServiceImpl.getUserLastBshoot();
             }
         }
         return  null;
     }
 
-    private Bshoot recommendNewUser(String userId,int start){
-        UserProfile userProfile = userProfileServiceImpl.get(userId);
+    /**
+     * 附近的人动态
+     * @param loginArea
+     * @return
+     */
+    private List<Bshoot> nearbyBshoot(String loginArea ,int start){
+        Criterias criterias = new Criterias();
+        criterias.qc("login_area:"+loginArea);
+        criterias.addField("id");
+        criterias.addOrder("lastPublishTime","desc");
+        criterias.setStart(start*6);
+        criterias.setRows(6);
+        SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
+        if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
+            List<UserEntity> users = solrResponse.getDocs();
+            List<String> userIds = new ArrayList<String>();
+            for(UserEntity userEntity:users){
+                userIds.add(userEntity.getId());
+            }
+            return bshootServiceImpl.getUserLastBshoot(userIds);
+        }
+        return null;
+    }
+
+    private Bshoot recommendNewUser(Integer fansNum,String loginArea,int start){
         //1.新人推荐
-        if(null!=userProfile&&userProfile.getFansNum()<50) {
+        if(null!=fansNum&&fansNum<50) {
             //当前用户粉丝量大于50则不推荐，新人推荐根据用户粉丝量，获取同城用户且当天发布了动态
             String qc = null;
-            if(userProfile.getFansNum()<10)
+            if(fansNum<10)
                 qc="fans_num:[0 TO 9]";
-            else if(userProfile.getFansNum()>10&&userProfile.getFansNum()<30)
+            else if(fansNum>10&&fansNum<30)
                 qc="fans_num:[10 TO 29]";
-            else if(userProfile.getFansNum()>30&&userProfile.getFansNum()<50)
+            else if(fansNum>30&&fansNum<50)
                 qc="fans_num:[30 TO 49]";
             Criterias criterias = new Criterias();
             criterias.qc(qc);
-            criterias.eq("login_area",userProfile.getLoginArea());
+            criterias.eq("login_area",loginArea);
             criterias.lt("lastPublishTime", DateUtil.convert2SolrDate(DateUtil.getDate(0)));
             criterias.addField("id");
-            criterias.setStart(start);
-            criterias.setRows((start==0?1:start)*1);
+            criterias.setStart(start*1);
+            criterias.setRows(1);
             SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
             if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
                 List<UserEntity> user = solrResponse.getDocs();
-                return bshootServiceImpl.getUserLastBshoot(user.get(0).getId());
+               return bshootServiceImpl.getUserLastBshoot(user.get(0).getId());
             }
         }
         return null;

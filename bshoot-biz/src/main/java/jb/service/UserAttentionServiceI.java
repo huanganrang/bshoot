@@ -5,6 +5,8 @@ import jb.pageModel.PageHelper;
 import jb.pageModel.UserAttention;
 import jb.pageModel.UserAttentionGroup;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -105,4 +107,12 @@ public interface UserAttentionServiceI {
 	 */
 	public UserAttention get(String userId, String attUserId);
 
+	/**
+	 * 好友共同关注的人
+	 * @param userId
+	 * @return
+	 */
+	public List<UserAttention> friendCommonAtt(String userId,int start,int rows);
+
+	List<UserAttention> singleFriednAtt(String userId,int start,int rows);
 }

@@ -70,4 +70,27 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 		return l;
 	}
 
+	@Override
+	public List<Tbshoot> getUserLastBshoot(List<String> userIds) {
+		if(userIds==null||userIds.size()==0)return null;
+		String hql="select A.* from bshoot A,(SELECT MAX(create_datetime) last_date FROM bshoot where user_id in (:userId) GROUP BY user_id) B where A.create_datetime=B.last_date and AND A.user_id in (:userId) ";
+		Query query = getCurrentSession().createSQLQuery(hql).addEntity(Tbshoot.class);
+		query.setParameterList("userId", userIds);
+		List<Tbshoot> l = query.list();
+		return l;
+	}
+
+	@Override
+	public Tbshoot getUserLastBshoot(String userId) {
+		if(userId==null||userId.trim().length()==0)return null;
+		String hql="select * from bshoot  where user_id=:userId order by create_datetime desc limit 0,1";
+		Query query = getCurrentSession().createSQLQuery(hql).addEntity(Tbshoot.class);
+		query.setParameter("userId",userId);
+		List<Tbshoot> l = query.list();
+		if (l != null && l.size() > 0) {
+			return l.get(0);
+		}
+		return null;
+	}
+
 }
