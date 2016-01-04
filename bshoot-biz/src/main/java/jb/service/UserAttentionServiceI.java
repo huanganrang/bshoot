@@ -77,4 +77,6 @@ public interface UserAttentionServiceI {
 	 * @return
 	 */
 	public List<UserAttention> friendCommonAtt(String userId,int start,int rows);
+
+	List<UserAttention> singleFriednAtt(String userId,int start,int rows);
 }

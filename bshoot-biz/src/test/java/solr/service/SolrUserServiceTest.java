@@ -21,7 +21,7 @@ public class SolrUserServiceTest extends TestConfig{
     @Test
     public void queryTest(){
         Criterias criterias = new Criterias();
-        criterias.qc("id:12");
+        criterias.qc("nickname:61848");
         SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
         List<UserEntity> userEntityList = solrResponse.getDocs();
         for (UserEntity userEntity:userEntityList)

@@ -132,9 +132,13 @@ public class RecommendService implements RecommendServiceI{
     //好友共同关注的人
     private List<Bshoot> friendCommonAtt(String useId,int start){
         List<UserAttention> userAttentionList = userAttentionServiceImpl.friendCommonAtt(useId,6*start,6);
-        if(CollectionUtils.isNotEmpty(userAttentionList)){
-            List<String > userIds  = new ArrayList<String>();
-            for(UserAttention userAttention:userAttentionList){
+        if(CollectionUtils.isEmpty(userAttentionList)){
+            //显示单个好友关注的人动态
+            userAttentionList = userAttentionServiceImpl.singleFriednAtt(useId,6*start,6);
+        }
+        if(CollectionUtils.isNotEmpty(userAttentionList)) {
+            List<String> userIds = new ArrayList<String>();
+            for (UserAttention userAttention : userAttentionList) {
                 userIds.add(userAttention.getAttUserId());
             }
             return bshootServiceImpl.getUserLastBshoot(userIds);

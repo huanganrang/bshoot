@@ -15,4 +15,6 @@ public interface UserAttentionDaoI extends BaseDaoI<TuserAttention> {
 	public List<TuserAttention> getTuserAttentions(String userId, String[] attUserIds);
 
 	List<TuserAttention> friendCommonAtt(String userId, int start,int rows);
+
+	List<TuserAttention> singleFriednAtt(String userId,int start,int rows);
 }
