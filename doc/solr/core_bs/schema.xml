@@ -1,0 +1,44 @@
+<schema name="core_bs" version="1.1">
+    <types>
+        <fieldType name="text" class="solr.TextField">
+            <analyzer type="index" isMaxWorldLength="false" class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+            <analyzer type="query" isMaxWorldLength="true" class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+        </fieldType>
+        <fieldtype name="string"  class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
+        <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="date" class="solr.TrieDateField" precisionStep="0"
+                   positionIncrementGap="0" omitNorms="true" />
+        <fieldtype name="location" class="solr.LatLonType" subFieldSuffix="_latlon"/>
+        <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0"
+                   positionIncrementGap="0" />
+        <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0" omitNorms="true"/>
+        <fieldType name="random" class="solr.RandomSortField"/>
+    </types>
+    <fields>
+        <!--动态基础信息-->
+        <field name="id" type="string" indexed="true"  stored="true" required="true"/>
+        <field name="publishTime" type="date" indexed="true" stored="true"/>
+        <!--<field name="nickname" type="string" indexed="true" stored="true"/>-->
+        <field name="userId" type="string" indexed="true" stored="true"/>
+        <!--<field name="praise_num" type="long" indexed="true" stored="true"/>-->
+        <field name="comment_num" type="long" indexed="true" stored="true"/>
+        <field name="read_num" type="long" indexed="true" stored="true"/>
+        <field name="pub_location" type="location" indexed="true"/>
+        <field name="file_type" type="int" indexed="true" stored="true"/>
+        <!--<field name="hasVideo" type="int" indexed="true" stored="true"/>
+        <field name="hasImg" type="int" indexed="true" stored="true"/>
+        <field name="hasAudio" type="int" indexed="true" stored="true"/>-->
+        <field name="forward_num" type="long" indexed="true" stored="true"/>
+        <field name="reward_num" type="long" indexed="true" stored="true"/>
+        <field name="favorite_num" type="long" indexed="true" stored="true"/>
+        <field name="isDelete" type="int" indexed="true" stored="true"/>
+        <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
+        <dynamicField name="*_square" type="string" indexed="true" stored="true"/>
+        <dynamicField name="*_text" type="string" indexed="true" stored="true"/>
+        <dynamicField name="*_shareNum" type="long" indexed="true" stored="true"/>
+        <dynamicField name="*_latlon" type="double" indexed="true" stored="true"/>
+        <dynamicField name="rand*" type="random" indexed="true" stored="false"/>
+    </fields>
+    <uniqueKey>id</uniqueKey>
+    <defaultSearchField>userId</defaultSearchField>
+</schema>

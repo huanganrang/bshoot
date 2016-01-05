@@ -2,18 +2,12 @@ package jb.dao.impl;
 
 import jb.dao.BshootDaoI;
 import jb.model.Tbshoot;
-import jb.util.PathUtil;
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.CallableStatementCallback;
-import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -71,26 +65,40 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 	}
 
 	@Override
-	public List<Tbshoot> getUserLastBshoot(List<String> userIds) {
+	public List<Tbshoot> getUserLastBshoot(List<String> userIds,Date dateLimit) {
 		if(userIds==null||userIds.size()==0)return null;
-		String hql="select A.* from bshoot A,(SELECT MAX(create_datetime) last_date FROM bshoot where user_id in (:userId) GROUP BY user_id) B where A.create_datetime=B.last_date and AND A.user_id in (:userId) ";
+		String hql="select A.* from bshoot A,(SELECT MAX(create_datetime) last_date FROM bshoot where user_id in (:userId) GROUP BY user_id) B where A.create_datetime=B.last_date and A.create_datetime>=:dateLimit and  A.user_id in (:userId) ";
 		Query query = getCurrentSession().createSQLQuery(hql).addEntity(Tbshoot.class);
 		query.setParameterList("userId", userIds);
+		query.setParameter("dateLimit",dateLimit);
 		List<Tbshoot> l = query.list();
 		return l;
 	}
 
 	@Override
-	public Tbshoot getUserLastBshoot(String userId) {
+	public Tbshoot getUserLastBshoot(String userId,Date dateLimit) {
 		if(userId==null||userId.trim().length()==0)return null;
-		String hql="select * from bshoot  where user_id=:userId order by create_datetime desc limit 0,1";
+		String hql="select * from bshoot  where user_id=:userId and create_datetime>=:dateLimit order by create_datetime desc limit 0,1";
 		Query query = getCurrentSession().createSQLQuery(hql).addEntity(Tbshoot.class);
 		query.setParameter("userId",userId);
+		query.setParameter("dateLimit",dateLimit);
 		List<Tbshoot> l = query.list();
 		if (l != null && l.size() > 0) {
 			return l.get(0);
 		}
 		return null;
+	}
+
+	@Override
+	public List<Tbshoot> getHotBshoots(Date pubTime, int praiseNum, int start, int rows) {
+		String hql="select * from bshoot t  where t.create_datetime >=:pubTime and t.bs_praise>=:praiseNum order by t.create_datetime desc  limit :start,:rows";
+		Query query = getCurrentSession().createSQLQuery(hql).addEntity(Tbshoot.class);
+		query.setParameter("pubTime", pubTime);
+		query.setParameter("praiseNum",praiseNum);
+		query.setParameter("start",start);
+		query.setParameter("rows",rows);
+		List<Tbshoot> l = query.list();
+		return l;
 	}
 
 }

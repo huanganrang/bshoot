@@ -4,6 +4,8 @@ import jb.pageModel.UserMobilePerson;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -50,5 +52,17 @@ public interface UserMobilePersonServiceI {
 	 * @param id
 	 */
 	public void delete(String id);
+
+	/**
+	 * 我未关注的手机联系人
+	 * @param userId
+	 * @param start
+	 * @param rows
+	 * @return
+	 */
+	public List<UserMobilePerson> notAttMobilePerson(String userId,int start,int rows);
+
+	public List<UserMobilePerson> noAttMobilePersonPerson(String userId,int start,int rows);
+
 
 }

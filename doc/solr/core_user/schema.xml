@@ -1,0 +1,50 @@
+<schema name="core_user" version="1.1">
+    <types>
+        <fieldType name="text" class="solr.TextField">
+            <analyzer type="index" isMaxWorldLength="false" class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+            <analyzer type="query" isMaxWorldLength="true" class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+        </fieldType>
+        <fieldtype name="string"  class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
+        <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldtype name="location" class="solr.LatLonType" subFieldSuffix="_latlon"/>
+        <fieldType name="date" class="solr.TrieDateField" precisionStep="0"
+                   positionIncrementGap="0" omitNorms="true" />
+        <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0"
+                   positionIncrementGap="0" />
+        <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0" omitNorms="true"/>
+        <fieldType name="random" class="solr.RandomSortField"/>
+    </types>
+    <fields>
+        <!--用户基础信息-->
+        <field name="id" type="string" indexed="true"  stored="true" required="true"/>
+        <field name="utype" type="string" indexed="true" stored="true"/>
+        <field name="nickname" type="string" indexed="true" stored="true"/>
+        <field name="usex" type="string" indexed="true" stored="true"/>
+        <field name="areaCode" type="string" indexed="true" stored="true"/>
+        <field name="areaName" type="string" indexed="true" stored="true"/>
+        <field name="birthday" type="string" indexed="true" stored="true"/>
+        <field name="bardian" type="text" indexed="true" stored="true"/>
+        <field name="member_v" type="string" indexed="true" stored="true"/>
+        <field name="createTime" type="date" indexed="true" stored="true"/>
+        <field name="hobby" type="string" indexed="true" stored="true" multiValued="true"/>
+        <field name="lastLoginTime" type="date" indexed="true" stored="true"/>
+        <field name="lastPublishTime" type="date" indexed="true" stored="true"/>
+        <field name="fansNum" type="long" indexed="true" stored="true"/>
+        <field name="login_location" type="location" indexed="true"/>
+        <field name="mobile" type="string" indexed="true" stored="true"  multiValued="true"/>
+        <field name="is_tarento" type="int" indexed="true" stored="true"/>
+        <field name="is_star" type="int" indexed="true" stored="true"/>
+        <field name="month_praise" type="int" indexed="true" stored="true"/>
+        <field name="login_area" type="string" indexed="true" stored="true"/>
+        <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
+        <dynamicField name="*_reward" type="long" indexed="true" stored="true"/>
+        <dynamicField name="*_att" type="long" indexed="true" stored="true"/>
+        <dynamicField name="*_square" type="string" indexed="true" stored="true"  multiValued="true"/>
+        <dynamicField name="*_job" type="string" indexed="true" stored="true"  multiValued="true"/>
+        <dynamicField name="*_location" type="string" indexed="true" stored="true"/>
+        <dynamicField name="*_latlon" type="double" indexed="true" stored="true"/>
+        <dynamicField name="rand*" type="random" indexed="true" stored="false"/>
+    </fields>
+    <uniqueKey>id</uniqueKey>
+    <defaultSearchField>nickname</defaultSearchField>
+</schema>

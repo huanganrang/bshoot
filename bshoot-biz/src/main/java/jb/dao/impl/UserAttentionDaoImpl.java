@@ -25,7 +25,7 @@ public class UserAttentionDaoImpl extends BaseDaoImpl<TuserAttention> implements
 
 	@Override
 	public List<TuserAttention> friendCommonAtt(String userId, int start,int rows) {
-		String hql="select * from user_attention  where user_id in (SELECT att_user_id from user_attention WHERE user_id=:userId) group by att_user_id HAVING count(att_user_id)>1  order by rand() limit :start,:rows";
+		String hql="select * from user_attention  where user_id in (SELECT att_user_id from user_attention WHERE user_id=:userId) group by att_user_id HAVING count(att_user_id)>1 limit :start,:rows";
 		Query query = getCurrentSession().createSQLQuery(hql).addEntity(TuserAttention.class);
 		query.setParameter("userId", userId);
 		query.setParameter("start",start);
@@ -36,7 +36,7 @@ public class UserAttentionDaoImpl extends BaseDaoImpl<TuserAttention> implements
 
 	@Override
 	public List<TuserAttention> singleFriednAtt(String userId, int start, int rows) {
-		String hql="select * from user_attention  where user_id in (SELECT att_user_id from user_attention WHERE user_id=:userId)  order by rand() limit :start,:rows";
+		String hql="select * from user_attention  where user_id in (SELECT att_user_id from user_attention WHERE user_id=:userId) limit :start,:rows";
 		Query query = getCurrentSession().createSQLQuery(hql).addEntity(TuserAttention.class);
 		query.setParameter("userId", userId);
 		query.setParameter("start",start);

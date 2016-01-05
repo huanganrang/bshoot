@@ -44,6 +44,7 @@ public class TbshootCollect implements java.io.Serializable{
 	private String bshootId;
 	//
 	private Date collectDatetime;
+	private String bsUserId;
 	//columns END
 
 
@@ -91,8 +92,15 @@ public class TbshootCollect implements java.io.Serializable{
 	public void setCollectDatetime(Date collectDatetime) {
 		this.collectDatetime = collectDatetime;
 	}
-	
-	
+
+	@Column(name = "bs_userId", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
+	public String getBsUserId() {
+		return bsUserId;
+	}
+
+	public void setBsUserId(String bsUserId) {
+		this.bsUserId = bsUserId;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

@@ -1,9 +1,14 @@
 package jb.controller;
 
+import jb.bizmodel.RecommendUser;
+import jb.pageModel.Bshoot;
 import jb.service.impl.RecommendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  *
@@ -17,4 +22,27 @@ public class RecommendController extends  BaseController{
     @Autowired
     private RecommendService recommendService;
 
+    //热门推荐
+    @RequestMapping("/hot")
+    @ResponseBody
+    public List<Bshoot> recommentHost(int start) {
+        return  recommendService.recommendHot(start);
+    }
+
+
+    //新人推荐
+    @RequestMapping("/recommendUser")
+    @ResponseBody
+    public List<RecommendUser> recommendUser() {
+        //TODO
+        return  recommendService.recommendUser("1");
+    }
+
+    //首页推荐
+    @RequestMapping("/recommend")
+    @ResponseBody
+    public List<Bshoot> recommend(int start) {
+        //TODO
+        return  recommendService.recommend("1",start);
+    }
 }

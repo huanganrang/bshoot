@@ -346,10 +346,11 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	}
 
 	@Override
-	public List<Bshoot> getUserLastBshoot(List<String> userIds) {
+	public List<Bshoot> getUserLastBshoot(List<String> userIds,Date dateLimit) {
+		if(null==userIds||userIds.isEmpty()) return null;
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userIds);
-		List<Tbshoot> tbshoots = bshootDao.getUserLastBshoot(userIds);
+		List<Tbshoot> tbshoots = bshootDao.getUserLastBshoot(userIds,dateLimit);
 		if(tbshoots==null) return null;
 		Bshoot o = null;
 		List<Bshoot> bshootList = new ArrayList<Bshoot>();
@@ -362,10 +363,10 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	}
 
 	@Override
-	public Bshoot getUserLastBshoot(String userId) {
+	public Bshoot getUserLastBshoot(String userId,Date dateLimit) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
-		Tbshoot t = bshootDao.getUserLastBshoot(userId);
+		Tbshoot t = bshootDao.getUserLastBshoot(userId,dateLimit);
 		if(t==null) return null;
 		Bshoot o = new Bshoot();
 		BeanUtils.copyProperties(t, o);
@@ -656,15 +657,8 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	}
 
 	@Override
-	public List<Bshoot> getHotBshoots(Date pubTime, int praiseNum, int rows) {
-		List<Bshoot> ol = new ArrayList<Bshoot>();
-		DataGrid dg = new DataGrid();
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("pubTime",pubTime);
-		params.put("praiseNum",praiseNum);
-		params.put("rows",rows);
-		String hql = " from Tbshoot t  where t.createDatetime >=:pubTime and t.bsPraise>=:praiseNum order by t.createDatetime desc  limit 0,:rows";
-		List<Tbshoot> l = bshootDao.find(hql,params);
+	public List<Bshoot> getHotBshoots(Date pubTime, int praiseNum,int start, int rows) {
+		List<Tbshoot> l = bshootDao.getHotBshoots(pubTime,praiseNum,start,rows);
 		List<Bshoot> bshoots = new ArrayList<Bshoot>();
 		for(Tbshoot t:l){
 			Bshoot bs = new Bshoot();

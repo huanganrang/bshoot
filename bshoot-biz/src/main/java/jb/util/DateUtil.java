@@ -41,6 +41,17 @@ public class DateUtil {
 		return a;
 	}
 
+	public static String getDateStart(int beforeDays){
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date());
+		c.add(Calendar.DAY_OF_MONTH, beforeDays);
+		c.set(Calendar.HOUR_OF_DAY,0);
+		c.set(Calendar.MINUTE,0);
+		c.set(Calendar.SECOND,0);
+		String a = dateToString(c.getTime(), DATETIME_FORMAT);
+		return a;
+	}
+
 	/**
 	 * 得到当前日期的前/后　beforeDays　天的日期数,格式自定
 	 * 
@@ -91,7 +102,7 @@ public class DateUtil {
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DATETIME_FORMAT);
 		try {
 			dateFormat.parse(date);
-			date.replace(" ","T");
+			date=date.replace(" ","T");
 			return date+"Z";
 		}catch (ParseException e){
 			e.printStackTrace();

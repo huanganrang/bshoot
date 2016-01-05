@@ -50,6 +50,7 @@ public class TbshootComment implements java.io.Serializable{
 	private java.util.Date commentDatetime;
 
 	private Integer commentPraise;
+	private String bsUserId;
 	//columns END
 
 
@@ -123,7 +124,14 @@ public class TbshootComment implements java.io.Serializable{
 	public void setCommentPraise(Integer commentPraise) {
 		this.commentPraise = commentPraise;
 	}
-	
+	@Column(name = "bs_userId", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
+	public String getBsUserId() {
+		return bsUserId;
+	}
+
+	public void setBsUserId(String bsUserId) {
+		this.bsUserId = bsUserId;
+	}
 	
 	/*
 	public String toString() {

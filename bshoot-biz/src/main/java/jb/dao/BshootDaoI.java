@@ -2,6 +2,7 @@ package jb.dao;
 
 import jb.model.Tbshoot;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,10 @@ public interface BshootDaoI extends BaseDaoI<Tbshoot> {
 
 	public List<Tbshoot> getTbshoots(String[] bshootIds);
 
-	List<Tbshoot> getUserLastBshoot(List<String> userIds);
+	List<Tbshoot> getUserLastBshoot(List<String> userIds,Date dateLimit);
 
-	Tbshoot getUserLastBshoot(String userId);
+	Tbshoot getUserLastBshoot(String userId,Date dateLimit);
+
+
+	List<Tbshoot> getHotBshoots(Date pubTime, int praiseNum, int start, int rows);
 }

@@ -11,7 +11,8 @@ public class UserMobilePerson implements java.io.Serializable {
 	private java.lang.String userId;	
 	private java.lang.String friendName;	
 	private java.lang.String mobile;	
-	private java.lang.Integer isDelete;	
+	private java.lang.Integer isDelete;
+	private java.lang.String friendId;
 	private Date createDatetime;			
 
 	
@@ -61,4 +62,11 @@ public class UserMobilePerson implements java.io.Serializable {
 		return this.createDatetime;
 	}
 
+	public String getFriendId() {
+		return friendId;
+	}
+
+	public void setFriendId(String friendId) {
+		this.friendId = friendId;
+	}
 }

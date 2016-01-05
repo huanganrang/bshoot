@@ -295,4 +295,44 @@ public class Bshoot implements java.io.Serializable {
 	public void setPraises(List<Map> praises) {
 		this.praises = praises;
 	}
+
+	@Override
+	public String toString() {
+		return "Bshoot{" +
+				"id='" + id + '\'' +
+				", bsTitle='" + bsTitle + '\'' +
+				", bsTopic='" + bsTopic + '\'' +
+				", bsIcon='" + bsIcon + '\'' +
+				", bsStream='" + bsStream + '\'' +
+				", bsCollect=" + bsCollect +
+				", bsPraise=" + bsPraise +
+				", bsPlay=" + bsPlay +
+				", bsType='" + bsType + '\'' +
+				", bsComment=" + bsComment +
+				", userId='" + userId + '\'' +
+				", userHeadImage='" + userHeadImage + '\'' +
+				", userName='" + userName + '\'' +
+				", userHeadImageAbsolute='" + userHeadImageAbsolute + '\'' +
+				", bsIconAbsolute='" + bsIconAbsolute + '\'' +
+				", bsStreamAbsolute='" + bsStreamAbsolute + '\'' +
+				", bsDescription='" + bsDescription + '\'' +
+				", bsRemark='" + bsRemark + '\'' +
+				", createDatetime=" + createDatetime +
+				", updateDatetime=" + updateDatetime +
+				", createPerson='" + createPerson + '\'' +
+				", updatePerson='" + updatePerson + '\'' +
+				", lgX='" + lgX + '\'' +
+				", lgY='" + lgY + '\'' +
+				", lgName='" + lgName + '\'' +
+				", parentId='" + parentId + '\'' +
+				", status='" + status + '\'' +
+				", bsArea='" + bsArea + '\'' +
+				", distance=" + distance +
+				", praised='" + praised + '\'' +
+				", parentBshoot=" + parentBshoot +
+				", squareIds='" + squareIds + '\'' +
+				", comments=" + comments +
+				", praises=" + praises +
+				'}';
+	}
 }
