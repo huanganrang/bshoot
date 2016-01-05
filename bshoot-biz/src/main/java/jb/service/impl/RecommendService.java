@@ -108,13 +108,14 @@ public class RecommendService implements RecommendServiceI{
     }
 
     @Override
-    public List<Bshoot> recommendHot(int start) {
+    public List<Bshoot> recommendHot(Integer start,Integer fileType) {
         Date oneDayago = DateUtil.stringToDate(DateUtil.getDate(-1, DateUtil.DATETIME_FORMAT));
-        return bshootServiceImpl.getHotBshoots(oneDayago, 200,start, 50);
+        HotShootRequest hotShootRequest = new HotShootRequest(oneDayago,200,start,fileType,50);
+        return bshootServiceImpl.getHotBshoots(hotShootRequest);
     }
 
     @Override
-    public List<Bshoot> recommend(String userId,int start) {
+    public List<Bshoot> recommend(String userId,Integer start) {
         //获得当前用户画像
         UserProfile userProfile = userProfileServiceImpl.get(userId);
         List<Bshoot> bshoots = new ArrayList<Bshoot>();

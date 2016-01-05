@@ -2,6 +2,7 @@ package jb.service;
 
 import jb.pageModel.Bshoot;
 import jb.pageModel.DataGrid;
+import jb.pageModel.HotShootRequest;
 import jb.pageModel.PageHelper;
 
 import java.util.Date;
@@ -89,7 +90,7 @@ public interface BshootServiceI {
 	 * 首页热门动态获取
 	 * @return
 	 */
-	public List<Bshoot> getHotBshoots(Date pubTime,int praiseNum,int start,int rows);
+	public List<Bshoot> getHotBshoots(HotShootRequest hotShootRequest);
 
 	/**
 	 * 同城视频

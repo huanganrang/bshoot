@@ -1,6 +1,7 @@
 package jb.dao;
 
 import jb.model.Tbshoot;
+import jb.pageModel.HotShootRequest;
 
 import java.util.Date;
 import java.util.List;
@@ -22,5 +23,5 @@ public interface BshootDaoI extends BaseDaoI<Tbshoot> {
 	Tbshoot getUserLastBshoot(String userId,Date dateLimit);
 
 
-	List<Tbshoot> getHotBshoots(Date pubTime, int praiseNum, int start, int rows);
+	List<Tbshoot> getHotBshoots(HotShootRequest hotShootRequest);
 }
