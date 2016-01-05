@@ -24,24 +24,24 @@ public class UserAttentionDaoImpl extends BaseDaoImpl<TuserAttention> implements
 	}
 
 	@Override
-	public List<TuserAttention> friendCommonAtt(String userId, int start,int rows) {
-		String hql="select * from user_attention  where user_id in (SELECT att_user_id from user_attention WHERE user_id=:userId) group by att_user_id HAVING count(att_user_id)>1 limit :start,:rows";
-		Query query = getCurrentSession().createSQLQuery(hql).addEntity(TuserAttention.class);
+	public List<String> friendCommonAtt(String userId, int start,int rows) {
+		String hql="select DISTINCT(att_user_id) from user_attention  where att_user_id!=:userId and user_id in (SELECT att_user_id from user_attention WHERE user_id=:userId and is_friend=1) group by att_user_id HAVING count(att_user_id)>1 limit :start,:rows";
+		Query query = getCurrentSession().createSQLQuery(hql);
 		query.setParameter("userId", userId);
 		query.setParameter("start",start);
 		query.setParameter("rows",rows);
-		List<TuserAttention> l = query.list();
+		List<String> l = query.list();
 		return l;
 	}
 
 	@Override
-	public List<TuserAttention> singleFriednAtt(String userId, int start, int rows) {
-		String hql="select * from user_attention  where user_id in (SELECT att_user_id from user_attention WHERE user_id=:userId) limit :start,:rows";
-		Query query = getCurrentSession().createSQLQuery(hql).addEntity(TuserAttention.class);
+	public List<String> singleFriednAtt(String userId, int start, int rows) {
+		String hql="select DISTINCT(att_user_id) from user_attention  where att_user_id!=:userId and user_id in (SELECT att_user_id from user_attention WHERE user_id=:userId and is_friend=1) limit :start,:rows";
+		Query query = getCurrentSession().createSQLQuery(hql);
 		query.setParameter("userId", userId);
 		query.setParameter("start",start);
 		query.setParameter("rows",rows);
-		List<TuserAttention> l = query.list();
+		List<String> l = query.list();
 		return l;
 	}
 

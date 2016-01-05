@@ -25,8 +25,8 @@ public class BshootPraiseDaoImpl extends BaseDaoImpl<TbshootPraise> implements B
 	@Override
 	public List<String> friendHasPraisedUser(String userId, int start, int rows) {
 		if(userId==null||userId.trim().length()==0)return null;
-		String hql="select DISTINCT(bs_userId) from bshoot_praise where user_id in (select att_user_id from user_attention where user_id=:userId) group by bs_userId HAVING count(bs_userId)>1 ORDER BY praise_datetime  limit :start,:rows";
-		Query query = getCurrentSession().createSQLQuery(hql).addEntity(String.class);
+		String hql="select DISTINCT(bs_userId) from bshoot_praise where bs_userId!=:userId and user_id in (select att_user_id from user_attention where user_id=:userId and is_friend=1) group by bs_userId HAVING count(bs_userId)>1 ORDER BY praise_datetime  limit :start,:rows";
+		Query query = getCurrentSession().createSQLQuery(hql);
 		query.setParameter("userId", userId);
 		query.setParameter("start", start);
 		query.setParameter("rows",rows);
@@ -37,8 +37,8 @@ public class BshootPraiseDaoImpl extends BaseDaoImpl<TbshootPraise> implements B
 	@Override
 	public List<String> singleFriendHasPraisedUser(String userId, int start, int rows) {
 		if(userId==null||userId.trim().length()==0)return null;
-		String hql="select DISTINCT(bs_userId) from bshoot_praise where user_id in (select att_user_id from user_attention where user_id=:userId) ORDER BY praise_datetime limit :start,:rows";
-		Query query = getCurrentSession().createSQLQuery(hql).addEntity(String.class);
+		String hql="select DISTINCT(bs_userId) from bshoot_praise where bs_userId!=:userId and user_id in (select att_user_id from user_attention where user_id=:userId and is_friend=1) ORDER BY praise_datetime limit :start,:rows";
+		Query query = getCurrentSession().createSQLQuery(hql);
 		query.setParameter("userId", userId);
 		query.setParameter("start", start);
 		query.setParameter("rows",rows);
@@ -49,10 +49,10 @@ public class BshootPraiseDaoImpl extends BaseDaoImpl<TbshootPraise> implements B
 	@Override
 	public List<String> mePraiseCommentUser(String userId, int start, int rows) {
 		if(userId==null||userId.trim().length()==0)return null;
-		String hql="select DISTINCT(bs_userId) as bs_userId,praise_datetime as create_datetime from bshoot_praise where user_id=:userId " +
-				"union select DISTINCT(bs_userId) as bs_userId,comment_datetime as create_datetime from bshoot_comment where user_id=:userId " +
-				"ORDER BY create_datetime desc limit :start,:rows";
-		Query query = getCurrentSession().createSQLQuery(hql).addEntity(String.class);
+		String hql="select DISTINCT(bs_userId)  from (select bs_userId,praise_datetime as create_datetime from bshoot_praise where user_id=:userId  and bs_userId!=:userId " +
+				"union select bs_userId,comment_datetime as create_datetime from bshoot_comment where user_id=:userId and bs_userId!=:userId ) t " +
+				"ORDER BY t.create_datetime desc limit :start,:rows";
+		Query query = getCurrentSession().createSQLQuery(hql);
 		query.setParameter("userId", userId);
 		query.setParameter("start",start);
 		query.setParameter("rows",rows);

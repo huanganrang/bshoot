@@ -12,7 +12,7 @@ public class UserProfile implements java.io.Serializable {
 	private java.lang.Integer attNum;	
 	private java.lang.Integer fansNum;	
 	private java.lang.Integer praiseNum;
-	private java.lang.String monthPraise;
+	private java.lang.Integer monthPraise;
 	private java.lang.String loginArea;
 	private Date lastLoginTime;
 	private Date lastPubTime;
@@ -73,11 +73,11 @@ public class UserProfile implements java.io.Serializable {
 		return this.updateDatetime;
 	}
 
-	public String getMonthPraise() {
+	public Integer getMonthPraise() {
 		return monthPraise;
 	}
 
-	public void setMonthPraise(String monthPraise) {
+	public void setMonthPraise(Integer monthPraise) {
 		this.monthPraise = monthPraise;
 	}
 

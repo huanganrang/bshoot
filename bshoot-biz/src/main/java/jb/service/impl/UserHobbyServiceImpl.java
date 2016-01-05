@@ -48,7 +48,7 @@ public class UserHobbyServiceImpl extends BaseServiceImpl<UserHobby> implements 
 	public UserHobby getUserHobby(String userId) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
-		TuserHobby t = userHobbyDao.get("from TuserHobby t  where t.user_id = :userId", params);
+		TuserHobby t = userHobbyDao.get("from TuserHobby t  where t.userId = :userId", params);
 		UserHobby o = new UserHobby();
 		BeanUtils.copyProperties(t, o);
 		return o;

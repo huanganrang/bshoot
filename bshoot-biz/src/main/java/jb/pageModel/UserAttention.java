@@ -11,6 +11,7 @@ public class UserAttention implements java.io.Serializable {
 	private String attUserId;
 	private Date attentionDatetime;
 	private Integer isDelete;
+	private Integer isFriend;
 
 	public Integer getIsDelete() {
 		return isDelete;
@@ -51,4 +52,11 @@ public class UserAttention implements java.io.Serializable {
 		return this.attentionDatetime;
 	}
 
+	public Integer getIsFriend() {
+		return isFriend;
+	}
+
+	public void setIsFriend(Integer isFriend) {
+		this.isFriend = isFriend;
+	}
 }

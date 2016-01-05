@@ -31,4 +31,12 @@ public class TestRecommendService extends TestConfig{
             System.out.println(bshoot);
         }
     }
+
+    @Test
+    public void testRecommend(){
+       List<Bshoot> bshoots =  recommendServiceImpl.recommend("2", 0);
+        for(Bshoot bshoot:bshoots){
+            System.out.println(bshoot);
+        }
+    }
 }

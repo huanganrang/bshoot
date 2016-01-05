@@ -119,14 +119,14 @@ public class RecommendService implements RecommendServiceI{
         UserProfile userProfile = userProfileServiceImpl.get(userId);
         List<Bshoot> bshoots = new ArrayList<Bshoot>();
         //1.新人推荐 done
-        bshoots.add(recommendNewUser(userProfile.getFansNum(),userProfile.getLoginArea(),start,DateUtil.stringToDate(DateUtil.getDateStart(-1))));
+        bshoots.add(recommendNewUser(userId,userProfile.getFansNum(),userProfile.getLoginArea(),start,DateUtil.stringToDate(DateUtil.getDateStart(-1))));
         Date threeDaysAgo = DateUtil.stringToDate(DateUtil.getDateStart(-3));
         //2.好友共同关注的人 done
         List<Bshoot> friendCommonBshoot = friendCommonAtt(userId, start,threeDaysAgo);
         if(CollectionUtils.isNotEmpty(friendCommonBshoot))
             bshoots.addAll(friendCommonBshoot);
 
-        //3.我评论打赏过的人
+        //3.我评论打赏过的人 done
         List<Bshoot> comment_praise = have_comment_praise(userId, start,threeDaysAgo);
         if(CollectionUtils.isNotEmpty(comment_praise))
             bshoots.addAll(comment_praise);
@@ -136,7 +136,7 @@ public class RecommendService implements RecommendServiceI{
         if(CollectionUtils.isNotEmpty(friendPraise))
             bshoots.addAll(friendPraise);
 
-        //5、可能感兴趣的人
+        //5、可能感兴趣的人 done
         List<Bshoot> mabyeInterestBshoot = mabyeInterest(userId,userProfile.getLoginArea(), start,threeDaysAgo);
         if(CollectionUtils.isNotEmpty(mabyeInterestBshoot))
             bshoots.addAll(mabyeInterestBshoot);
@@ -147,7 +147,7 @@ public class RecommendService implements RecommendServiceI{
             bshoots.addAll(maybeKnow);
 
         //7.附近的人 done
-        List<Bshoot> nearbyBshoot = nearbyBshoot(userProfile.getLoginArea(), start,threeDaysAgo);
+        List<Bshoot> nearbyBshoot = nearbyBshoot(userId,userProfile.getLoginArea(), start,threeDaysAgo);
         if(CollectionUtils.isNotEmpty(nearbyBshoot))
            bshoots.addAll(nearbyBshoot);
         Collections.shuffle(bshoots);
@@ -164,17 +164,13 @@ public class RecommendService implements RecommendServiceI{
 
     //好友共同关注的人
     private List<Bshoot> friendCommonAtt(String userId,int start,Date dateLimit){
-        List<UserAttention> userAttentionList = userAttentionServiceImpl.friendCommonAtt(userId,6*start,6);
+        List<String> userAttentionList = userAttentionServiceImpl.friendCommonAtt(userId,6*start,6);
         if(CollectionUtils.isEmpty(userAttentionList)){
             //显示单个好友关注的人动态
             userAttentionList = userAttentionServiceImpl.singleFriednAtt(userId,6*start,6);
         }
         if(CollectionUtils.isNotEmpty(userAttentionList)) {
-            List<String> userIds = new ArrayList<String>();
-            for (UserAttention userAttention : userAttentionList) {
-                userIds.add(userAttention.getAttUserId());
-            }
-            return getLastBshoot(userIds,dateLimit);
+            return getLastBshoot(userAttentionList,dateLimit);
         }
         return null;
     }
@@ -226,6 +222,7 @@ public class RecommendService implements RecommendServiceI{
             criterias.ge("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0, DateUtil.DATETIME_FORMAT)));
             criterias.addNativeFq(sb.toString());
             criterias.addField("id");
+            criterias.ne("id",userId);
             criterias.setStart(3*start);
             criterias.setRows(3);
 
@@ -239,6 +236,7 @@ public class RecommendService implements RecommendServiceI{
             criterias2.qc(qc.toString());
             criterias.ge("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0, DateUtil.DATETIME_FORMAT)));
             criterias.addField("id");
+            criterias.ne("id",userId);
             criterias.setStart(3*start);
             criterias.setRows(3);
             SolrResponse<UserEntity> solrResponse2 = solrUserService.query(criterias);
@@ -265,10 +263,11 @@ public class RecommendService implements RecommendServiceI{
      * @param loginArea
      * @return
      */
-    private List<Bshoot> nearbyBshoot(String loginArea ,int start,Date dateLimit){
+    private List<Bshoot> nearbyBshoot(String userId,String loginArea ,int start,Date dateLimit){
         Criterias criterias = new Criterias();
         criterias.qc("login_area:"+loginArea);
         criterias.addField("id");
+        criterias.ne("id",userId);//去掉自己
         criterias.addOrder("lastPublishTime","desc");
         criterias.setStart(start*6);
         criterias.setRows(6);
@@ -284,7 +283,7 @@ public class RecommendService implements RecommendServiceI{
         return null;
     }
 
-    private Bshoot recommendNewUser(Integer fansNum,String loginArea,int start,Date dateLimit){
+    private Bshoot recommendNewUser(String userId,Integer fansNum,String loginArea,int start,Date dateLimit){
         //1.新人推荐
         if(null!=fansNum&&fansNum<50) {
             //当前用户粉丝量大于50则不推荐，新人推荐根据用户粉丝量，获取同城用户且当天发布了动态
@@ -299,6 +298,7 @@ public class RecommendService implements RecommendServiceI{
             criterias.qc(qc);
             criterias.eq("login_area",loginArea);
             criterias.ge("lastPublishTime", DateUtil.convert2SolrDate(DateUtil.getDateStart(0)));
+            criterias.ne("id",userId);//不能是自己
             criterias.addField("id");
             criterias.setStart(start*1);
             criterias.setRows(1);

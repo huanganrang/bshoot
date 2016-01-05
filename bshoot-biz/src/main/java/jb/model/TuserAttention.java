@@ -43,6 +43,7 @@ public class TuserAttention implements java.io.Serializable{
 	//
 	private java.util.Date attentionDatetime;
 	private java.lang.Integer isDelete;
+	private java.lang.Integer isFriend;
 
 	//columns END
 
@@ -101,7 +102,15 @@ public class TuserAttention implements java.io.Serializable{
 		this.isDelete = isDelete;
 	}
 
-	/*
+	@Column(name = "is_friend", unique = false, nullable = true, insertable = true, updatable = true, length = 1)
+	public Integer getIsFriend() {
+		return isFriend;
+	}
+
+	public void setIsFriend(Integer isFriend) {
+		this.isFriend = isFriend;
+	}
+/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
 			.append("Id",getId())
