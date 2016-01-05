@@ -67,6 +67,34 @@ public class SystemUtils {
 	}
 
 	/**
+	 * solr or条件组合
+	 * @param str
+	 * @param matchFactor
+	 * @param out
+	 */
+	public static void combineStr(String[] str,int matchFactor,List<String> out ,String connStr) {
+		if(null==connStr) connStr=" ";
+		int nCnt = str.length;
+		int nBit = 1<<nCnt;
+		int counter = 0;
+		StringBuffer sb = new StringBuffer();
+		for (int i = 1; i <= nBit; i++) {
+			for (int j = 0; j < nCnt; j++) {
+				if ((1<<j & i ) != 0) {
+					counter++;
+					sb.append("\"").append(str[j]).append("\" ").append(connStr);
+				}
+			}
+			if(counter==matchFactor){
+				sb.delete(sb.lastIndexOf(connStr),sb.length());
+				out.add(sb.toString());
+			}
+			counter=0;
+			sb.delete(0,sb.length()-1);
+		}
+	}
+
+	/**
 	 *
 	 * @param list
 	 * @param pageSize

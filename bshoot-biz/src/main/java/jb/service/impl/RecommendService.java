@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import solr.common.SystemUtils;
 import solr.model.SolrResponse;
 import solr.model.UserEntity;
 import solr.model.criteria.Criterias;
@@ -209,22 +210,52 @@ public class RecommendService implements RecommendServiceI{
         UserHobby userHobby  = userHobbyServiceImpl.getUserHobby(userId);
         if(null!=userHobby&& StringUtils.isNotEmpty(userHobby.getHobbyType())){
             String[] hobbyType = userHobby.getHobbyType().split(",");
-            StringBuffer qc = new StringBuffer();
-            for(String hobby:hobbyType){
-
+            List<String> out1 = new ArrayList<String>();
+            List<String> out2 = new ArrayList<String>();
+            SystemUtils.combineStr(hobbyType,2,out1,"AND");
+            SystemUtils.combineStr(hobbyType,3,out2,"AND");
+            StringBuffer sb = new StringBuffer();
+            for(String s1 :out1){
+                sb.append("(")/*.append("login_area:").append(loginArea).append(" AND ")*/.append("hobby:").append(s1).append(") OR ");
             }
+            for(String s2:out2){
+                sb.append("hobby:(").append(s2).append(") OR ");
+            }
+            sb.delete(sb.lastIndexOf("OR "),sb.length());
             Criterias criterias = new Criterias();
-            criterias.qc("");
+            criterias.lt("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0)));
+            criterias.addNativeFq(sb.toString());
+            criterias.addField("id");
+            criterias.setStart(3*start);
+            criterias.setRows(3);
+
+            SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
+            //附近共同属性1个以上的人显示三个
+            Criterias criterias2 = new Criterias();
+            StringBuffer qc = new StringBuffer();
+            List<String> out3 = new ArrayList<String>();
+            SystemUtils.combineStr(hobbyType,hobbyType.length,out3,null);
+            qc.append("login_area:").append(loginArea).append("^5 AND ").append("hobby:(").append(out3.get(0)).append(")^3");
+            criterias2.qc(qc.toString());
             criterias.lt("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0)));
             criterias.addField("id");
-            criterias.setStart(6*start);
-            criterias.setRows(6);
-            SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
+            criterias.setStart(3*start);
+            criterias.setRows(3);
+            SolrResponse<UserEntity> solrResponse2 = solrUserService.query(criterias);
+            List<String> userIds = new ArrayList<String>();
             if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
-                List<UserEntity> user = solrResponse.getDocs();
-                //return bshootServiceImpl.getUserLastBshoot(user.get(0).getId());
-                //bshootServiceImpl.getUserLastBshoot();
+                List<UserEntity> users = solrResponse.getDocs();
+                for(UserEntity userEntity:users){
+                    userIds.add(userEntity.getId());
+                }
             }
+            if(null!=solrResponse2&&CollectionUtils.isNotEmpty(solrResponse2.getDocs())){
+                List<UserEntity> users = solrResponse2.getDocs();
+                for(UserEntity userEntity:users){
+                    userIds.add(userEntity.getId());
+                }
+            }
+            return getLastBshoot(userIds,dateLimit);
         }
         return  null;
     }

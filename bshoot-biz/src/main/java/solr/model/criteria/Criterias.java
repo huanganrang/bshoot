@@ -346,4 +346,8 @@ public class Criterias {
 	public void setRows(int rows){
 		fakeSolrParam.setRows(rows);
 	}
+
+	public void addNativeFq(String fq){
+		fakeSolrParam.getFq().add(fq);
+	}
 }
