@@ -33,8 +33,16 @@ public class BasedataServiceImpl implements BasedataServiceI {
 	}
 
 	@Override
-	public List<BaseData> getBaseDatas(List<String> ids) {
+	public <T> T getBaseDatas(Collection<String> ids,Class o) {
 		if(CollectionUtils.isEmpty(ids)) return null;
+		Map<String,BaseData> baseDataMap = null;
+		List<BaseData> baseDataList = null;
+		if(o==Map.class)
+			baseDataMap =  new HashMap<String,BaseData>();
+		else if(o==List.class)
+			baseDataList =  new ArrayList<BaseData>();
+		else
+			throw  new IllegalArgumentException("the argument is not allowed!(must be Map or List)");
 		Map<String,Object> parmas = new HashMap<String, Object>();
 		List<String> uniqueIds = new ArrayList<String>();
 		for(String id:ids){
@@ -43,13 +51,18 @@ public class BasedataServiceImpl implements BasedataServiceI {
 		}
 		parmas.put("alist", uniqueIds);
 		List<Tbasedata> t = basedataDao.find("from Tbasedata t where t.id in (:alist)",parmas);
-		List<BaseData> baseDatas = new ArrayList<BaseData>();
 		for(Tbasedata tbasedata:t){
 			BaseData u = new BaseData();
 			BeanUtils.copyProperties(tbasedata, u);
-			baseDatas.add(u);
+			if(o==Map.class)
+			  baseDataMap.put(tbasedata.getId(),u);
+			else
+			  baseDataList.add(u);
 		}
-		return baseDatas;
+		if(o==Map.class)
+			return (T)baseDataMap;
+		else
+			return (T)baseDataList;
 	}
 
 	private void refeshAppVariable(Tbasedata bd){

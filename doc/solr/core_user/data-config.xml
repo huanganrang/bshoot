@@ -28,12 +28,13 @@ _location(string)          	 暂预留
 month_parise                 month_parise(int,table:user_profile)
 -->
         <entity name="tuser" pk="ID"
-                query="select ID,utype,nickname,sex,area,birthday,bardian,member_v,CREATEDATETIME,isStar,isTarento,mobile,job from tuser"
-                deltaImportQuery="select ID,utype,nickname,sex,area,birthday,bardian,member_v,CREATEDATETIME,isStar,isTarento,mobile,job from tuser where ID='${dih.delta.ID}'"
+                query="select ID,utype,nickname,head_image,sex,area,birthday,bardian,member_v,CREATEDATETIME,isStar,isTarento,mobile,job from tuser"
+                deltaImportQuery="select ID,utype,nickname,head_image,sex,area,birthday,bardian,member_v,CREATEDATETIME,isStar,isTarento,mobile,job from tuser where ID='${dih.delta.ID}'"
                 deltaQuery="select ID from tuser where MODIFYDATETIME &gt; '${dih.last_index_time}'" transformer="DateFormatTransformer,RegexTransformer">
         <field column="ID" name="id"/>
         <field column="utype" name="utype"/>
         <field column="nickname" name="nickname"/>
+        <field column="headImg" name="head_image"/>
         <field column="sex" name="usex"/>
         <field column="area" name="areaCode"/>
         <field column="birthday" name="birthday"/>

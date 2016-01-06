@@ -1,6 +1,8 @@
 package test;
 
 
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,11 @@ public class Test {
         for(String em:out){
             System.out.println(em);
         }*/
-        System.out.println(1<<8);
+        //System.out.println(1<<8);
+       /* Class c = List.class;
+        System.out.println(c==List.class);*/
+        List<String> list = Lists.newArrayList();
+        list.addAll(null);
     }
 
     public static void stringCombine(String[] str,List<String> out,int matchFactor){

@@ -54,6 +54,20 @@ public class UserHobbyServiceImpl extends BaseServiceImpl<UserHobby> implements 
 		return o;
 	}
 
+	@Override
+	public List<UserHobby> getUserHobbies(List<String> userIds) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userIds", userIds);
+		List<TuserHobby> tuserHobbies = userHobbyDao.find("from TuserHobby t  where t.userId in (:userIds)", params);
+		UserHobby o = null;
+		List<UserHobby> userHobbies = new ArrayList<UserHobby>();
+		for(TuserHobby t:tuserHobbies){
+            o = new UserHobby();
+			BeanUtils.copyProperties(t, o);
+			userHobbies.add(o);
+		}
+		return userHobbies;
+	}
 
 	protected String whereHql(UserHobby userHobby, Map<String, Object> params) {
 		String whereHql = "";	

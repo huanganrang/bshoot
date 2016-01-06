@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +111,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
 		Query q = this.getCurrentSession().createQuery(hql);
 		if (params != null && !params.isEmpty()) {
 			for (String key : params.keySet()) {
-				if(params.get(key) instanceof  List)
+				if(params.get(key) instanceof Collection)
 					q.setParameterList(key,(List)params.get(key));
 				else
 				    q.setParameter(key, params.get(key));
