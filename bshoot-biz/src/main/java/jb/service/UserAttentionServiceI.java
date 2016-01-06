@@ -112,7 +112,7 @@ public interface UserAttentionServiceI {
 	 * @param userId
 	 * @return
 	 */
-	public List<UserAttention> friendCommonAtt(String userId,int start,int rows);
+	public List<String> friendCommonAtt(String userId,int start,int rows);
 
-	List<UserAttention> singleFriednAtt(String userId,int start,int rows);
+	List<String> singleFriednAtt(String userId,int start,int rows);
 }

@@ -26,9 +26,25 @@ public class TestRecommendService extends TestConfig{
 
     @Test
     public void testRecommendHot(){
-        List<Bshoot> bshoots = recommendServiceImpl.recommendHot(0);
+        List<Bshoot> bshoots = recommendServiceImpl.recommendHot("e2891f2f-6a6f-41d5-933d-28fa796eee93",0,null,1);
         for(Bshoot bshoot:bshoots){
             System.out.println(bshoot);
         }
+    }
+
+    @Test
+    public void testRecommend(){
+       List<Bshoot> bshoots =  recommendServiceImpl.recommend("2", 0);
+        for(Bshoot bshoot:bshoots){
+            System.out.println(bshoot);
+        }
+    }
+
+    @Test
+    public void testMaybeInterest(){
+        /*List<Bshoot> bshoots =  recommendServiceImpl.mabyeInterest("e2891f2f-6a6f-41d5-933d-28fa796eee93","AR02",0, DateUtil.stringToDate(DateUtil.getDateStart(-6)));
+        for(Bshoot bshoot:bshoots){
+            System.out.println(bshoot);
+        }*/
     }
 }

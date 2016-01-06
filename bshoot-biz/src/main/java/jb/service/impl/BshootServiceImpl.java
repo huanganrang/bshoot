@@ -657,8 +657,8 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	}
 
 	@Override
-	public List<Bshoot> getHotBshoots(Date pubTime, int praiseNum,int start, int rows) {
-		List<Tbshoot> l = bshootDao.getHotBshoots(pubTime,praiseNum,start,rows);
+	public List<Bshoot> getHotBshoots(HotShootRequest hotShootRequest) {
+		List<Tbshoot> l = bshootDao.getHotBshoots(hotShootRequest);
 		List<Bshoot> bshoots = new ArrayList<Bshoot>();
 		for(Tbshoot t:l){
 			Bshoot bs = new Bshoot();
