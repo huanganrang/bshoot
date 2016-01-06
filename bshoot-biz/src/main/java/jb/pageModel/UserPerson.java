@@ -9,7 +9,8 @@ public class UserPerson implements java.io.Serializable {
 
 	private java.lang.String id;	
 	private java.lang.String userId;	
-	private java.lang.String attUserId;	
+	private java.lang.String attUserId;
+	private String personGroup;
 	private java.lang.Integer isDelete;	
 	private Date createDatetime;			
 
@@ -34,7 +35,15 @@ public class UserPerson implements java.io.Serializable {
 	public void setAttUserId(java.lang.String attUserId) {
 		this.attUserId = attUserId;
 	}
-	
+
+	public String getPersonGroup() {
+		return personGroup;
+	}
+
+	public void setPersonGroup(String personGroup) {
+		this.personGroup = personGroup;
+	}
+
 	public java.lang.String getAttUserId() {
 		return this.attUserId;
 	}

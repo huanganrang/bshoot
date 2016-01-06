@@ -6,12 +6,13 @@
 
 package jb.model;
 
-import javax.persistence.*;
-
-import java.util.Date;
-
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
@@ -26,6 +27,7 @@ public class TuserPerson implements java.io.Serializable,IEntity{
 	public static final String ALIAS_ID = "主键";
 	public static final String ALIAS_USER_ID = "用户id";
 	public static final String ALIAS_ATT_USER_ID = "被关注用户ID";
+	public static final String ALIAS_PERSON_GROUP = "人脉圈好友分组";
 	public static final String ALIAS_IS_DELETE = "是否删除";
 	public static final String ALIAS_CREATE_DATETIME = "创建时间";
 	
@@ -41,6 +43,7 @@ public class TuserPerson implements java.io.Serializable,IEntity{
 	private java.lang.String userId;
 	//@Length(max=36)
 	private java.lang.String attUserId;
+	private String personGroup;
 	//
 	private java.lang.Integer isDelete;
 	//
@@ -82,7 +85,16 @@ public class TuserPerson implements java.io.Serializable,IEntity{
 	public void setAttUserId(java.lang.String attUserId) {
 		this.attUserId = attUserId;
 	}
-	
+
+	@Column(name = "person_group", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
+	public String getPersonGroup() {
+		return personGroup;
+	}
+
+	public void setPersonGroup(String personGroup) {
+		this.personGroup = personGroup;
+	}
+
 	@Column(name = "is_delete", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public java.lang.Integer getIsDelete() {
 		return this.isDelete;

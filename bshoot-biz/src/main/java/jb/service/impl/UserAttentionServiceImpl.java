@@ -78,6 +78,12 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		return o;
 	}
 
+	public List<TuserAttention> getUserAttentionList(String attentionGroup) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("attentionGroup", attentionGroup);
+		List<TuserAttention> t = userAttentionDao.find("from TuserAttention t  where t.attentionGroup = :attentionGroup", params);
+		return t;
+	}
 	
 	public UserAttention get(String userId,String attUserId) {
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -111,6 +117,38 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	}
 
 	@Override
+	public int editAttentionGroup(UserAttention userAttention) {
+		if(!F.empty(userAttention.getAttUserId())){
+			UserAttention ua = get(userAttention.getUserId(),userAttention.getAttUserId());
+			TuserAttention t = new TuserAttention();
+			BeanUtils.copyProperties(ua, t);
+			t.setAttentionGroup(userAttention.getAttentionGroup());
+			userAttentionDao.save(t);
+			return 1;//修改分组成功
+		}
+		TuserAttention t = userAttentionDao.get(TuserAttention.class, userAttention.getId());
+		if(t==null){
+			return -1;//修改分组失败,未传入关注id或者被关注用户id
+		}
+		t.setAttentionGroup(userAttention.getAttentionGroup());
+		userAttentionDao.save(t);
+		return 1;//修改分组成功
+	}
+
+	@Override
+	public int delUserAtteGroup(UserAttentionGroup userAttentionGroup){
+		if(!F.empty(userAttentionGroup.getId())){
+			List<TuserAttention> list = getUserAttentionList(userAttentionGroup.getId());
+			for(TuserAttention tuserAttention : list){
+				tuserAttention.setAttentionGroup(null);
+				userAttentionDao.save(tuserAttention);
+			}
+			return 1;//删除分组成功
+		}
+		return -1;//删除分组失败
+	}
+
+	@Override
 	public void delete(String id) {
 		userAttentionDao.delete(userAttentionDao.get(TuserAttention.class, id));
 	}
@@ -124,6 +162,31 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		}
 		delete(ua.getId());
 		return 1;
+	}
+
+	@Override
+	public int deleteAttention(UserAttention userAttention) {
+		UserAttention ua = get(userAttention.getUserId(), userAttention.getAttUserId());
+		if(ua==null){
+			return -1;
+		}
+		TuserAttention t = new TuserAttention();
+		BeanUtils.copyProperties(ua, t);
+		t.setIsDelete(1);
+		t.setAttentionDatetime(new Date());
+		userAttentionDao.save(t);
+		return 1;
+	}
+
+	@Override
+	public int idAttention(UserAttention userAttention){
+		UserAttention ua = get(userAttention.getUserId(), userAttention.getAttUserId());
+		if(ua==null){
+			return -1;//未关注
+		}else if(ua.getIsDelete()!=0){
+			return -1;//未关注
+		}
+		return 1;//已关注
 	}
 
 
@@ -191,4 +254,69 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		dg.setRows(l);
 		return dg;
 	}
+
+	@Override
+	public int addAttention(UserAttention userAttention) {
+		if(get(userAttention.getUserId(), userAttention.getAttUserId())!=null && userAttention.getIsDelete()==0){
+			return -1;//已关注
+		}else if(get(userAttention.getUserId(), userAttention.getAttUserId())!=null && userAttention.getIsDelete()!=0){
+			UserAttention ua = get(userAttention.getUserId(), userAttention.getAttUserId());
+			TuserAttention t = new TuserAttention();
+			BeanUtils.copyProperties(ua, t);
+			t.setIsDelete(0);
+			t.setAttentionDatetime(new Date());
+			userAttentionDao.save(t);
+			return 1;
+		}else {
+			TuserAttention t = new TuserAttention();
+			BeanUtils.copyProperties(userAttention, t);
+			t.setId(UUID.randomUUID().toString());
+			t.setAttentionDatetime(new Date());
+			userAttentionDao.save(t);
+			return 1;
+		}
+	}
+
+	@Override
+	public DataGrid dataGridUserByGroup(UserAttention userAttention, PageHelper ph) {
+		List<User> ol = new ArrayList<User>();
+
+		DataGrid dg = dataGridByGroup(ph, userAttention, userAttentionDao);
+		@SuppressWarnings("unchecked")
+		List<Tuser> l = dg.getRows();
+		if (l != null && l.size() > 0) {
+			for (Tuser t : l) {
+				User o = new User();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		dg.setRows(ol);
+		return dg;
+	}
+
+	private DataGrid dataGridByGroup(PageHelper ph,UserAttention userAttention,BaseDaoI dao){
+		DataGrid dg = new DataGrid();
+		String hql = "select u from Tuser u ,TuserAttention t  ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		//我的关注好友
+		if(!F.empty(userAttention.getUserId())){
+			hql +="where u.id = t.attUserId and t.userId = :userId";
+			params.put("userId",userAttention.getUserId());
+			//按分组查找
+			if(!F.empty(userAttention.getAttentionGroup())){
+				hql +=" and t.attentionGroup = :attentionGroup";
+				params.put("attentionGroup",userAttention.getAttentionGroup());
+			}
+			//我的粉丝
+		}else if(!F.empty(userAttention.getAttUserId())){
+			hql +="where u.id = t.userId and t.attUserId = :userId";
+			params.put("userId",userAttention.getAttUserId());
+		}
+		List<Bshoot> l = dao.find(hql   + orderHql(ph), params, ph.getPage(), ph.getRows());
+		dg.setTotal(dao.count("select count(*) " + hql.substring(8) , params));
+		dg.setRows(l);
+		return dg;
+	}
+
 }

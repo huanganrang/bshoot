@@ -3,6 +3,7 @@ package jb.service;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.pageModel.UserAttention;
+import jb.pageModel.UserAttentionGroup;
 
 import java.util.List;
 
@@ -29,18 +30,39 @@ public interface UserAttentionServiceI {
 	public DataGrid dataGridUser(UserAttention userAttention, PageHelper ph,
 								 String id);
 
+	public DataGrid dataGridUserByGroup(UserAttention userAttention, PageHelper ph);
+
 	/**
 	 * 添加UserAttention
 	 * 
 	 * @param userAttention
 	 */
 	public int add(UserAttention userAttention);
+
+	/**
+	 * 添加UserAttention,若无记录则新添加，若有记录则把is_delete改为0
+	 *
+	 * @param userAttention
+	 */
+	public int addAttention(UserAttention userAttention);
 	
 	/**
 	 * 取消关注
 	 * @param userAttention
 	 */
 	public int deleteUa(UserAttention userAttention);
+
+	/**
+	 * 取消关注,把is_delete参数改为1
+	 * @param userAttention
+	 */
+	public int deleteAttention(UserAttention userAttention);
+
+	/**
+	 * 查询是否关注该用户
+	 * @param userAttention
+	 */
+	public int idAttention(UserAttention userAttention);
 
 	/**
 	 * 获得UserAttention对象
@@ -56,6 +78,20 @@ public interface UserAttentionServiceI {
 	 * @param userAttention
 	 */
 	public void edit(UserAttention userAttention);
+
+	/**
+	 * 修改UserAttention分组
+	 *
+	 * @param userAttention
+	 */
+	public int editAttentionGroup(UserAttention userAttention);
+
+	/**
+	 * 删除UserAttention分组
+	 *
+	 * @param userAttentionGroup
+	 */
+	public int delUserAtteGroup(UserAttentionGroup userAttentionGroup);
 
 	/**
 	 * 删除UserAttention

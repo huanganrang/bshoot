@@ -26,6 +26,7 @@ public class TuserAttention implements java.io.Serializable{
 	public static final String ALIAS_ID = "id";
 	public static final String ALIAS_USER_ID = "关注人";
 	public static final String ALIAS_ATT_USER_ID = "被关注人";
+	public static final String ALIAS_ATTENTION_GROUP = "关注分组";
 	public static final String ALIAS_ATTENTION_DATETIME = "时间";
 	
 	//date formats
@@ -40,6 +41,7 @@ public class TuserAttention implements java.io.Serializable{
 	private String userId;
 	//@Length(max=36)
 	private String attUserId;
+	private String attentionGroup;
 	//
 	private java.util.Date attentionDatetime;
 	private java.lang.Integer isDelete;
@@ -82,7 +84,15 @@ public class TuserAttention implements java.io.Serializable{
 	public void setAttUserId(String attUserId) {
 		this.attUserId = attUserId;
 	}
-	
+
+	@Column(name = "attention_group", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
+	public String getAttentionGroup() {
+		return attentionGroup;
+	}
+
+	public void setAttentionGroup(String attentionGroup) {
+		this.attentionGroup = attentionGroup;
+	}
 
 	@Column(name = "attention_datetime", unique = false, nullable = true, insertable = true, updatable = true, length = 19)
 	public java.util.Date getAttentionDatetime() {

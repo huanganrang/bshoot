@@ -97,7 +97,12 @@
 						<value>/api/apiCommon/error</value><!-- token过期错误返回 -->								
 						<value>/api/apiCommon/upload_errorlog</value><!-- token过期错误返回 -->								
 						<value>/api/apiCommon/html</value>							
-						<value>/api/apiMessageController/message_test</value>							
+						<value>/api/apiMessageController/message_test</value>
+
+						<value>/api/apiUserAttentionController/user_attention</value><!-- 古鑫测试 -->
+						<value>/api/apiUserAttentionController/user_disattention</value><!-- 古鑫测试 -->
+						<value>/api/apiUserAttentionController/user_myattruser</value><!-- 古鑫测试 -->
+						<value>/api/apiUserAttentionController/user_editattention</value><!-- 古鑫测试 -->
 					</list>
 				</property>
 				<property name="tokenManage" ref="tokenManage"/>
