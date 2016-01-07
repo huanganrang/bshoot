@@ -6,12 +6,13 @@
 
 package jb.model;
 
-import javax.persistence.*;
-
-import java.util.Date;
-
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
@@ -28,6 +29,7 @@ public class TuserFriendTime implements java.io.Serializable,IEntity{
 	public static final String ALIAS_BS_ID = "资源id";
 	public static final String ALIAS_IS_DELETE = "是否删除";
 	public static final String ALIAS_IS_READ = "是否已读";
+	public static final String ALIAS_FRIEND_TYPE = "0为单向关注1为双向关注";
 	public static final String ALIAS_IS_PRAISE = "是否已打赏";
 	public static final String ALIAS_CREATE_DATETIME = "创建时间";
 	
@@ -49,6 +51,8 @@ public class TuserFriendTime implements java.io.Serializable,IEntity{
 	private java.lang.Integer isRead;
 	//
 	private java.lang.Integer isPraise;
+	//
+	private java.lang.Integer friendType;
 	//
 	private java.util.Date createDatetime;
 	//columns END
@@ -125,9 +129,17 @@ public class TuserFriendTime implements java.io.Serializable,IEntity{
 	public void setCreateDatetime(java.util.Date createDatetime) {
 		this.createDatetime = createDatetime;
 	}
-	
-	
-	/*
+
+	@Column(name = "friend_type", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getFriendType() {
+		return friendType;
+	}
+
+	public void setFriendType(Integer friendType) {
+		this.friendType = friendType;
+	}
+
+/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
 			.append("Id",getId())

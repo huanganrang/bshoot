@@ -12,7 +12,8 @@ public class UserPersonTime implements java.io.Serializable {
 	private java.lang.String bsId;	
 	private java.lang.Integer isRead;	
 	private java.lang.Integer isPraise;	
-	private java.lang.Integer isDelete;	
+	private java.lang.Integer isDelete;
+	private java.lang.Integer personType;
 	private Date createDatetime;			
 
 	
@@ -69,4 +70,11 @@ public class UserPersonTime implements java.io.Serializable {
 		return this.createDatetime;
 	}
 
+	public Integer getPersonType() {
+		return personType;
+	}
+
+	public void setPersonType(Integer personType) {
+		this.personType = personType;
+	}
 }
