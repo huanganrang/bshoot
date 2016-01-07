@@ -1,9 +1,6 @@
 package jb.service.impl;
 
-import jb.pageModel.AttentionRequest;
-import jb.pageModel.Bshoot;
-import jb.pageModel.PraiseCommentRequest;
-import jb.pageModel.UserMobilePersonRequest;
+import jb.pageModel.*;
 import jb.service.HotGuideServiceI;
 import jb.util.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -42,13 +39,22 @@ public class HotGuideService extends  RecommendService implements HotGuideServic
             userIds.addAll(friendPraise);
 
         //4.可能感兴趣的人
-        //TODO
+        //获得当前用户画像
+        UserProfile userProfile = userProfileServiceImpl.get(userId);
+        MaybeInterestRequest maybeInterestRequest = new MaybeInterestRequest(userId,userProfile.getLoginArea(),1*start,1);
+        List<String> maybeInterest = mabyeInterest(maybeInterestRequest);
+        if(CollectionUtils.isNotEmpty(maybeInterest))
+            userIds.addAll(maybeInterest);
 
         //5.可能认识的人
         UserMobilePersonRequest userMobilePersonRequest = new UserMobilePersonRequest(userId,1*start,1);
         List<String> maybeKnow = maybeKnow(userMobilePersonRequest);
         if(CollectionUtils.isNotEmpty(maybeKnow))
             userIds.addAll(maybeKnow);
+        //TODO
+        HotShootRequest hotShootRequest = new HotShootRequest(null,null,start,null,null,50);
+        List<Bshoot> bshoots = bshootServiceImpl.getHotBshoots(hotShootRequest);
+        fillBshoot(bshoots);
         return null;
     }
 

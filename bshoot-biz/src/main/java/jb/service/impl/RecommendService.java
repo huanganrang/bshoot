@@ -36,9 +36,9 @@ public class RecommendService implements RecommendServiceI{
     @Autowired
     private BasedataServiceI basedataServiceImpl;
     @Autowired
-    private BshootServiceI bshootServiceImpl;
+    protected BshootServiceI bshootServiceImpl;
     @Autowired
-    private UserProfileServiceI userProfileServiceImpl;
+    protected UserProfileServiceI userProfileServiceImpl;
     @Autowired
     private UserHobbyServiceI userHobbyServiceImpl;
     @Autowired
@@ -130,7 +130,7 @@ public class RecommendService implements RecommendServiceI{
         return fillBshoot(bshoots);
     }
 
-    private List<Bshoot> fillBshoot(List<Bshoot> bshoots){
+    protected List<Bshoot> fillBshoot(List<Bshoot> bshoots){
         if(CollectionUtils.isEmpty(bshoots)) return bshoots;
         Set<String> userIds = new HashSet<String>();
         for(Bshoot bshoot:bshoots)
@@ -174,8 +174,6 @@ public class RecommendService implements RecommendServiceI{
 
     @Override
     public List<Bshoot> recommend(String userId,Integer start) {
-        //获得当前用户画像
-        UserProfile userProfile = userProfileServiceImpl.get(userId);
         List<Bshoot> bshoots = new ArrayList<Bshoot>();
 
         List<String> userIds = new ArrayList<String>();
@@ -192,13 +190,17 @@ public class RecommendService implements RecommendServiceI{
             userIds.addAll(comment_praise);
 
         //4.好友打赏过的人 done
-        PraiseCommentRequest praiseCommentRequest2 = new PraiseCommentRequest(userId,null,6*start,6);
+        PraiseCommentRequest praiseCommentRequest2 = new PraiseCommentRequest(userId,null,3*start,3);
         List<String> friendPraise = friendPraise(praiseCommentRequest2);
         if(CollectionUtils.isNotEmpty(friendPraise))
             userIds.addAll(friendPraise);
 
+        //获得当前用户画像
+        UserProfile userProfile = userProfileServiceImpl.get(userId);
+
         //5、可能感兴趣的人 done
-        List<String> mabyeInterestBshoot = mabyeInterest(userId,userProfile.getLoginArea(), start);
+        MaybeInterestRequest maybeInterestRequest = new MaybeInterestRequest(userId,userProfile.getLoginArea(),0*start,6);
+        List<String> mabyeInterestBshoot = mabyeInterest(maybeInterestRequest);
         if(CollectionUtils.isNotEmpty(mabyeInterestBshoot))
             userIds.addAll(mabyeInterestBshoot);
 
@@ -263,8 +265,8 @@ public class RecommendService implements RecommendServiceI{
     }
 
     //可能感兴趣的人
-    protected List<String> mabyeInterest(String userId,String loginArea,int start){
-        UserHobby userHobby  = userHobbyServiceImpl.getUserHobby(userId);
+    protected List<String> mabyeInterest(MaybeInterestRequest maybeInterestRequest){
+        UserHobby userHobby  = userHobbyServiceImpl.getUserHobby(maybeInterestRequest.getUserId());
         if(null!=userHobby&& StringUtils.isNotEmpty(userHobby.getHobbyType())){
             String[] hobbyType = userHobby.getHobbyType().split(",");
             List<String> out1 = new ArrayList<String>();
@@ -273,19 +275,23 @@ public class RecommendService implements RecommendServiceI{
             SystemUtils.combineStr(hobbyType,3,out2,"AND");
             StringBuffer sb = new StringBuffer();
             for(String s1 :out1){
-                sb.append("login_area:").append(loginArea).append(" AND ").append("hobby:(").append(s1).append(") OR ");
+                sb.append("login_area:").append(maybeInterestRequest.getLoginArea()).append(" AND ").append("hobby:(").append(s1).append(") OR ");
             }
             for(String s2:out2){
                 sb.append("hobby:(").append(s2).append(") OR ");
             }
             sb.delete(sb.lastIndexOf("OR "),sb.length());
             Criterias criterias = new Criterias();
-            criterias.ge("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0, DateUtil.DATETIME_FORMAT)));
+            criterias.ge("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(-1, DateUtil.DATETIME_FORMAT)));
             criterias.addNativeFq(sb.toString());
             criterias.addField("id");
-            criterias.ne("id",userId);
-            criterias.setStart(3*start);
-            criterias.setRows(3);
+            criterias.ne("id",maybeInterestRequest.getUserId());
+            if(maybeInterestRequest.isRand()){
+                Random random = new Random();
+                criterias.addOrder("rand_"+random.nextInt(1000),"asc");//随机排序字段
+            }
+            criterias.setStart(maybeInterestRequest.getPage());
+            criterias.setRows(maybeInterestRequest.getRows());
 
             SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
             //附近共同属性1个以上的人显示三个
@@ -293,13 +299,17 @@ public class RecommendService implements RecommendServiceI{
             StringBuffer qc = new StringBuffer();
             List<String> out3 = new ArrayList<String>();
             SystemUtils.combineStr(hobbyType,hobbyType.length,out3,null);
-            qc.append("login_area:").append(loginArea).append("^5 AND ").append("hobby:(").append(out3.get(0)).append(")^3");
+            qc.append("login_area:").append(maybeInterestRequest.getLoginArea()).append("^5 AND ").append("hobby:(").append(out3.get(0)).append(")^3");
             criterias2.qc(qc.toString());
-            criterias2.ge("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(0, DateUtil.DATETIME_FORMAT)));
+            criterias2.ge("lastLoginTime", DateUtil.convert2SolrDate(DateUtil.getDate(-1, DateUtil.DATETIME_FORMAT)));
             criterias2.addField("id");
-            criterias2.ne("id", userId);
-            criterias2.setStart(3*start);
-            criterias2.setRows(3);
+            criterias2.ne("id", maybeInterestRequest.getUserId());
+            if(maybeInterestRequest.isRand()){
+                Random random = new Random();
+                criterias2.addOrder("rand_"+random.nextInt(1000),"asc");//随机排序字段
+            }
+            criterias2.setStart(maybeInterestRequest.getPage());
+            criterias2.setRows(maybeInterestRequest.getRows());
             SolrResponse<UserEntity> solrResponse2 = solrUserService.query(criterias2);
             List<String> userIds = new ArrayList<String>();
             if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
