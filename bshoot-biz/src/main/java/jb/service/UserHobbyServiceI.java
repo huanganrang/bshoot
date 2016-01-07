@@ -4,6 +4,8 @@ import jb.pageModel.UserHobby;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -28,6 +30,8 @@ public interface UserHobbyServiceI {
 	 * @return
 	 */
 	public UserHobby getUserHobby(String userId);
+
+	public List<UserHobby> getUserHobbies(List<String> userIds);
 
 	/**
 	 * 添加UserHobby

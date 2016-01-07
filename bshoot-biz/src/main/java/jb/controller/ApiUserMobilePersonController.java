@@ -45,14 +45,14 @@ public class ApiUserMobilePersonController extends BaseController {
         try {
             SessionInfo s = getSessionInfo(request);
             userMobilePerson.setUserId(s.getId());
-            int r = userMobilePersonService.add(userMobilePerson);
+            /*int r = userMobilePersonService.add(userMobilePerson);
             if(r==-1){
                 j.setSuccess(false);
                 j.setMsg("已经存在");
             }else{
                 j.setSuccess(true);
                 j.setMsg("添加成功");
-            }
+            }*/
         } catch (Exception e) {
             j.setMsg(e.getMessage());
         }
@@ -73,14 +73,14 @@ public class ApiUserMobilePersonController extends BaseController {
         try {
             SessionInfo s = getSessionInfo(request);
             userMobilePerson.setUserId(s.getId());
-            int r = userMobilePersonService.deleteMobilePerson(userMobilePerson);
+          /*  int r = userMobilePersonService.deleteMobilePerson(userMobilePerson);
             if(r==-1){
                 j.setSuccess(false);
                 j.setMsg("该通讯录不存在");
             }else{
                 j.setSuccess(true);
                 j.setMsg("删除成功！");
-            }
+            }*/
         } catch (Exception e) {
             j.setMsg(e.getMessage());
         }

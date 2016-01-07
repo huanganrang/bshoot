@@ -18,13 +18,18 @@ public class Bshoot implements java.io.Serializable {
 	private String bsStream;
 	private Integer bsCollect;
 	private Integer bsPraise;
+	private Integer bsForward;
+	private Integer bsShare;
 	private Integer bsPlay;
 	private String bsType;
+	private Integer bsFileType;//文件类型
 	private Integer bsComment;
 	private String userId;
 	private String userHeadImage;
 	private String userName;
-
+	private List<String> hobby;//用户兴趣
+	private String publishFrom;//发布来源
+	private Integer guideType;//引导类型 1:新人推荐 2:好友关注的人 3：我评论/打赏过的人 4：好友打赏过的人 5：可能感兴趣的人 6：可能认识的人 7：附近的人
 	private String userHeadImageAbsolute;
 	private String bsIconAbsolute;
 	private String bsStreamAbsolute;
@@ -43,9 +48,8 @@ public class Bshoot implements java.io.Serializable {
 	private String bsArea;
 	private double distance; //距离
 	private String praised; //是否赞过
-
 	private Bshoot parentBshoot; // 转发的美拍
-
+	private String memberV;//用户等级
 	private String squareIds; // 广场分类id集合
 
 	private DataGrid comments; // 评论集合
@@ -296,6 +300,74 @@ public class Bshoot implements java.io.Serializable {
 		this.praises = praises;
 	}
 
+	public Integer getBsForward() {
+		return bsForward;
+	}
+
+	public void setBsForward(Integer bsForward) {
+		this.bsForward = bsForward;
+	}
+
+	public Integer getBsShare() {
+		return bsShare;
+	}
+
+	public void setBsShare(Integer bsShare) {
+		this.bsShare = bsShare;
+	}
+
+	public Integer getBsFileType() {
+		return bsFileType;
+	}
+
+	public void setBsFileType(Integer bsFileType) {
+		this.bsFileType = bsFileType;
+	}
+
+	public List<String> getHobby() {
+		return hobby;
+	}
+
+	public void setHobby(List<String> hobby) {
+		this.hobby = hobby;
+	}
+
+	public String getPublishFrom() {
+		return publishFrom;
+	}
+
+	public void setPublishFrom(String publishFrom) {
+		this.publishFrom = publishFrom;
+	}
+
+	public void setUserHeadImageAbsolute(String userHeadImageAbsolute) {
+		this.userHeadImageAbsolute = userHeadImageAbsolute;
+	}
+
+	public void setBsIconAbsolute(String bsIconAbsolute) {
+		this.bsIconAbsolute = bsIconAbsolute;
+	}
+
+	public void setBsStreamAbsolute(String bsStreamAbsolute) {
+		this.bsStreamAbsolute = bsStreamAbsolute;
+	}
+
+	public String getMemberV() {
+		return memberV;
+	}
+
+	public void setMemberV(String memberV) {
+		this.memberV = memberV;
+	}
+
+	public Integer getGuideType() {
+		return guideType;
+	}
+
+	public void setGuideType(Integer guideType) {
+		this.guideType = guideType;
+	}
+
 	@Override
 	public String toString() {
 		return "Bshoot{" +
@@ -306,12 +378,18 @@ public class Bshoot implements java.io.Serializable {
 				", bsStream='" + bsStream + '\'' +
 				", bsCollect=" + bsCollect +
 				", bsPraise=" + bsPraise +
+				", bsForward=" + bsForward +
+				", bsShare=" + bsShare +
 				", bsPlay=" + bsPlay +
 				", bsType='" + bsType + '\'' +
+				", bsFileType=" + bsFileType +
 				", bsComment=" + bsComment +
 				", userId='" + userId + '\'' +
 				", userHeadImage='" + userHeadImage + '\'' +
 				", userName='" + userName + '\'' +
+				", hobby=" + hobby +
+				", publishFrom='" + publishFrom + '\'' +
+				", guideType=" + guideType +
 				", userHeadImageAbsolute='" + userHeadImageAbsolute + '\'' +
 				", bsIconAbsolute='" + bsIconAbsolute + '\'' +
 				", bsStreamAbsolute='" + bsStreamAbsolute + '\'' +
@@ -330,6 +408,7 @@ public class Bshoot implements java.io.Serializable {
 				", distance=" + distance +
 				", praised='" + praised + '\'' +
 				", parentBshoot=" + parentBshoot +
+				", memberV='" + memberV + '\'' +
 				", squareIds='" + squareIds + '\'' +
 				", comments=" + comments +
 				", praises=" + praises +

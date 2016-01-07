@@ -4,6 +4,7 @@ import jb.pageModel.BaseData;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public interface BasedataServiceI {
 	 * @return
 	 * @author zhouyibing
 	 */
-	public List<BaseData> getBaseDatas(List<String> ids);
+	public <T> T getBaseDatas(Collection<String> ids,Class clazz);
 	/**
 	 * 获得基础数据
 	 * 

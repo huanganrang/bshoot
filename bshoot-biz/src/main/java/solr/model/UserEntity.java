@@ -17,6 +17,8 @@ public class UserEntity {
     @Field
     private String nickname;
     @Field
+    private String headImg;
+    @Field
     private String usex;
     @Field
     private String areaCode;
@@ -261,12 +263,21 @@ public class UserEntity {
         this.login_area = login_area;
     }
 
+    public String getHeadImg() {
+        return headImg;
+    }
+
+    public void setHeadImg(String headImg) {
+        this.headImg = headImg;
+    }
+
     @Override
     public String toString() {
         return "UserEntity{" +
                 "id='" + id + '\'' +
                 ", utype='" + utype + '\'' +
                 ", nickname='" + nickname + '\'' +
+                ", headImg='" + headImg + '\'' +
                 ", usex='" + usex + '\'' +
                 ", areaCode='" + areaCode + '\'' +
                 ", areaName='" + areaName + '\'' +

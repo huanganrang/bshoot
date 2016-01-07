@@ -48,14 +48,14 @@ public class ApiUserPersonGroupController extends BaseController {
         try {
             SessionInfo s = getSessionInfo(request);
             userPersonGroup.setUserId(s.getId());
-            int r = userPersonGroupService.add(userPersonGroup);
+            /*int r = userPersonGroupService.add(userPersonGroup);
             if(r==-1){
                 j.setSuccess(false);
                 j.setMsg("已存在该分组");
             }else{
                 j.setSuccess(true);
                 j.setMsg("添加分组成功");
-            }
+            }*/
         } catch (Exception e) {
             j.setMsg(e.getMessage());
         }
@@ -78,7 +78,7 @@ public class ApiUserPersonGroupController extends BaseController {
             userPersonGroup.setUserId(s.getId());
             if(!F.empty(userPersonGroup.getId())){//必需传进分组id，否则清除关注表上的分组时会有问题
                 userPersonGroupService.delete(userPersonGroup.getId());
-                userPersonService.delUserPersonGroup(userPersonGroup.getId());
+                //userPersonService.delUserPersonGroup(userPersonGroup.getId());
                 j.setSuccess(true);
                 j.setMsg("删除分组成功");
             }else{
@@ -105,14 +105,14 @@ public class ApiUserPersonGroupController extends BaseController {
             SessionInfo s = getSessionInfo(request);
             userPersonGroup.setUserId(s.getId());
             if(!F.empty(userPersonGroup.getId())){
-                int r = userPersonGroupService.edit(userPersonGroup);
+               /* int r = userPersonGroupService.edit(userPersonGroup);
                 if(r==-1){
                     j.setSuccess(false);
                     j.setMsg("修改分组名称失败");
                 }else{
                     j.setSuccess(true);
                     j.setMsg("修改分组名称成功");
-                }
+                }*/
             }else{
                 j.setSuccess(false);
                 j.setMsg("修改分组名称失败,未传入分组id");

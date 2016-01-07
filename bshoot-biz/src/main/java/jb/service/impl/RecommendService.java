@@ -2,6 +2,7 @@ package jb.service.impl;
 
 import com.alibaba.druid.support.json.JSONUtils;
 import com.google.common.collect.Lists;
+import com.sun.xml.internal.rngom.parse.host.Base;
 import jb.bizmodel.RecommendUser;
 import jb.pageModel.*;
 import jb.service.*;
@@ -75,6 +76,17 @@ public class RecommendService implements RecommendServiceI{
         if(null!=userv&&CollectionUtils.isNotEmpty(userv.getDocs()))
             userList.addAll(userv.getDocs());
         List<RecommendUser> recommendUsers = new ArrayList<RecommendUser>();
+        Set<String> baseDataIds = new HashSet<String>();
+        for(UserEntity userEntity:userList){
+            if(null!=userEntity.getLogin_area())
+               baseDataIds.add(userEntity.getLogin_area());
+            if(null!=userEntity.getUsex())
+                baseDataIds.add(userEntity.getUsex());
+            if(null!=userEntity.getHobby())
+                baseDataIds.addAll(userEntity.getHobby());
+        }
+        Map<String,BaseData> baseDataMap = basedataServiceImpl.getBaseDatas(baseDataIds,Map.class);
+        BaseData baseData;
         for(UserEntity userEntity:userList){
             User u = userServiceImpl.get(userEntity.getId());
             RecommendUser recommendUser = new RecommendUser();
@@ -82,26 +94,20 @@ public class RecommendService implements RecommendServiceI{
             recommendUser.setNickname(u.getNickname());
             recommendUser.setHeadImage(u.getHeadImage());
             recommendUser.setBardian(u.getBardian());
-            BaseData area = null;
-            if(null!=userEntity.getLogin_area())
-              area = basedataServiceImpl.get(userEntity.getLogin_area());
-            if(null!=area)
-              recommendUser.setArea(area.getName());
-            List<BaseData> hobbys = null;
-            if(null!=userEntity.getHobby())
-                hobbys = basedataServiceImpl.getBaseDatas(userEntity.getHobby());
-            List<String> h = Lists.newArrayList();
-            if(CollectionUtils.isNotEmpty(hobbys)){
-                for(BaseData hobby:hobbys){
-                    h.add(hobby.getName());
-                }
-                recommendUser.setHobby(h);
+            baseData = baseDataMap.get(userEntity.getLogin_area());
+            if(null!=baseData)
+              recommendUser.setArea(baseData.getName());
+            List<String> hobbies = userEntity.getHobby();
+            List<String> hobbyNames = Lists.newArrayList();
+            for(String hobby:hobbies){
+                baseData = baseDataMap.get(hobby);
+                if(null!=baseData)
+                    hobbyNames.add(baseData.getName());
             }
-            BaseData sex = null;
-            if(null!=u.getSex())
-              sex = basedataServiceImpl.get(u.getSex());
-            if(null!=sex)
-             recommendUser.setSex(sex.getName());
+            recommendUser.setHobby(hobbyNames);
+            baseData = baseDataMap.get(userEntity.getUsex());
+            if(null!=baseData)
+              recommendUser.setSex(baseData.getName());
             recommendUsers.add(recommendUser);
         }
         return recommendUsers;
@@ -120,7 +126,50 @@ public class RecommendService implements RecommendServiceI{
             hobby = out.get(0);
         }
         HotShootRequest hotShootRequest = new HotShootRequest(oneDayago,200,start,fileType,hobby,50);
-        return bshootServiceImpl.getHotBshoots(hotShootRequest);
+        List<Bshoot> bshoots =  bshootServiceImpl.getHotBshoots(hotShootRequest);
+        return fillBshoot(bshoots);
+    }
+
+    private List<Bshoot> fillBshoot(List<Bshoot> bshoots){
+        if(CollectionUtils.isEmpty(bshoots)) return bshoots;
+        Set<String> userIds = new HashSet<String>();
+        for(Bshoot bshoot:bshoots)
+            userIds.add(bshoot.getUserId());
+        Criterias criterias = new Criterias();
+        List<String> out = new ArrayList<String>();
+        String[] u = new String[userIds.size()];
+        userIds.toArray(u);
+        SystemUtils.combineStr(u,2,out,null);
+        criterias.addNativeFq("id:("+out.toString()+")");
+        criterias.addField(new String[]{"id","headImg","member_v","hobby","nickname"});
+        criterias.setStart(0);
+        criterias.setRows(u.length);
+        SolrResponse<UserEntity> userEntitySolrResponse = solrUserService.query(criterias);
+        if(null!=userEntitySolrResponse&&CollectionUtils.isNotEmpty(userEntitySolrResponse.getDocs())){
+            List<UserEntity> userEntities = userEntitySolrResponse.getDocs();
+            Set<String> hobbies = new HashSet<String>();
+            Map<String,UserEntity> userEntityMap = new HashMap<String, UserEntity>();
+            UserEntity userEntity;
+            for(int i=0;i<userEntities.size();i++){
+                userEntity = userEntities.get(i);
+                userEntityMap.put(userEntity.getId(),userEntity);
+                hobbies.addAll(userEntity.getHobby());
+            }
+            Map<String,BaseData> baseDatas = basedataServiceImpl.getBaseDatas(hobbies,Map.class);
+            List<String> h;
+            for(Bshoot bshoot:bshoots){
+                userEntity = userEntityMap.get(bshoot.getUserId());
+                bshoot.setUserName(userEntity.getNickname());
+                bshoot.setMemberV(userEntity.getMember_v());
+                bshoot.setUserHeadImage(userEntity.getHeadImg());
+                h = new ArrayList<String>();
+                for(String hob:userEntity.getHobby()){
+                    h.add(baseDatas.get(hob).getName());
+                }
+                bshoot.setHobby(h);
+            }
+        }
+        return bshoots;
     }
 
     @Override
@@ -128,91 +177,93 @@ public class RecommendService implements RecommendServiceI{
         //获得当前用户画像
         UserProfile userProfile = userProfileServiceImpl.get(userId);
         List<Bshoot> bshoots = new ArrayList<Bshoot>();
-        //1.新人推荐 done
-        bshoots.add(recommendNewUser(userId,userProfile.getFansNum(),userProfile.getLoginArea(),start,DateUtil.stringToDate(DateUtil.getDateStart(-1))));
-        Date threeDaysAgo = DateUtil.stringToDate(DateUtil.getDateStart(-3));
+
+        List<String> userIds = new ArrayList<String>();
         //2.好友共同关注的人 done
-        List<Bshoot> friendCommonBshoot = friendCommonAtt(userId, start,threeDaysAgo);
+        AttentionRequest attentionRequest = new AttentionRequest(userId,null,6*start,6);
+        List<String> friendCommonBshoot = friendCommonAtt(attentionRequest);
         if(CollectionUtils.isNotEmpty(friendCommonBshoot))
-            bshoots.addAll(friendCommonBshoot);
+            userIds.addAll(friendCommonBshoot);
 
         //3.我评论打赏过的人 done
-        List<Bshoot> comment_praise = have_comment_praise(userId, start,threeDaysAgo);
+        PraiseCommentRequest praiseCommentRequest = new PraiseCommentRequest(userId,null,6*start,6);
+        List<String> comment_praise = have_comment_praise(praiseCommentRequest);
         if(CollectionUtils.isNotEmpty(comment_praise))
-            bshoots.addAll(comment_praise);
+            userIds.addAll(comment_praise);
 
         //4.好友打赏过的人 done
-        List<Bshoot> friendPraise = friendPraise(userId, start,threeDaysAgo);
+        PraiseCommentRequest praiseCommentRequest2 = new PraiseCommentRequest(userId,null,6*start,6);
+        List<String> friendPraise = friendPraise(praiseCommentRequest2);
         if(CollectionUtils.isNotEmpty(friendPraise))
-            bshoots.addAll(friendPraise);
+            userIds.addAll(friendPraise);
 
         //5、可能感兴趣的人 done
-        List<Bshoot> mabyeInterestBshoot = mabyeInterest(userId,userProfile.getLoginArea(), start,threeDaysAgo);
+        List<String> mabyeInterestBshoot = mabyeInterest(userId,userProfile.getLoginArea(), start);
         if(CollectionUtils.isNotEmpty(mabyeInterestBshoot))
-            bshoots.addAll(mabyeInterestBshoot);
+            userIds.addAll(mabyeInterestBshoot);
 
         //6.可能认识的人 done
-        List<Bshoot> maybeKnow = maybeKnow(userId,start,threeDaysAgo);
+        UserMobilePersonRequest userMobilePersonRequest = new UserMobilePersonRequest(userId,6*start,6);
+        List<String> maybeKnow = maybeKnow(userMobilePersonRequest);
         if(CollectionUtils.isNotEmpty(maybeKnow))
-            bshoots.addAll(maybeKnow);
+            userIds.addAll(maybeKnow);
 
         //7.附近的人 done
-        List<Bshoot> nearbyBshoot = nearbyBshoot(userId,userProfile.getLoginArea(), start,threeDaysAgo);
+        List<String> nearbyBshoot = nearbyBshoot(userId,userProfile.getLoginArea(), start);
         if(CollectionUtils.isNotEmpty(nearbyBshoot))
-           bshoots.addAll(nearbyBshoot);
+            userIds.addAll(nearbyBshoot);
+        getLastBshoot(userIds,DateUtil.stringToDate(DateUtil.getDateStart(-3)));
+        fillBshoot(bshoots);
         Collections.shuffle(bshoots);
+        //1.新人推荐 done
+        String uid = recommendNewUser(userId,userProfile.getFansNum(),userProfile.getLoginArea(),start);
+        List<Bshoot> newUserBshoot = getLastBshoot(Lists.newArrayList(uid), DateUtil.stringToDate(DateUtil.getDateStart(-1)));
+        if(CollectionUtils.isNotEmpty(newUserBshoot))
+            bshoots.addAll(0, newUserBshoot);//固定在第一位
         return bshoots;
     }
 
-    private List<Bshoot> friendPraise(String userId,int start,Date dateLimit){
-        List<String> userIds = bshootPraiseServiceImpl.friendHasPraisedUser(userId,6*start, 6);
+    protected List<String> friendPraise(PraiseCommentRequest praiseCommentRequest){
+        List<String> userIds = bshootPraiseServiceImpl.friendHasPraisedUser(praiseCommentRequest);
         if(CollectionUtils.isEmpty(userIds)){
-            userIds = bshootPraiseServiceImpl.singleFriendHasPraisedUser(userId, 6 * start, 6);
+            userIds = bshootPraiseServiceImpl.singleFriendHasPraisedUser(praiseCommentRequest);
         }
-        return getLastBshoot(userIds,dateLimit);
+        return userIds;
     }
 
     //好友共同关注的人
-    private List<Bshoot> friendCommonAtt(String userId,int start,Date dateLimit){
-        List<String> userAttentionList = userAttentionServiceImpl.friendCommonAtt(userId,6*start,6);
+    protected List<String> friendCommonAtt(AttentionRequest attentionRequest){
+        List<String> userAttentionList = userAttentionServiceImpl.friendCommonAtt(attentionRequest);
         if(CollectionUtils.isEmpty(userAttentionList)){
             //显示单个好友关注的人动态
-            userAttentionList = userAttentionServiceImpl.singleFriednAtt(userId,6*start,6);
+            userAttentionList = userAttentionServiceImpl.singleFriednAtt(attentionRequest);
         }
-        if(CollectionUtils.isNotEmpty(userAttentionList)) {
-            return getLastBshoot(userAttentionList,dateLimit);
-        }
-        return null;
+        return userAttentionList;
     }
 
     //我评论/打赏过的人的动态
-    private List<Bshoot> have_comment_praise(String userId,int start,Date dateLimit){
-        List<String> userIds =  bshootPraiseServiceImpl.mePraiseCommentUser(userId,6*start, 6);
-        return getLastBshoot(userIds,dateLimit);
+    protected List<String> have_comment_praise(PraiseCommentRequest praiseCommentRequest){
+       return bshootPraiseServiceImpl.mePraiseCommentUser(praiseCommentRequest);
     }
 
     //可能认识的人
-    private List<Bshoot> maybeKnow(String userId,int start,Date dateLimit){
-        List<UserMobilePerson> userMobilePersonList = userMobilePersonServiceImpl.notAttMobilePerson(userId,6*start,6);
+    protected List<String> maybeKnow(UserMobilePersonRequest request){
+        List<String> userMobilePersonList = userMobilePersonServiceImpl.notAttMobilePerson(request);
         List<String> userIds = new ArrayList<String>();
         int rows = 6;
         if(CollectionUtils.isEmpty(userMobilePersonList)){
-            userMobilePersonList = new ArrayList<UserMobilePerson>();
+            userMobilePersonList = new ArrayList<String>();
             rows = 12;
         }else if(userMobilePersonList.size()<6){
             rows = 12-userMobilePersonList.size();
         }
-        List<UserMobilePerson> userMobilePersonList2 = userMobilePersonServiceImpl.noAttMobilePersonPerson(userId,6*start,rows);
+        List<String> userMobilePersonList2 = userMobilePersonServiceImpl.noAttMobilePersonPerson(request);
         if(CollectionUtils.isNotEmpty(userMobilePersonList2)) userMobilePersonList.addAll(userMobilePersonList2);
-
-        for(UserMobilePerson u:userMobilePersonList){
-            userIds.add(u.getFriendId());
-        }
-        return getLastBshoot(userIds,dateLimit);
+        return userMobilePersonList;
     }
 
     //可能感兴趣的人
-    private List<Bshoot> mabyeInterest(String userId,String loginArea,int start,Date dateLimit){
+    protected List<String> mabyeInterest(String userId,String loginArea,int start){
         UserHobby userHobby  = userHobbyServiceImpl.getUserHobby(userId);
         if(null!=userHobby&& StringUtils.isNotEmpty(userHobby.getHobbyType())){
             String[] hobbyType = userHobby.getHobbyType().split(",");
@@ -222,7 +273,7 @@ public class RecommendService implements RecommendServiceI{
             SystemUtils.combineStr(hobbyType,3,out2,"AND");
             StringBuffer sb = new StringBuffer();
             for(String s1 :out1){
-                sb/*.append("login_area:").append(loginArea).append(" AND ")*/.append("hobby:(").append(s1).append(") OR ");
+                sb.append("login_area:").append(loginArea).append(" AND ").append("hobby:(").append(s1).append(") OR ");
             }
             for(String s2:out2){
                 sb.append("hobby:(").append(s2).append(") OR ");
@@ -263,7 +314,7 @@ public class RecommendService implements RecommendServiceI{
                     userIds.add(userEntity.getId());
                 }
             }
-            return getLastBshoot(userIds,dateLimit);
+            return userIds;
         }
         return  null;
     }
@@ -273,7 +324,7 @@ public class RecommendService implements RecommendServiceI{
      * @param loginArea
      * @return
      */
-    private List<Bshoot> nearbyBshoot(String userId,String loginArea ,int start,Date dateLimit){
+    protected List<String> nearbyBshoot(String userId,String loginArea ,int start){
         Criterias criterias = new Criterias();
         criterias.qc("login_area:"+loginArea);
         criterias.addField("id");
@@ -288,12 +339,12 @@ public class RecommendService implements RecommendServiceI{
             for(UserEntity userEntity:users){
                 userIds.add(userEntity.getId());
             }
-            return getLastBshoot(userIds,dateLimit);
+            return userIds;
         }
         return null;
     }
 
-    private Bshoot recommendNewUser(String userId,Integer fansNum,String loginArea,int start,Date dateLimit){
+    private String recommendNewUser(String userId,Integer fansNum,String loginArea,int start){
         //1.新人推荐
         if(null!=fansNum&&fansNum<50) {
             //当前用户粉丝量大于50则不推荐，新人推荐根据用户粉丝量，获取同城用户且当天发布了动态
@@ -315,20 +366,31 @@ public class RecommendService implements RecommendServiceI{
             SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
             if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
                 List<UserEntity> user = solrResponse.getDocs();
-               return bshootServiceImpl.getUserLastBshoot(user.get(0).getId(),dateLimit);
+                return user.get(0).getId();
             }
         }
         return null;
     }
 
-    private List<Bshoot> getLastBshoot(List<String> userIds,Date dateLimit){
-        List<Bshoot> bshoots =  bshootServiceImpl.getUserLastBshoot(userIds,dateLimit);
+    protected List<Bshoot> getLastBshoot(List<String> userIds,Date dateLimit){
+        if(CollectionUtils.isEmpty(userIds)) return null;
+        List<Bshoot> bshoots=null;
+        if(userIds.size()==1){
+            Bshoot bshoot = bshootServiceImpl.getUserLastBshoot(userIds.get(0), dateLimit);
+            if(null!=bshoot){
+                bshoots = new ArrayList<Bshoot>();
+                bshoots.add(bshoot);
+            }
+        }else{
+            bshoots =  bshootServiceImpl.getUserLastBshoot(userIds,dateLimit);
+        }
         if(logger.isDebugEnabled()){
             StackTraceElement[] stack = (new Throwable()).getStackTrace();
             logger.debug(stack[0].getClassName()+"." + stack[0].getMethodName() + " result:" + JSONUtils.toJSONString(bshoots));
         }
         return bshoots;
     }
+
     public static void main(String[] args){
         System.out.println(DateUtil.convert2SolrDate(DateUtil.getDate(-1, DateUtil.DATETIME_FORMAT)));
         //System.out.println(DateUtil.convert2SolrDate(DateUtil.getDateBeforeHours(-10, DateUtil.DATETIME_FORMAT)));

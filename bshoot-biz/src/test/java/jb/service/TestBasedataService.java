@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import solr.TestConfig;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by zhou on 2016/1/1.
@@ -23,9 +25,13 @@ public class TestBasedataService extends TestConfig{
                 "SV003"});
         BaseData bd = basedataServiceImpl.get("SV002");
         System.out.println(bd);
-        List<BaseData> baseDatas  = basedataServiceImpl.getBaseDatas(ids);
+       /* List<BaseData> baseDatas  = basedataServiceImpl.getBaseDatas(ids,List.class);
         for(BaseData baseData:baseDatas){
             System.out.println(baseData);
-        }
+        }*/
+        Map<String,BaseData> baseDataMap = basedataServiceImpl.getBaseDatas(ids,Map.class);
+        System.out.print(baseDataMap);
+        Set<BaseData> baseDataSet = basedataServiceImpl.getBaseDatas(ids,Set.class);
+        System.out.print(baseDataMap);
     }
 }

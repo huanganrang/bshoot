@@ -102,6 +102,7 @@ public class Tbshoot implements java.io.Serializable{
 	private java.lang.Integer bsForward;
 	private java.lang.Integer bsShare;
 	private java.lang.Integer isDelete;
+	private java.lang.Integer bsFileType;
 
 		public Tbshoot(){
 		}
@@ -341,6 +342,14 @@ public class Tbshoot implements java.io.Serializable{
 	@Column(name = "bs_forward", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getBsForward() {
 		return bsForward;
+	}
+	@Column(name = "bs_file_type", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
+	public Integer getBsFileType() {
+		return bsFileType;
+	}
+
+	public void setBsFileType(Integer bsFileType) {
+		this.bsFileType = bsFileType;
 	}
 
 	public void setBsForward(Integer bsForward) {

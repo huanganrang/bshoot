@@ -19,6 +19,7 @@
         <field name="id" type="string" indexed="true"  stored="true" required="true"/>
         <field name="utype" type="string" indexed="true" stored="true"/>
         <field name="nickname" type="string" indexed="true" stored="true"/>
+        <field name="headImg" type="string" indexed="false" stored="true"/>
         <field name="usex" type="string" indexed="true" stored="true"/>
         <field name="areaCode" type="string" indexed="true" stored="true"/>
         <field name="areaName" type="string" indexed="true" stored="true"/>
