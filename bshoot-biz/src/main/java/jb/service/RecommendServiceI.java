@@ -28,5 +28,5 @@ public interface RecommendServiceI {
      * @param  userId 当前登录用户id
      * @param start 第几页 从0开始
      */
-    public  List<Bshoot> recommend(String userId,Integer start);
+    public  List<Bshoot> recommend(String userId,Integer start,Integer rows);
 }

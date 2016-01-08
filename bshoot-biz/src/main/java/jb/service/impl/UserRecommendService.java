@@ -4,8 +4,6 @@ import jb.pageModel.*;
 import jb.service.*;
 import jb.util.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.util.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import solr.common.SystemUtils;
 import solr.model.SolrResponse;
@@ -20,20 +18,16 @@ import java.util.Random;
 /**
  * Created by Zhou Yibing on 2016/1/8.
  */
-public class UserRecommendService implements UserRecommendServiceI{
+public class UserRecommendService implements CommonRecommendServiceI{
 
     @Autowired
-    private SolrUserService solrUserService;
+    protected SolrUserService solrUserService;
     @Autowired
-    protected UserProfileServiceI userProfileServiceImpl;
+    protected UserAttentionServiceI userAttentionServiceImpl;
     @Autowired
-    private UserHobbyServiceI userHobbyServiceImpl;
+    protected UserMobilePersonServiceI userMobilePersonServiceImpl;
     @Autowired
-    private UserAttentionServiceI userAttentionServiceImpl;
-    @Autowired
-    private UserMobilePersonServiceI userMobilePersonServiceImpl;
-    @Autowired
-    private BshootPraiseServiceI bshootPraiseServiceImpl;
+    protected BshootPraiseServiceI bshootPraiseServiceImpl;
 
     @Override
     public List<String> friendPraisedUser(PraiseCommentRequest praiseCommentRequest) {
@@ -61,17 +55,17 @@ public class UserRecommendService implements UserRecommendServiceI{
     }
 
     @Override
-    public List<String> notAttMobilePerson(UserMobilePersonRequest userMobilePersonRequest) {
+    public List<String> notAttMobileUser(UserMobilePersonRequest userMobilePersonRequest) {
         return userMobilePersonServiceImpl.notAttMobilePerson(userMobilePersonRequest);
     }
 
     @Override
-    public List<String> mobilePersonPerson(UserMobilePersonRequest userMobilePersonRequest) {
+    public List<String> mobileUserUser(UserMobilePersonRequest userMobilePersonRequest) {
         return userMobilePersonServiceImpl.noAttMobilePersonPerson(userMobilePersonRequest);
     }
 
     @Override
-    public List<String> mabyeInterest(MaybeInterestRequest maybeInterestRequest) {
+    public List<String> mabyeInterestedUser(MaybeInterestRequest maybeInterestRequest) {
         List<String> property = new ArrayList<String>();
         if(null!=maybeInterestRequest.getLoginArea())
           property.add(maybeInterestRequest.getLoginArea());
@@ -91,13 +85,21 @@ public class UserRecommendService implements UserRecommendServiceI{
         sb.delete(sb.lastIndexOf("OR "),sb.length());
 
         Criterias criterias = new Criterias();
-        criterias.ge("lastLoginTime",maybeInterestRequest.getLastLoginTime());
+        if(null!=maybeInterestRequest.getLastLoginTime())
+           criterias.ge("lastLoginTime", DateUtil.convert2SolrDate(maybeInterestRequest.getLastLoginTime()));
         criterias.addNativeFq(sb.toString());
         criterias.addField("id");
         criterias.ne("id",maybeInterestRequest.getUserId());
+
+        //用户登录的经纬度
+        if(null!=maybeInterestRequest.getLgX()&&null!=maybeInterestRequest.getLgY()&&0!=maybeInterestRequest.getDistance()){
+            criterias.addLocation("login_location",maybeInterestRequest.getLgY()+","+maybeInterestRequest.getLgX(),maybeInterestRequest.getDistance(),"asc");//附近的用户，按距离升序排序
+        }
         if(maybeInterestRequest.isRand()){
             Random random = new Random();
             criterias.addOrder("rand_"+random.nextInt(1000),"asc");//随机排序字段
+        }else{
+            criterias.addOrder("lastPublishTime","desc");
         }
         criterias.setStart(maybeInterestRequest.getPage());
         criterias.setRows(maybeInterestRequest.getRows());
@@ -111,5 +113,52 @@ public class UserRecommendService implements UserRecommendServiceI{
             }
         }
         return userIds;
+    }
+
+    @Override
+    public List<String> nearbyUser(NearbyRequest nearbyRequest) {
+        Criterias criterias = new Criterias();
+        criterias.addField("id");
+        criterias.ne("id",nearbyRequest.getUserId());//去掉自己
+        criterias.addOrder("lastPublishTime","desc");
+        //用户登录的经纬度
+        if(null!=nearbyRequest.getLgX()&&null!=nearbyRequest.getLgY()&&0!=nearbyRequest.getDistance()){
+            criterias.addLocation("login_location",nearbyRequest.getLgY()+","+nearbyRequest.getLgX(),nearbyRequest.getDistance(),"asc");//附近的用户，按距离升序排序
+        }
+        if(null!=nearbyRequest.getLastLoginTime()){
+            criterias.ge("lastLoginTime",  DateUtil.convert2SolrDate(nearbyRequest.getLastLoginTime()));
+        }
+        criterias.setStart(nearbyRequest.getPage());
+        criterias.setRows(nearbyRequest.getRows());
+        SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
+        List<String> userIds = new ArrayList<String>();
+        if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
+            List<UserEntity> users = solrResponse.getDocs();
+            for(UserEntity userEntity:users){
+                userIds.add(userEntity.getId());
+            }
+        }
+        return userIds;
+    }
+
+    @Override
+    public List<String> sameCityUser(SameCityRequest sameCityRequest) {
+        Criterias criterias = new Criterias();
+        criterias.qc("login_area:"+sameCityRequest.getLoginArea());
+        criterias.addField("id");
+        criterias.ne("id",sameCityRequest.getUserId());//去掉自己
+        criterias.addOrder("lastPublishTime","desc");
+        criterias.setStart(sameCityRequest.getPage());
+        criterias.setRows(sameCityRequest.getRows());
+        SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
+        if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
+            List<UserEntity> users = solrResponse.getDocs();
+            List<String> userIds = new ArrayList<String>();
+            for(UserEntity userEntity:users){
+                userIds.add(userEntity.getId());
+            }
+            return userIds;
+        }
+        return null;
     }
 }

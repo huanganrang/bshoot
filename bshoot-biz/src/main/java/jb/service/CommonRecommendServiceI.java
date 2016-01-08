@@ -1,16 +1,13 @@
 package jb.service;
 
-import jb.pageModel.AttentionRequest;
-import jb.pageModel.MaybeInterestRequest;
-import jb.pageModel.PraiseCommentRequest;
-import jb.pageModel.UserMobilePersonRequest;
+import jb.pageModel.*;
 
 import java.util.List;
 
 /**
  * Created by Zhou Yibing on 2016/1/8.
  */
-public interface UserRecommendServiceI {
+public interface CommonRecommendServiceI {
 
     //好友打共同赏过的人
     List<String> friendPraisedUser(PraiseCommentRequest praiseCommentRequest);
@@ -28,11 +25,17 @@ public interface UserRecommendServiceI {
     List<String> meCommentPraisedUser(PraiseCommentRequest praiseCommentRequest);
 
     //我未关注的手机联系人
-    List<String> notAttMobilePerson(UserMobilePersonRequest userMobilePersonRequest);
+    List<String> notAttMobileUser(UserMobilePersonRequest userMobilePersonRequest);
 
     //我手机联系人的联系人
-    List<String> mobilePersonPerson(UserMobilePersonRequest userMobilePersonRequest);
+    List<String> mobileUserUser(UserMobilePersonRequest userMobilePersonRequest);
 
     //共同属性的人
-    List<String>  mabyeInterest(MaybeInterestRequest maybeInterestRequest);
+    List<String>  mabyeInterestedUser(MaybeInterestRequest maybeInterestRequest);
+
+    //附近的人
+    List<String> nearbyUser(NearbyRequest nearbyRequest);
+
+    //同城的人
+    List<String> sameCityUser(SameCityRequest sameCityRequest);
 }

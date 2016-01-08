@@ -25,14 +25,12 @@ import java.util.*;
  * Created by zhou on 2016/1/1.
  */
 @Service
-public class RecommendService extends UserRecommendService implements RecommendServiceI{
+public class RecommendService extends UserRecommendService implements RecommendServiceI,CommonRecommendServiceI{
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UserServiceI userServiceImpl;
-    @Autowired
-    private SolrUserService solrUserService;
     @Autowired
     private BasedataServiceI basedataServiceImpl;
     @Autowired
@@ -41,12 +39,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
     protected UserProfileServiceI userProfileServiceImpl;
     @Autowired
     private UserHobbyServiceI userHobbyServiceImpl;
-    @Autowired
-    private UserAttentionServiceI userAttentionServiceImpl;
-    @Autowired
-    private UserMobilePersonServiceI userMobilePersonServiceImpl;
-    @Autowired
-    private BshootPraiseServiceI bshootPraiseServiceImpl;
+
 
     @Override
     public List<RecommendUser> recommendUser( String loginArea) {
@@ -173,24 +166,24 @@ public class RecommendService extends UserRecommendService implements RecommendS
     }
 
     @Override
-    public List<Bshoot> recommend(String userId,Integer start) {
+    public List<Bshoot> recommend(String userId,Integer start,Integer rows) {
         List<Bshoot> bshoots = new ArrayList<Bshoot>();
 
         Date threeDayAgo = DateUtil.stringToDate(DateUtil.getDateStart(-3));
         //2.好友共同关注的人 done
-        AttentionRequest attentionRequest = new AttentionRequest(userId,null,6*start,6);
+        AttentionRequest attentionRequest = new AttentionRequest(userId,null,rows*start,rows);
         List<Bshoot> friendCommonBshoot = friendCommonAtt(attentionRequest,threeDayAgo,false);
         if(CollectionUtils.isNotEmpty(friendCommonBshoot))
             bshoots.addAll(friendCommonBshoot);
 
         //3.我评论打赏过的人 done
-        PraiseCommentRequest praiseCommentRequest = new PraiseCommentRequest(userId,null,6*start,6);
+        PraiseCommentRequest praiseCommentRequest = new PraiseCommentRequest(userId,null,rows*start,rows);
         List<Bshoot> comment_praise = have_comment_praise(praiseCommentRequest,threeDayAgo,false);
         if(CollectionUtils.isNotEmpty(comment_praise))
             bshoots.addAll(comment_praise);
 
         //4.好友打赏过的人 done
-        PraiseCommentRequest praiseCommentRequest2 = new PraiseCommentRequest(userId,null,3*start,3);
+        PraiseCommentRequest praiseCommentRequest2 = new PraiseCommentRequest(userId,null,rows*start,rows);
         List<Bshoot> friendPraise = friendPraise(praiseCommentRequest2,threeDayAgo,false);
         if(CollectionUtils.isNotEmpty(friendPraise))
             bshoots.addAll(friendPraise);
@@ -202,21 +195,28 @@ public class RecommendService extends UserRecommendService implements RecommendS
         MaybeInterestRequest maybeInterestRequest = new MaybeInterestRequest();
         maybeInterestRequest.setUserId(userId);
         maybeInterestRequest.setLoginArea(userProfile.getLoginArea());
-        maybeInterestRequest.setPage(3*start);
-        maybeInterestRequest.setLastLoginTime(DateUtil.convert2SolrDate(DateUtil.getDate(-1, DateUtil.DATETIME_FORMAT)));
-        maybeInterestRequest.setRows(6);
+        maybeInterestRequest.setPage(rows*start);
+        maybeInterestRequest.setLastLoginTime(DateUtil.getDate(-1, DateUtil.DATETIME_FORMAT));
+        maybeInterestRequest.setLgX(userProfile.getLgX());
+        maybeInterestRequest.setLgY(userProfile.getLgY());
+        maybeInterestRequest.setRows(rows);
         List<Bshoot> mabyeInterestBshoot = mabyeInterest(maybeInterestRequest,threeDayAgo,false);
         if(CollectionUtils.isNotEmpty(mabyeInterestBshoot))
             bshoots.addAll(mabyeInterestBshoot);
 
         //6.可能认识的人 done
-        UserMobilePersonRequest userMobilePersonRequest = new UserMobilePersonRequest(userId,6*start,6);
+        UserMobilePersonRequest userMobilePersonRequest = new UserMobilePersonRequest(userId,rows*start,rows);
         List<Bshoot> maybeKnow = maybeKnow(userMobilePersonRequest,threeDayAgo,false);
         if(CollectionUtils.isNotEmpty(maybeKnow))
             bshoots.addAll(maybeKnow);
 
         //7.附近的人 done
-        List<Bshoot> nearbyBshoot = nearbyBshoot(userId,userProfile.getLoginArea(), start,threeDayAgo,false);
+        SameCityRequest sameCityRequest = new SameCityRequest();
+        sameCityRequest.setUserId(userId);
+        sameCityRequest.setLoginArea(userProfile.getLoginArea());
+        sameCityRequest.setPage(rows*start);
+        sameCityRequest.setRows(rows);
+        List<Bshoot> nearbyBshoot = nearbyBshoot(sameCityRequest,threeDayAgo,false);
         if(CollectionUtils.isNotEmpty(nearbyBshoot))
             bshoots.addAll(nearbyBshoot);
 
@@ -255,7 +255,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
 
     //可能认识的人
     protected List<Bshoot> maybeKnow(UserMobilePersonRequest request,Date dateLimit,boolean maxPraise){
-        List<String> userMobilePersonList = super.notAttMobilePerson(request);
+        List<String> userMobilePersonList = super.notAttMobileUser(request);
         List<String> userIds = new ArrayList<String>();
         int rows = request.getRows();
         if(CollectionUtils.isEmpty(userMobilePersonList)){
@@ -265,7 +265,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
             rows = 2*rows-userMobilePersonList.size();
         }
         request.setRows(rows);
-        List<String> userMobilePersonList2 = super.notAttMobilePerson(request);
+        List<String> userMobilePersonList2 = super.notAttMobileUser(request);
         if(CollectionUtils.isNotEmpty(userMobilePersonList2)) userMobilePersonList.addAll(userMobilePersonList2);
         return getLastBshoot(userMobilePersonList,dateLimit, GuideType.MAYBE_KNOW.getId(),maxPraise);
     }
@@ -274,10 +274,21 @@ public class RecommendService extends UserRecommendService implements RecommendS
     protected List<Bshoot> mabyeInterest(MaybeInterestRequest maybeInterestRequest,Date dateLimit,boolean maxPraise){
         UserHobby userHobby  = userHobbyServiceImpl.getUserHobby(maybeInterestRequest.getUserId());
         if(null!=userHobby&& StringUtils.isNotEmpty(userHobby.getHobbyType())){
-            /*maybeInterestRequest.setHobby(Lists.newArrayList(userHobby.getHobbyType().split(",")));
+            maybeInterestRequest.setHobby(Lists.newArrayList(userHobby.getHobbyType().split(",")));
             maybeInterestRequest.setPropertyCount(3);
-            super.mabyeInterest(maybeInterestRequest);*/
-            String[] hobbyType = userHobby.getHobbyType().split(",");
+            maybeInterestRequest.setRows(maybeInterestRequest.getRows()<2?1:maybeInterestRequest.getRows()/2);
+            List<String> userIds = new ArrayList<String>();
+            userIds = super.mabyeInterestedUser(maybeInterestRequest);
+
+            //附近共同属性1个以上的人显示三个
+            maybeInterestRequest.setPropertyCount(1);
+            maybeInterestRequest.setDistance(5);
+            maybeInterestRequest.setRows(maybeInterestRequest.getRows()<2?1:maybeInterestRequest.getRows()/2);
+            List<String> userIds2 = super.mabyeInterestedUser(maybeInterestRequest);
+            if(CollectionUtils.isNotEmpty(userIds2))
+                userIds.addAll(userIds2);
+
+           /* String[] hobbyType = userHobby.getHobbyType().split(",");
             List<String> out1 = new ArrayList<String>();
             List<String> out2 = new ArrayList<String>();
             SystemUtils.combineStr(hobbyType,2,out1,"AND");
@@ -332,7 +343,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
                 for(UserEntity userEntity:users){
                     userIds.add(userEntity.getId());
                 }
-            }
+            }*/
             return getLastBshoot(userIds, dateLimit, GuideType.MAYBE_INTEREST.getId(),maxPraise);
         }
         return  null;
@@ -340,27 +351,10 @@ public class RecommendService extends UserRecommendService implements RecommendS
 
     /**
      * 附近的人动态
-     * @param loginArea
      * @return
      */
-    protected List<Bshoot> nearbyBshoot(String userId,String loginArea ,int start,Date dateLimit,boolean maxPraise){
-        Criterias criterias = new Criterias();
-        criterias.qc("login_area:"+loginArea);
-        criterias.addField("id");
-        criterias.ne("id",userId);//去掉自己
-        criterias.addOrder("lastPublishTime","desc");
-        criterias.setStart(start*6);
-        criterias.setRows(6);
-        SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
-        if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
-            List<UserEntity> users = solrResponse.getDocs();
-            List<String> userIds = new ArrayList<String>();
-            for(UserEntity userEntity:users){
-                userIds.add(userEntity.getId());
-            }
-            return getLastBshoot(userIds, dateLimit, GuideType.NEARBY_PEOPLE.getId(),maxPraise);
-        }
-        return null;
+    protected List<Bshoot> nearbyBshoot(SameCityRequest sameCityRequest,Date dateLimit,boolean maxPraise){
+            return getLastBshoot(super.sameCityUser(sameCityRequest), dateLimit, GuideType.NEARBY_PEOPLE.getId(),maxPraise);
     }
 
     protected String recommendNewUser(String userId,Integer fansNum,String loginArea,int start){
