@@ -12,9 +12,8 @@ public interface RecommendServiceI {
 
     /**
      * 推荐用户
-     * @param  loginArea 当前用户登录区域
      */
-    public List<RecommendUser> recommendUser(String loginArea);
+    public List<RecommendUser> recommendUser(String userId);
 
     /**
      * 首页热门动态推荐
@@ -28,5 +27,5 @@ public interface RecommendServiceI {
      * @param  userId 当前登录用户id
      * @param start 第几页 从0开始
      */
-    public  List<Bshoot> recommend(String userId,Integer start);
+    public  List<Bshoot> recommend(String userId,Integer start,Integer rows);
 }

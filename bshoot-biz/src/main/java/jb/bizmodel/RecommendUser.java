@@ -15,6 +15,7 @@ public class RecommendUser {
     private String headImage;//头像
     private String sex;//性别
     private List<String> job;//职业
+    private Integer recommendType;//1:新人推荐 2:好友关注的人 3：我评论/打赏过的人 4：好友打赏过的人 5：可能感兴趣的人 6：可能认识的人 7：附近的人
 
     public String getId() {
         return id;
@@ -88,6 +89,14 @@ public class RecommendUser {
         this.job = job;
     }
 
+    public Integer getRecommendType() {
+        return recommendType;
+    }
+
+    public void setRecommendType(Integer recommendType) {
+        this.recommendType = recommendType;
+    }
+
     @Override
     public String toString() {
         return "RecommendUser{" +
@@ -100,6 +109,7 @@ public class RecommendUser {
                 ", headImage='" + headImage + '\'' +
                 ", sex='" + sex + '\'' +
                 ", job=" + job +
+                ", recommendType=" + recommendType +
                 '}';
     }
 }

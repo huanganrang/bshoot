@@ -37,7 +37,7 @@ public class UserAttentionDaoImpl extends BaseDaoImpl<TuserAttention> implements
 	}
 
 	@Override
-	public List<String> singleFriednAtt(AttentionRequest attentionRequest) {
+	public List<String> singleFriendAtt(AttentionRequest attentionRequest) {
 		String attentionAfterDate =  "";
 		String rand = "";
 		if(null!=attentionRequest.getAttentionAfterDate())

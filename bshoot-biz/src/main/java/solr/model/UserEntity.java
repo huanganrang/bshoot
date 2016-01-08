@@ -53,7 +53,7 @@ public class UserEntity {
     @Field
     private long _att;
     @Field
-    private List<String> _square;
+    private List<String> att_square;
     @Field
     private List<String> job;
     @Field
@@ -223,12 +223,12 @@ public class UserEntity {
         this._att = _att;
     }
 
-    public List<String> get_square() {
-        return _square;
+    public List<String> getAtt_square() {
+        return att_square;
     }
 
-    public void set_square(List<String> _square) {
-        this._square = _square;
+    public void setAtt_square(List<String> att_square) {
+        this.att_square = att_square;
     }
 
     public List<String> getJob() {
@@ -295,7 +295,7 @@ public class UserEntity {
                 ", is_tarento=" + is_tarento +
                 ", _reward=" + _reward +
                 ", _att=" + _att +
-                ", _square=" + _square +
+                ", att_square=" + att_square +
                 ", job=" + job +
                 ", _location='" + _location + '\'' +
                 ", month_praise=" + month_praise +

@@ -41,7 +41,9 @@ public interface BshootServiceI {
 	 * @return
 	 */
 	public DataGrid dataGridByFriend(PageHelper ph, String userId);
-	
+
+	List<Bshoot>  getMaxPraiseBshoot(List<String> userId, Date dateLimit);
+
 	/**
 	 * 附近视频
 	 * @param ph

@@ -103,8 +103,8 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	}
 
 	@Override
-	public List<String> singleFriednAtt(AttentionRequest attentionRequest) {
-		return userAttentionDao.singleFriednAtt(attentionRequest);
+	public List<String> singleFriendAtt(AttentionRequest attentionRequest) {
+		return userAttentionDao.singleFriendAtt(attentionRequest);
 	}
 
 	@Override

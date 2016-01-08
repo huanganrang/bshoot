@@ -3,6 +3,7 @@ package jb.dao.impl;
 import jb.dao.BshootDaoI;
 import jb.model.Tbshoot;
 import jb.pageModel.HotShootRequest;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -68,7 +69,27 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 	@Override
 	public List<Tbshoot> getUserLastBshoot(List<String> userIds,Date dateLimit) {
 		if(userIds==null||userIds.size()==0)return null;
-		String hql="select A.* from bshoot A,(SELECT MAX(create_datetime) last_date FROM bshoot where isDelete!=1 and user_id in (:userId) GROUP BY user_id) B where A.create_datetime=B.last_date and A.create_datetime>=:dateLimit and  A.user_id in (:userId) ";
+		StringBuffer hql=new StringBuffer("select A.* from bshoot A,(SELECT MAX(create_datetime) last_date,user_id FROM bshoot where isDelete!=1 and user_id in (:userId) GROUP BY user_id) B where A.user_id=B.user_id and A.create_datetime=B.last_date ");
+		if(null!=dateLimit)
+			hql.append(" and A.create_datetime>=:dateLimit ");
+		hql.append(" ORDER BY A.create_datetime desc");
+
+		Query query = getCurrentSession().createSQLQuery(hql.toString()).addEntity(Tbshoot.class);
+		query.setParameterList("userId", userIds);
+		if(null!=dateLimit)
+		query.setParameter("dateLimit",dateLimit);
+		List<Tbshoot> l = query.list();
+		return l;
+	}
+
+	@Override
+	public List<Tbshoot> getMaxPraiseBshoot(List<String> userIds,Date dateLimit) {
+		if(userIds==null||userIds.size()==0)return null;
+		String hql="select A.* from bshoot A," +
+				"(SELECT user_id,MAX(bs_praise) bs_praise FROM bshoot " +
+				"where isDelete!=1 and user_id in (:userId) and create_datetime>=:dateLimit " +
+				"GROUP BY user_id) B " +
+				"where A.user_id=B.user_id and  A.bs_praise=B.bs_praise and A.create_datetime>=:dateLimit ORDER  BY A.create_datetime desc";
 		Query query = getCurrentSession().createSQLQuery(hql).addEntity(Tbshoot.class);
 		query.setParameterList("userId", userIds);
 		query.setParameter("dateLimit",dateLimit);
@@ -93,23 +114,35 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 	@Override
 	public List<Tbshoot> getHotBshoots(HotShootRequest hotShootRequest) {
 		String hql = null;
-		if(hotShootRequest.getFileType()!=null){
-			hql="select * from bshoot t  where t.bs_file_type=:fileType and t.isDelete!=1 and t.create_datetime >=:pubTime and t.bs_praise>=:praiseNum order by t.create_datetime desc  limit :start,:rows";
-			if(null!=hotShootRequest.getHobby())
-				hql="select * from bshoot t ,user_hobby t1  where t.bs_file_type=:fileType and t.isDelete!=1  and t.create_datetime >=:pubTime and t.bs_praise>=:praiseNum and ("+hotShootRequest.getHobby()+")in (t1.hobby_type) and t1.user_id=t.user_id order by t.create_datetime desc  limit :start,:rows";
+		 StringBuffer sb = new StringBuffer();
+		if(null!=hotShootRequest.getHobby()){
+			sb.append("select * from bshoot t ,user_hobby t1 where t.isDelete!=1");
+			sb.append(" and (").append(hotShootRequest.getHobby()).append(") in (t1.hobby_type) and t1.user_id=t.user_id");
 		}else{
-			hql="select * from bshoot t  where t.isDelete!=1 and  t.create_datetime >=:pubTime  and t.bs_praise>=:praiseNum order by t.create_datetime desc  limit :start,:rows";
-			if(null!=hotShootRequest.getHobby())
-				hql="select * from bshoot t,user_hobby t1  where t.isDelete!=1 and t.create_datetime >=:pubTime and t.bs_praise>=:praiseNum and ("+hotShootRequest.getHobby()+") in (t1.hobby_type) and t1.user_id=t.user_id order by t.create_datetime desc  limit :start,:rows";
-
+			sb.append("select * from bshoot t  where t.isDelete!=1");
 		}
+		if(hotShootRequest.getFileType()!=null)
+			sb.append(" and t.bs_file_type=:fileType");
+		if(null!=hotShootRequest.getPubTime())
+			sb.append(" and t.create_datetime >=:pubTime");
+		if(null!=hotShootRequest.getPraiseNum()||0!=hotShootRequest.getPraiseNum())
+			sb.append(" and t.bs_praise>=:praiseNum");
+		if(CollectionUtils.isNotEmpty(hotShootRequest.getOrderBy())){
+			sb.append(" order by ");
+			for(String order:hotShootRequest.getOrderBy())
+			  sb.append("t.").append(order.trim()).append(",");
+			sb.deleteCharAt(sb.length()-1);
+		}
+		sb.append(" limit :start,:rows");
 
 		Query query = getCurrentSession().createSQLQuery(hql).addEntity(Tbshoot.class);
-		query.setParameter("pubTime", hotShootRequest.getPubTime());
+		if(null!=hotShootRequest.getPubTime())
+		    query.setParameter("pubTime", hotShootRequest.getPubTime());
 		if(hotShootRequest.getFileType()!=null)
 			query.setParameter("fileType", hotShootRequest.getFileType());
-		query.setParameter("praiseNum",hotShootRequest.getPraiseNum());
-		query.setParameter("start",hotShootRequest.getStart());
+		if(null!=hotShootRequest.getPraiseNum()||0!=hotShootRequest.getPraiseNum())
+		    query.setParameter("praiseNum",hotShootRequest.getPraiseNum());
+		query.setParameter("start",hotShootRequest.getPage());
 		query.setParameter("rows",hotShootRequest.getRows());
 		List<Tbshoot> l = query.list();
 		return l;

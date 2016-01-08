@@ -14,7 +14,7 @@ public interface HotGuideServiceI {
      * @param userId
      * @return
      */
-    List<Bshoot> guideExternalPage(String userId,int start);
+    List<Bshoot> guideExternalPage(String userId,Integer start,Integer rows);
 
     /**
      * 引导内页
@@ -23,5 +23,5 @@ public interface HotGuideServiceI {
      * @param start 开始位置
      * @return
      */
-    List<Bshoot> guideInternalPage(String userId,String guideType,int start);
+    List<Bshoot> guideInternalPage(String userId,Integer guideType,Integer start,Integer rows);
 }
