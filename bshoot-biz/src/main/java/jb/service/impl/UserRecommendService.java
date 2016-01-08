@@ -120,13 +120,21 @@ public class UserRecommendService implements CommonRecommendServiceI{
         Criterias criterias = new Criterias();
         criterias.addField("id");
         criterias.ne("id",nearbyRequest.getUserId());//去掉自己
-        criterias.addOrder("lastPublishTime","desc");
+        if(nearbyRequest.isRand()){
+            Random random = new Random();
+            criterias.addOrder("rand_"+random.nextInt(1000),"asc");//随机排序字段
+        }else{
+            criterias.addOrder("lastPublishTime","desc");
+        }
         //用户登录的经纬度
         if(null!=nearbyRequest.getLgX()&&null!=nearbyRequest.getLgY()&&0!=nearbyRequest.getDistance()){
             criterias.addLocation("login_location",nearbyRequest.getLgY()+","+nearbyRequest.getLgX(),nearbyRequest.getDistance(),"asc");//附近的用户，按距离升序排序
         }
         if(null!=nearbyRequest.getLastLoginTime()){
             criterias.ge("lastLoginTime",  DateUtil.convert2SolrDate(nearbyRequest.getLastLoginTime()));
+        }
+        if(null!=nearbyRequest.getLoginArea()){
+            criterias.eq("login_area", nearbyRequest.getLoginArea());
         }
         criterias.setStart(nearbyRequest.getPage());
         criterias.setRows(nearbyRequest.getRows());
@@ -139,26 +147,5 @@ public class UserRecommendService implements CommonRecommendServiceI{
             }
         }
         return userIds;
-    }
-
-    @Override
-    public List<String> sameCityUser(SameCityRequest sameCityRequest) {
-        Criterias criterias = new Criterias();
-        criterias.qc("login_area:"+sameCityRequest.getLoginArea());
-        criterias.addField("id");
-        criterias.ne("id",sameCityRequest.getUserId());//去掉自己
-        criterias.addOrder("lastPublishTime","desc");
-        criterias.setStart(sameCityRequest.getPage());
-        criterias.setRows(sameCityRequest.getRows());
-        SolrResponse<UserEntity> solrResponse = solrUserService.query(criterias);
-        if(null!=solrResponse&&CollectionUtils.isNotEmpty(solrResponse.getDocs())){
-            List<UserEntity> users = solrResponse.getDocs();
-            List<String> userIds = new ArrayList<String>();
-            for(UserEntity userEntity:users){
-                userIds.add(userEntity.getId());
-            }
-            return userIds;
-        }
-        return null;
     }
 }

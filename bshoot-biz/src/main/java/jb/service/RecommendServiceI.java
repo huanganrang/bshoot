@@ -12,9 +12,8 @@ public interface RecommendServiceI {
 
     /**
      * 推荐用户
-     * @param  loginArea 当前用户登录区域
      */
-    public List<RecommendUser> recommendUser(String loginArea);
+    public List<RecommendUser> recommendUser(String userId);
 
     /**
      * 首页热门动态推荐

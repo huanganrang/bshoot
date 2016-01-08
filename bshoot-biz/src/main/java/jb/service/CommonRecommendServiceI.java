@@ -35,7 +35,4 @@ public interface CommonRecommendServiceI {
 
     //附近的人
     List<String> nearbyUser(NearbyRequest nearbyRequest);
-
-    //同城的人
-    List<String> sameCityUser(SameCityRequest sameCityRequest);
 }
