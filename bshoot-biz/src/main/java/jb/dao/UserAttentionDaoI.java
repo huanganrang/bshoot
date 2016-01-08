@@ -17,5 +17,5 @@ public interface UserAttentionDaoI extends BaseDaoI<TuserAttention> {
 
 	List<String> friendCommonAtt(AttentionRequest attentionRequest);
 
-	List<String> singleFriednAtt(AttentionRequest attentionRequest);
+	List<String> singleFriendAtt(AttentionRequest attentionRequest);
 }

@@ -110,5 +110,5 @@ public interface UserAttentionServiceI {
 	 */
 	public List<String> friendCommonAtt(AttentionRequest attentionRequest);
 
-	List<String> singleFriednAtt(AttentionRequest attentionRequest);
+	List<String> singleFriendAtt(AttentionRequest attentionRequest);
 }

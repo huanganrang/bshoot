@@ -23,5 +23,5 @@ public interface HotGuideServiceI {
      * @param start 开始位置
      * @return
      */
-    List<Bshoot> guideInternalPage(String userId,String guideType,int start);
+    List<Bshoot> guideInternalPage(String userId,Integer guideType,int start);
 }

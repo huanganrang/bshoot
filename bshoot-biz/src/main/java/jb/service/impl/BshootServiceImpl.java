@@ -348,8 +348,6 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	@Override
 	public List<Bshoot> getUserLastBshoot(List<String> userIds,Date dateLimit) {
 		if(null==userIds||userIds.isEmpty()) return null;
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("userId", userIds);
 		List<Tbshoot> tbshoots = bshootDao.getUserLastBshoot(userIds,dateLimit);
 		if(tbshoots==null) return null;
 		Bshoot o = null;
@@ -364,13 +362,25 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 
 	@Override
 	public Bshoot getUserLastBshoot(String userId,Date dateLimit) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("userId", userId);
 		Tbshoot t = bshootDao.getUserLastBshoot(userId,dateLimit);
 		if(t==null) return null;
 		Bshoot o = new Bshoot();
 		BeanUtils.copyProperties(t, o);
 		return o;
+	}
+
+	@Override
+	public List<Bshoot>  getMaxPraiseBshoot(List<String> userId,Date dateLimit) {
+		List<Tbshoot> tbshoots = bshootDao.getMaxPraiseBshoot(userId,dateLimit);
+		if(tbshoots==null) return null;
+		Bshoot o = null;
+		List<Bshoot> bshootList = new ArrayList<Bshoot>();
+		for(Tbshoot tbshoot:tbshoots){
+			o = new Bshoot();
+			BeanUtils.copyProperties(tbshoot, o);
+			bshootList.add(o);
+		}
+		return bshootList;
 	}
 
 	private void setUserInfo(List<Bshoot> bshoots){

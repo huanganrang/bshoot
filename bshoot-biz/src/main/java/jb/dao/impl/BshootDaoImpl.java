@@ -69,17 +69,27 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 	@Override
 	public List<Tbshoot> getUserLastBshoot(List<String> userIds,Date dateLimit) {
 		if(userIds==null||userIds.size()==0)return null;
-		String hql="select A.* from bshoot A,(SELECT MAX(create_datetime) last_date FROM bshoot where isDelete!=1 and user_id in (:userId) GROUP BY user_id) B where A.create_datetime=B.last_date and A.create_datetime>=:dateLimit and  A.user_id in (:userId) ";
-		Query query = getCurrentSession().createSQLQuery(hql).addEntity(Tbshoot.class);
+		StringBuffer hql=new StringBuffer("select A.* from bshoot A,(SELECT MAX(create_datetime) last_date,user_id FROM bshoot where isDelete!=1 and user_id in (:userId) GROUP BY user_id) B where A.user_id=B.user_id and A.create_datetime=B.last_date ");
+		if(null!=dateLimit)
+			hql.append(" and A.create_datetime>=:dateLimit ");
+		hql.append(" ORDER BY A.create_datetime desc");
+
+		Query query = getCurrentSession().createSQLQuery(hql.toString()).addEntity(Tbshoot.class);
 		query.setParameterList("userId", userIds);
+		if(null!=dateLimit)
 		query.setParameter("dateLimit",dateLimit);
 		List<Tbshoot> l = query.list();
 		return l;
 	}
 
+	@Override
 	public List<Tbshoot> getMaxPraiseBshoot(List<String> userIds,Date dateLimit) {
 		if(userIds==null||userIds.size()==0)return null;
-		String hql="select A.* from bshoot A,(SELECT MAX(bs_praise)  FROM bshoot where isDelete!=1 and user_id in (:userId) GROUP BY user_id) B where A.create_datetime=B.last_date and A.create_datetime>=:dateLimit and  A.user_id in (:userId) ";
+		String hql="select A.* from bshoot A," +
+				"(SELECT user_id,MAX(bs_praise) bs_praise FROM bshoot " +
+				"where isDelete!=1 and user_id in (:userId) and create_datetime>=:dateLimit " +
+				"GROUP BY user_id) B " +
+				"where A.user_id=B.user_id and  A.bs_praise=B.bs_praise and A.create_datetime>=:dateLimit ORDER  BY A.create_datetime desc";
 		Query query = getCurrentSession().createSQLQuery(hql).addEntity(Tbshoot.class);
 		query.setParameterList("userId", userIds);
 		query.setParameter("dateLimit",dateLimit);
