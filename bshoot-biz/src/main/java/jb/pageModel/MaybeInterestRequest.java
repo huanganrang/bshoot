@@ -14,7 +14,9 @@ public class MaybeInterestRequest extends PageHelper{
     private boolean isRand;
     private String loginArea;//登录地区
     private String lastLoginTime;
-    private String loginLocation;//登录地点
+    private String lgX;//登录经度
+    private String lgY;//登录维度
+    private int distance;//附近多少公里
 
     public String getUserId() {
         return userId;
@@ -72,25 +74,27 @@ public class MaybeInterestRequest extends PageHelper{
         this.lastLoginTime = lastLoginTime;
     }
 
-    public String getLoginLocation() {
-        return loginLocation;
+    public String getLgX() {
+        return lgX;
     }
 
-    public void setLoginLocation(String loginLocation) {
-        this.loginLocation = loginLocation;
+    public void setLgX(String lgX) {
+        this.lgX = lgX;
     }
 
-    @Override
-    public String toString() {
-        return "MaybeInterestRequest{" +
-                "userId='" + userId + '\'' +
-                ", propertyCount=" + propertyCount +
-                ", hobby=" + hobby +
-                ", attSquare=" + attSquare +
-                ", isRand=" + isRand +
-                ", loginArea='" + loginArea + '\'' +
-                ", lastLoginTime='" + lastLoginTime + '\'' +
-                ", loginLocation='" + loginLocation + '\'' +
-                '}';
+    public String getLgY() {
+        return lgY;
+    }
+
+    public void setLgY(String lgY) {
+        this.lgY = lgY;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 }

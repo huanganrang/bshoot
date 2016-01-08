@@ -17,7 +17,9 @@ public class UserProfile implements java.io.Serializable {
 	private Date lastLoginTime;
 	private Date lastPubTime;
 	private Date createDatetime;			
-	private Date updateDatetime;			
+	private Date updateDatetime;
+	private java.lang.String lgX;
+	private java.lang.String lgY;
 
 	
 
@@ -103,5 +105,21 @@ public class UserProfile implements java.io.Serializable {
 
 	public void setLastPubTime(Date lastPubTime) {
 		this.lastPubTime = lastPubTime;
+	}
+
+	public String getLgY() {
+		return lgY;
+	}
+
+	public void setLgY(String lgY) {
+		this.lgY = lgY;
+	}
+
+	public String getLgX() {
+		return lgX;
+	}
+
+	public void setLgX(String lgX) {
+		this.lgX = lgX;
 	}
 }
