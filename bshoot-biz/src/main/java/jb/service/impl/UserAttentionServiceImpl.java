@@ -169,13 +169,26 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		UserAttention ua = get(userAttention.getUserId(), userAttention.getAttUserId());
 		if(ua==null){
 			return -1;
+		}else{
+			TuserAttention t = new TuserAttention();
+			BeanUtils.copyProperties(ua, t);
+			t.setIsDelete(1);
+			t.setAttentionDatetime(new Date());
+			if(get(userAttention.getAttUserId(), userAttention.getUserId()) != null){
+				UserAttention uau = get(userAttention.getAttUserId(), userAttention.getUserId());
+				TuserAttention tu = new TuserAttention();
+				BeanUtils.copyProperties(uau, tu);
+				if(tu.getIsFriend()!=null){
+					tu.setIsFriend(null);
+					userAttentionDao.save(tu);
+				}
+			}
+			if(t.getIsFriend()!=null){
+				t.setIsFriend(null);
+			}
+			userAttentionDao.save(t);
+			return 1;
 		}
-		TuserAttention t = new TuserAttention();
-		BeanUtils.copyProperties(ua, t);
-		t.setIsDelete(1);
-		t.setAttentionDatetime(new Date());
-		userAttentionDao.save(t);
-		return 1;
 	}
 
 	@Override
@@ -265,15 +278,53 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 			BeanUtils.copyProperties(ua, t);
 			t.setIsDelete(0);
 			t.setAttentionDatetime(new Date());
-			userAttentionDao.save(t);
-			return 1;
+			//检查对方有没有关注我
+			if(get(userAttention.getAttUserId(), userAttention.getUserId())!=null){
+				UserAttention uau = get(userAttention.getAttUserId(), userAttention.getUserId());
+				TuserAttention tu = new TuserAttention();
+				BeanUtils.copyProperties(uau, tu);
+				//如果对方关注我了，则把is_friend参数改为1，变相互关注的好友
+				if(tu.getIsDelete() == 0){
+					t.setIsFriend(1);
+					tu.setIsFriend(1);
+					userAttentionDao.save(t);
+					userAttentionDao.save(tu);
+					return 1;
+				}else{
+					t.setIsFriend(null);
+					userAttentionDao.save(t);
+					return 0;
+				}
+			}else{
+				t.setIsFriend(null);
+				userAttentionDao.save(t);
+				return 0;
+			}
 		}else {
 			TuserAttention t = new TuserAttention();
 			BeanUtils.copyProperties(userAttention, t);
 			t.setId(UUID.randomUUID().toString());
 			t.setAttentionDatetime(new Date());
-			userAttentionDao.save(t);
-			return 1;
+			if(get(userAttention.getAttUserId(), userAttention.getUserId())!=null){
+				UserAttention uau = get(userAttention.getAttUserId(), userAttention.getUserId());
+				TuserAttention tu = new TuserAttention();
+				BeanUtils.copyProperties(uau, tu);
+				if(tu.getIsDelete() == 0){
+					t.setIsFriend(1);
+					tu.setIsFriend(1);
+					userAttentionDao.save(t);
+					userAttentionDao.save(tu);
+					return 1;
+				}else{
+					t.setIsFriend(null);
+					userAttentionDao.save(t);
+					return 0;
+				}
+			}else{
+				t.setIsFriend(null);
+				userAttentionDao.save(t);
+				return 0;
+			}
 		}
 	}
 
@@ -313,7 +364,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 			hql +="where u.id = t.userId and t.attUserId = :userId";
 			params.put("userId",userAttention.getAttUserId());
 		}
-		List<Bshoot> l = dao.find(hql   + orderHql(ph), params, ph.getPage(), ph.getRows());
+		List<Tuser> l = dao.find(hql   + orderHql(ph), params, ph.getPage(), ph.getRows());
 		dg.setTotal(dao.count("select count(*) " + hql.substring(8) , params));
 		dg.setRows(l);
 		return dg;

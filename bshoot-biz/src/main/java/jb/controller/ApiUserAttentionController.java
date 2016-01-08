@@ -2,10 +2,7 @@ package jb.controller;
 
 import jb.absx.F;
 import jb.interceptors.TokenManage;
-import jb.pageModel.Json;
-import jb.pageModel.PageHelper;
-import jb.pageModel.SessionInfo;
-import jb.pageModel.UserAttention;
+import jb.pageModel.*;
 import jb.service.UserAttentionServiceI;
 import jb.service.UserFriendTimeServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +50,13 @@ public class ApiUserAttentionController extends BaseController {
             if(r==-1){
                 j.setSuccess(false);
                 j.setMsg("已经关注！");
+            }else if(r==0){
+                j.setSuccess(true);
+                j.setMsg("成功，是单方关注！");
+                addMessage("MT01",ua.getAttUserId(),ua.getUserId());
             }else{
                 j.setSuccess(true);
-                j.setMsg("成功！");
+                j.setMsg("成功，是双方互相关注的好友！");
                 addMessage("MT01",ua.getAttUserId(),ua.getUserId());
             }
         } catch (Exception e) {
@@ -81,10 +82,10 @@ public class ApiUserAttentionController extends BaseController {
             int r = userAttentionService.deleteAttention(ua);
             if(r==-1){
                 j.setSuccess(false);
-                j.setMsg("已经取消！");
+                j.setMsg("不存在此关注信息！");
             }else{
                 j.setSuccess(true);
-                j.setMsg("成功！");
+                j.setMsg("取消关注成功！");
             }
         } catch (Exception e) {
             j.setMsg(e.getMessage());
@@ -175,30 +176,24 @@ public class ApiUserAttentionController extends BaseController {
     }
 
     /**
-     * 查询用户关注的朋友圈动态
+     * 查询用户关注的朋友圈动态，参数包括userId,attentionGroup,bsFileType
      * @param userAttention
+     * @param bshoot
+     * @param ph
      * @param request
      * @return
      */
     @RequestMapping("/user_friendtime")
     @ResponseBody
-    public Json userFriendTime(UserAttention userAttention, HttpServletRequest request) {
+    public Json dataGridUserFriendTime(UserAttention userAttention, Bshoot bshoot, PageHelper ph, HttpServletRequest request) {
         Json j = new Json();
         try {
             if(F.empty(userAttention.getUserId())){
                 SessionInfo s = getSessionInfo(request);
                 userAttention.setUserId(s.getId());
             }
-            if(!F.empty(userAttention.getAttentionGroup())){
-                int r = userAttentionService.editAttentionGroup(userAttention);
-                if(r==-1){
-                    j.setSuccess(false);
-                    j.setMsg("好友分组时未带上好友关注id或者被关注用户id");
-                }else{
-                    j.setSuccess(true);
-                    j.setMsg("修改好友分组成功");
-                }
-            }
+            j.setObj(userFriendTimeService.dataGridUserFriendTime(userAttention, bshoot, ph));
+            j.setSuccess(false);
         } catch (Exception e) {
             j.setMsg(e.getMessage());
         }
