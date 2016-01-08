@@ -44,6 +44,6 @@ public class RecommendController extends  BaseController{
     @ResponseBody
     public List<Bshoot> recommend(Integer start) {
         //TODO
-        return  recommendService.recommend("1",start);
+        return  recommendService.recommend("1",start,6);
     }
 }

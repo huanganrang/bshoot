@@ -27,7 +27,7 @@ public class HotGuideController {
     @ResponseBody
     public List<Bshoot> guideExternalPage(String userId,Integer start) {
         //获得登录用户id TODO
-        return  hotGuideServiceImpl.guideExternalPage(userId, start);
+        return  hotGuideServiceImpl.guideExternalPage(userId, start,1);
     }
 
     //引导内页
@@ -35,7 +35,7 @@ public class HotGuideController {
     @ResponseBody
     public List<Bshoot> guideInternalPage(String userId,Integer guideType,Integer start) {
         //获得登录用户id TODO
-        return  hotGuideServiceImpl.guideInternalPage(userId, guideType, start);
+        return  hotGuideServiceImpl.guideInternalPage(userId, guideType, start,6);
     }
 
 }
