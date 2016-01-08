@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 通讯录引导
@@ -27,7 +28,7 @@ public class ContractGuideController {
     //引导外页
     @RequestMapping("/external")
     @ResponseBody
-    public List<RecommendUser> guideExternalPage(Integer start,HttpSession session) {
+    public Map<Integer,List<RecommendUser>> guideExternalPage(Integer start,HttpSession session) {
         SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
         return  contractGuideServiceImpl.guideExternalPage(sessionInfo.getId(), start,1);
     }
