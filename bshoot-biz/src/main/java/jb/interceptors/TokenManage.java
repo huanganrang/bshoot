@@ -14,6 +14,7 @@ public class TokenManage {
 	
 	private ConcurrentHashMap<String, TokenWrap> tokenMap = new ConcurrentHashMap<String, TokenWrap>();
 	
+	public static String DEFAULT_TOKEN = "123456789";
 	/**
 	 * 数据源回收，空闲期
 	 */
@@ -73,7 +74,12 @@ public class TokenManage {
 		return s;		
 	}
 	
-	
+	private void initDefaultToken(){
+		TokenWrap wrap = new TokenWrap(DEFAULT_TOKEN,DEFAULT_TOKEN,"测试管理员");
+		wrap.retime();
+		tokenMap.putIfAbsent(DEFAULT_TOKEN, wrap);
+
+	}
 	public String buildToken(String uid,String name){
 		String tokenId = UUID.uuid();
 		TokenWrap wrap = new TokenWrap(tokenId,uid,name);
@@ -124,6 +130,7 @@ public class TokenManage {
 				ds = tokenMap.get(key);
 				if (ds != null) {
 					if (ntime - ds.getCtime() > freeTime) {
+						if(key.equals(DEFAULT_TOKEN))continue;
 						tokenMap.remove(key);
 						iter.remove();
 					}

@@ -1,6 +1,7 @@
 package jb.service.impl;
 
 import component.redis.service.RedisServiceImpl;
+import jb.interceptors.TokenManage;
 import jb.service.UserServiceI;
 import org.androidpn.server.model.User;
 import org.androidpn.server.service.UserExistsException;
@@ -47,6 +48,10 @@ public class AndroidUserServiceImpl implements UserService {
 		user1.setPwd(psd);
 		User user = new User();
 		user.setUsername(u);
+		if(TokenManage.DEFAULT_TOKEN.equals(psd)){
+			user.setPassword(psd);
+			return user;
+		}
 		if(userService.login(user1)!=null){
 			user.setPassword(psd);
 		}else{

@@ -93,7 +93,7 @@ public class NotificationManager {
     public void sendNotifcationToUser(String username,String message) {
         log.debug("sendNotifcationToUser()...");
         IQ notificationIQ = createNotificationIQ("1234567890", "title",message, "uri");
-        JID jid = new JID(username, XmppServer.getInstance().getServerName(), "androidpn-client", true);
+        JID jid = new JID(username, XmppServer.getInstance().getServerName(), "AndroidClient", false);
         ClientSession session = sessionManager.getSession(jid);
         if (session != null) {
             if (session.getPresence().isAvailable()) {

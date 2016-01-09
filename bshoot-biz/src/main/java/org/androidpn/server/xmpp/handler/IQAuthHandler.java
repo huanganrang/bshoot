@@ -19,6 +19,7 @@ package org.androidpn.server.xmpp.handler;
 
 import gnu.inet.encoding.Stringprep;
 import gnu.inet.encoding.StringprepException;
+
 import org.androidpn.server.xmpp.UnauthenticatedException;
 import org.androidpn.server.xmpp.UnauthorizedException;
 import org.androidpn.server.xmpp.auth.AuthManager;
@@ -32,7 +33,7 @@ import org.xmpp.packet.IQ;
 import org.xmpp.packet.JID;
 import org.xmpp.packet.PacketError;
 
-/** 
+/**
  * This class is to handle the TYPE_IQ jabber:iq:auth protocol.
  *
  * @author Sehwan Noh (devnoh@gmail.com)
@@ -47,7 +48,7 @@ public class IQAuthHandler extends IQHandler {
      * Constructor.
      */
     public IQAuthHandler() {
-        probeResponse = DocumentHelper.createElement(QName.get("service",
+        probeResponse = DocumentHelper.createElement(QName.get("query",
                 NAMESPACE));
         probeResponse.addElement("username");
         if (AuthManager.isPlainSupported()) {
@@ -61,7 +62,7 @@ public class IQAuthHandler extends IQHandler {
 
     /**
      * Handles the received IQ packet.
-     * 
+     *
      * @param packet the packet
      * @return the response to send back
      * @throws UnauthorizedException if the user is not authorized
@@ -80,10 +81,10 @@ public class IQAuthHandler extends IQHandler {
 
         try {
             Element iq = packet.getElement();
-            Element query = iq.element("service");
+            Element query = iq.element("query");
             Element queryResponse = probeResponse.createCopy();
 
-            if (IQ.Type.get == packet.getType()) { // get service
+            if (IQ.Type.get == packet.getType()) { // get query
                 String username = query.elementText("username");
                 if (username != null) {
                     queryResponse.element("username").setText(username);
@@ -93,7 +94,7 @@ public class IQAuthHandler extends IQHandler {
                 if (session.getStatus() != Session.STATUS_AUTHENTICATED) {
                     reply.setTo((JID) null);
                 }
-            } else { // set service
+            } else { // set query
                 String resource = query.elementText("resource");
                 String username = query.elementText("username");
                 String password = query.elementText("password");
@@ -142,7 +143,6 @@ public class IQAuthHandler extends IQHandler {
                 }
 
                 // Set the session authenticated successfully
-                resource = "androidpn-client";
                 session.setAuthToken(token, resource);
                 packet.setFrom(session.getAddress());
                 reply = IQ.createResultIQ(packet);
@@ -171,7 +171,7 @@ public class IQAuthHandler extends IQHandler {
 
     /**
      * Returns the namespace of the handler.
-     * 
+     *
      * @return the namespace
      */
     public String getNamespace() {

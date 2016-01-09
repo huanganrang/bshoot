@@ -19,7 +19,7 @@ import java.util.Set;
  * @author John
  */
 @Controller
-@RequestMapping("/messageCenterController")
+@RequestMapping("/api//messageCenterController")
 public class MessageCenterController extends BaseController {
     @ResponseBody
     @RequestMapping("/sendMessage")
