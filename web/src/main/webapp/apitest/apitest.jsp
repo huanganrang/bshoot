@@ -13,7 +13,7 @@
     <script src="jquery.form.min.js" type="text/javascript" charset="utf-8"></script>
     <script>
         $(function() {
-            $.getJSON("/api/apiTestController/apilist",function(data){
+            $.getJSON("${pageContext.request.contextPath}/api/apiTestController/apilist",function(data){
                 if(data!=null && data!=""){
                     $.each(data.obj,function(n,value) {
                         var content = '<tr height="30" style="cursor:pointer;"><td onclick="getResult(\''+value.id+'\');" id="'+value.id+'" style="background:'
@@ -84,7 +84,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="checkbox" name="api_status" value="1" id="isSuccess">
+                            <input type="checkbox" name="isSuccess" value="1" id="isSuccess">
                             <label for="isSuccess" style="font-weight: bolder; color: blue;">是否调试失败(调试失败则勾选)</label>
                         </td>
                         <td>
@@ -143,7 +143,7 @@
                     return;
                 }
                 $("#test_form").ajaxSubmit({
-                    url : "/api/apiTestController/edit",
+                    url : "${pageContext.request.contextPath}/api/apiTestController/edit",
                     success : function(data) {
                         alert("保存成功！");
                         is_test = false;
@@ -161,7 +161,7 @@
             if(is_test && !confirm("调试数据未保存是否继续？")) {
                 return;
             }
-            $.getJSON("/api/apiTestController/apitest?id="+id,function(data){
+            $.getJSON("${pageContext.request.contextPath}/api/apiTestController/apitest?id="+id,function(data){
                 $("#id").val(data.id);
                 $("#name").val(data.name);
                 $("#url").val(data.url);
@@ -186,7 +186,7 @@
             if(!confirm("是否删除此接口？")) {
                 return;
             }
-            $.getJSON("/api/apiTestController/delete?id="+id,function(data){
+            $.getJSON("${pageContext.request.contextPath}/api/apiTestController/delete?id="+id,function(data){
                 alert("删除成功！");
                 $(obj).parent().remove();
             });
