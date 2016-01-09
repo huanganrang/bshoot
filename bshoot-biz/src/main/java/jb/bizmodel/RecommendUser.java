@@ -11,6 +11,10 @@ public class RecommendUser {
     private List<String> hobby;//兴趣
     private String area;//地区
     private String bardian;//个性签名
+    private String uType;
+    private Integer isStar;
+    private Integer isTarento;
+    private List<String> attSquare;
     private String memberV;//级别
     private String headImage;//头像
     private String sex;//性别
@@ -97,6 +101,38 @@ public class RecommendUser {
         this.recommendType = recommendType;
     }
 
+    public String getuType() {
+        return uType;
+    }
+
+    public void setuType(String uType) {
+        this.uType = uType;
+    }
+
+    public Integer getIsStar() {
+        return isStar;
+    }
+
+    public void setIsStar(Integer isStar) {
+        this.isStar = isStar;
+    }
+
+    public Integer getIsTarento() {
+        return isTarento;
+    }
+
+    public void setIsTarento(Integer isTarento) {
+        this.isTarento = isTarento;
+    }
+
+    public List<String> getAttSquare() {
+        return attSquare;
+    }
+
+    public void setAttSquare(List<String> attSquare) {
+        this.attSquare = attSquare;
+    }
+
     @Override
     public String toString() {
         return "RecommendUser{" +
@@ -105,6 +141,10 @@ public class RecommendUser {
                 ", hobby=" + hobby +
                 ", area='" + area + '\'' +
                 ", bardian='" + bardian + '\'' +
+                ", uType='" + uType + '\'' +
+                ", isStar=" + isStar +
+                ", isTarento=" + isTarento +
+                ", attSquare=" + attSquare +
                 ", memberV='" + memberV + '\'' +
                 ", headImage='" + headImage + '\'' +
                 ", sex='" + sex + '\'' +

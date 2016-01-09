@@ -39,17 +39,19 @@ public class RecommendService extends UserRecommendService implements RecommendS
     protected UserProfileServiceI userProfileServiceImpl;
     @Autowired
     private UserHobbyServiceI userHobbyServiceImpl;
-
+    @Autowired
+    private BshootSquareServiceI bshootSquareServiceImpl;
 
     @Override
     public List<RecommendUser> recommendUser( String userId) {
         //获得6个大v,4个小v
+        String[] fileds = new String[]{"id","headImg","bardian","utype","usex","member_v","hobby","nickname","is_star","is_tarento","att_square","login_area"};
         Criterias criterias = new Criterias();
         criterias.qc("fansNum:[200 TO *]");
         criterias.gt("month_praise","50");
         Random random = new Random();
         criterias.addOrder("rand_"+random.nextInt(1000),"asc");//随机排序字段
-        criterias.addField(new String[]{"id","usex","hobby","login_area"});
+        criterias.addField(fileds);
         criterias.setStart(0);
         criterias.setRows(6);
         SolrResponse<UserEntity> userV = solrUserService.query(criterias);
@@ -63,21 +65,29 @@ public class RecommendService extends UserRecommendService implements RecommendS
         criterias2.eq("login_area",profile.getLoginArea());
         criterias2.ge("createTime", DateUtil.convert2SolrDate(DateUtil.getDateStart(-3)));
         criterias2.addOrder("rand_" + random.nextInt(1000), "asc");//随机排序字段
-        criterias2.addField(new String[]{"id","usex","hobby","login_area"});
+        criterias2.addField(fileds);
         criterias2.setStart(0);
         criterias2.setRows(4);
         SolrResponse<UserEntity> userv = solrUserService.query(criterias2);
         if(null!=userv&&CollectionUtils.isNotEmpty(userv.getDocs()))
             userList.addAll(userv.getDocs());
+        return fillUser(userList);
+    }
+
+    protected List<RecommendUser> fillUser(List<UserEntity> userList){
         List<RecommendUser> recommendUsers = new ArrayList<RecommendUser>();
         Set<String> baseDataIds = new HashSet<String>();
         for(UserEntity userEntity:userList){
             if(null!=userEntity.getLogin_area())
-               baseDataIds.add(userEntity.getLogin_area());
+                baseDataIds.add(userEntity.getLogin_area());
             if(null!=userEntity.getUsex())
                 baseDataIds.add(userEntity.getUsex());
             if(null!=userEntity.getHobby())
                 baseDataIds.addAll(userEntity.getHobby());
+            if(null!= userEntity.getUtype())
+                baseDataIds.add(userEntity.getUtype());
+            if(null!=userEntity.getMember_v())
+                baseDataIds.add(userEntity.getMember_v());
         }
         Map<String,BaseData> baseDataMap = basedataServiceImpl.getBaseDatas(baseDataIds,Map.class);
         BaseData baseData;
@@ -90,7 +100,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
             recommendUser.setBardian(u.getBardian());
             baseData = baseDataMap.get(userEntity.getLogin_area());
             if(null!=baseData)
-              recommendUser.setArea(baseData.getName());
+                recommendUser.setArea(baseData.getName());
             List<String> hobbies = userEntity.getHobby();
             List<String> hobbyNames = Lists.newArrayList();
             for(String hobby:hobbies){
@@ -101,7 +111,13 @@ public class RecommendService extends UserRecommendService implements RecommendS
             recommendUser.setHobby(hobbyNames);
             baseData = baseDataMap.get(userEntity.getUsex());
             if(null!=baseData)
-              recommendUser.setSex(baseData.getName());
+                recommendUser.setSex(baseData.getName());
+            baseData = baseDataMap.get(userEntity.getUtype());
+            if(null!=baseData)
+                recommendUser.setuType(baseData.getName());
+            baseData = baseDataMap.get(userEntity.getMember_v());
+            if(null!=baseData)
+                recommendUser.setMemberV(baseData.getName());
             recommendUsers.add(recommendUser);
         }
         return recommendUsers;
