@@ -16,9 +16,9 @@ public class TestUserAttentionService extends TestConfig {
 
     @Test
     public void testFriendCommonAtt(){
-       List<String> userAttentionList =  userAttentionServiceImpl.friendCommonAtt("1", 0, 6);
-        for(String userAttention:userAttentionList){
-            System.out.println(userAttention);
-        }
+//       List<String> userAttentionList =  userAttentionServiceImpl.friendCommonAtt("1", 0, 6);
+//        for(String userAttention:userAttentionList){
+//            System.out.println(userAttention);
+//        }
     }
 }
