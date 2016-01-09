@@ -68,6 +68,7 @@
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/api/**" />
+			<mvc:exclude-mapping path="/api/**"/>
 			<bean class="jb.interceptors.TokenInterceptor">
 				<property name="excludeUrls">
 					<list>
