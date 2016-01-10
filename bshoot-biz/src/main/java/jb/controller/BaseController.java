@@ -1,6 +1,7 @@
 package jb.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.mangofactory.swagger.annotations.ApiIgnore;
 import jb.absx.F;
 import jb.listener.Application;
 import jb.model.TmessageCount;
@@ -47,6 +48,7 @@ import java.util.List;
  * @author John
  * 
  */
+@ApiIgnore
 @Controller
 @RequestMapping("/baseController")
 public class BaseController {

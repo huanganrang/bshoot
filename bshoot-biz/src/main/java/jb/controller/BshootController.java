@@ -112,7 +112,8 @@ public class BshootController extends BaseController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping("/add")
+	//@RequestMapping("/add")
+	@RequestMapping("/uploadBshoot")
 	@ResponseBody
 	public Json uploadBshoot(Bshoot bshoot,@RequestParam MultipartFile[] movies,HttpSession session) {
 		Json j = new Json();		
