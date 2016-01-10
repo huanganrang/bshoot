@@ -44,7 +44,7 @@ month_parise                 month_parise(int,table:user_profile)
 		<field column="isStar" name="is_star"/>
 		<field column="isTarento" name="is_tarento"/>
 		<field column="mobile" name="mobile" splitBy =","/>
-		<field column="job" name="_job" splitBy =","/>
+		<field column="job" name="job" splitBy =","/>
 		<entity name="user_hobby" pk="id"
                 query="select hobby_type from user_hobby where user_id='${tuser.ID}'"
                 deltaQuery="select user_id,hobby_type from user_hobby where update_datetime>'${dih.last_index_time}'"

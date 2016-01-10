@@ -40,13 +40,13 @@
         <field name="property" type="string" indexed="true" multiValued="true"/>
         <field name="suggestion" type="string" indexed="true" stored="true"/>
         <field name="att_square" type="string" indexed="true" stored="true" multiValued="true"/>
+        <field name="job" type="string" indexed="true" stored="true"  multiValued="true"/>
         <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
         <copyField source="login_area" dest="property"/>
         <copyField source="hobby" dest="property"/>
         <copyField source="att_square" dest="property"/>
         <dynamicField name="*_reward" type="long" indexed="true" stored="true"/>
         <dynamicField name="*_att" type="long" indexed="true" stored="true"/>
-        <dynamicField name="*_job" type="string" indexed="true" stored="true"  multiValued="true"/>
         <dynamicField name="*_location" type="string" indexed="true" stored="true"/>
         <dynamicField name="*_latlon" type="double" indexed="true" stored="true"/>
         <dynamicField name="rand*" type="random" indexed="true" stored="false"/>
