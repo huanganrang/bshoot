@@ -113,7 +113,6 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 
 	@Override
 	public List<Tbshoot> getHotBshoots(HotShootRequest hotShootRequest) {
-		String hql = null;
 		 StringBuffer sb = new StringBuffer();
 		if(null!=hotShootRequest.getHobby()){
 			sb.append("select * from bshoot t ,user_hobby t1 where t.isDelete!=1");
@@ -121,7 +120,7 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 		}else{
 			sb.append("select * from bshoot t  where t.isDelete!=1");
 		}
-		if(hotShootRequest.getFileType()!=null)
+		if(hotShootRequest.getFileType()!=null&&hotShootRequest.getFileType()!=-1)
 			sb.append(" and t.bs_file_type=:fileType");
 		if(null!=hotShootRequest.getPubTime())
 			sb.append(" and t.create_datetime >=:pubTime");
@@ -135,10 +134,10 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 		}
 		sb.append(" limit :start,:rows");
 
-		Query query = getCurrentSession().createSQLQuery(hql).addEntity(Tbshoot.class);
+		Query query = getCurrentSession().createSQLQuery(sb.toString()).addEntity(Tbshoot.class);
 		if(null!=hotShootRequest.getPubTime())
 		    query.setParameter("pubTime", hotShootRequest.getPubTime());
-		if(hotShootRequest.getFileType()!=null)
+		if(hotShootRequest.getFileType()!=null&&hotShootRequest.getFileType()!=-1)
 			query.setParameter("fileType", hotShootRequest.getFileType());
 		if(null!=hotShootRequest.getPraiseNum()||0!=hotShootRequest.getPraiseNum())
 		    query.setParameter("praiseNum",hotShootRequest.getPraiseNum());

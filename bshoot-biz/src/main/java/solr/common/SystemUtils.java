@@ -74,6 +74,8 @@ public class SystemUtils {
 	 */
 	public static void combineStr(String[] str,int matchFactor,List<String> out ,String connStr) {
 		if(null==connStr) connStr=" ";
+		if(str.length<matchFactor)
+			matchFactor = str.length;
 		int nCnt = str.length;
 		int nBit = 1<<nCnt;
 		int counter = 0;

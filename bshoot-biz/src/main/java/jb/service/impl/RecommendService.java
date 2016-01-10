@@ -30,22 +30,20 @@ public class RecommendService extends UserRecommendService implements RecommendS
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private UserServiceI userServiceImpl;
+    private BasedataServiceI basedataService;
     @Autowired
-    private BasedataServiceI basedataServiceImpl;
+    protected BshootServiceI bshootService;
     @Autowired
-    protected BshootServiceI bshootServiceImpl;
+    protected UserProfileServiceI userProfileService;
     @Autowired
-    protected UserProfileServiceI userProfileServiceImpl;
+    private UserHobbyServiceI userHobbyService;
     @Autowired
-    private UserHobbyServiceI userHobbyServiceImpl;
-    @Autowired
-    private BshootSquareServiceI bshootSquareServiceImpl;
+    private BshootSquareServiceI bshootSquareService;
 
     @Override
     public List<RecommendUser> recommendUser( String userId) {
         //获得6个大v,4个小v
-        String[] fileds = new String[]{"id","headImg","bardian","utype","usex","member_v","hobby","nickname","is_star","is_tarento","att_square","login_area"};
+        String[] fileds = new String[]{"id","headImg","bardian","utype","usex","member_v","hobby","nickname","is_star","is_tarento","att_square","login_area","j"};
         Criterias criterias = new Criterias();
         criterias.qc("fansNum:[200 TO *]");
         criterias.gt("month_praise","50");
@@ -61,7 +59,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
 
         Criterias criterias2 = new Criterias();
         criterias2.qc("fansNum:[* TO 10]");
-        UserProfile profile = userProfileServiceImpl.get(userId);
+        UserProfile profile = userProfileService.get(userId);
         criterias2.eq("login_area",profile.getLoginArea());
         criterias2.ge("createTime", DateUtil.convert2SolrDate(DateUtil.getDateStart(-3)));
         criterias2.addOrder("rand_" + random.nextInt(1000), "asc");//随机排序字段
@@ -88,27 +86,32 @@ public class RecommendService extends UserRecommendService implements RecommendS
                 baseDataIds.add(userEntity.getUtype());
             if(null!=userEntity.getMember_v())
                 baseDataIds.add(userEntity.getMember_v());
+            if(null!=userEntity.getJob())
+                baseDataIds.addAll(userEntity.getJob());
         }
-        Map<String,BaseData> baseDataMap = basedataServiceImpl.getBaseDatas(baseDataIds,Map.class);
+        Map<String,BaseData> baseDataMap = basedataService.getBaseDatas(baseDataIds,Map.class);
         BaseData baseData;
         for(UserEntity userEntity:userList){
-            User u = userServiceImpl.get(userEntity.getId());
             RecommendUser recommendUser = new RecommendUser();
-            recommendUser.setId(u.getId());
-            recommendUser.setNickname(u.getNickname());
-            recommendUser.setHeadImage(u.getHeadImage());
-            recommendUser.setBardian(u.getBardian());
+            recommendUser.setId(userEntity.getId());
+            recommendUser.setNickname(userEntity.getNickname());
+            recommendUser.setHeadImage(userEntity.getHeadImg());
+            recommendUser.setBardian(userEntity.getBardian());
+            recommendUser.setIsStar(userEntity.getIs_star());
+            recommendUser.setIsTarento(userEntity.getIs_tarento());
             baseData = baseDataMap.get(userEntity.getLogin_area());
             if(null!=baseData)
                 recommendUser.setArea(baseData.getName());
             List<String> hobbies = userEntity.getHobby();
-            List<String> hobbyNames = Lists.newArrayList();
-            for(String hobby:hobbies){
-                baseData = baseDataMap.get(hobby);
-                if(null!=baseData)
-                    hobbyNames.add(baseData.getName());
+            if(hobbies!=null) {
+                List<String> hobbyNames = Lists.newArrayList();
+                for (String hobby : hobbies) {
+                    baseData = baseDataMap.get(hobby);
+                    if (null != baseData)
+                        hobbyNames.add(baseData.getName());
+                }
+                recommendUser.setHobby(hobbyNames);
             }
-            recommendUser.setHobby(hobbyNames);
             baseData = baseDataMap.get(userEntity.getUsex());
             if(null!=baseData)
                 recommendUser.setSex(baseData.getName());
@@ -118,6 +121,17 @@ public class RecommendService extends UserRecommendService implements RecommendS
             baseData = baseDataMap.get(userEntity.getMember_v());
             if(null!=baseData)
                 recommendUser.setMemberV(baseData.getName());
+            baseData = baseDataMap.get(userEntity.getJob());
+            List<String> jobs = userEntity.getJob();
+            if(null!=jobs){
+                List<String> jobNames = Lists.newArrayList();
+                for(String job:jobs){
+                baseData = baseDataMap.get(job);
+                if(null!=baseData)
+                    jobNames.add(baseData.getName());
+                 }
+                recommendUser.setJob(jobNames);
+            }
             recommendUsers.add(recommendUser);
         }
         return recommendUsers;
@@ -129,14 +143,14 @@ public class RecommendService extends UserRecommendService implements RecommendS
         Date oneDayago = DateUtil.stringToDate(DateUtil.getDate(-1, DateUtil.DATETIME_FORMAT),DateUtil.DATETIME_FORMAT);
         String hobby = null;
         if(interested==1) {
-            UserHobby userHobby = userHobbyServiceImpl.getUserHobby(userId);
+            UserHobby userHobby = userHobbyService.getUserHobby(userId);
             String[] hobbyType = userHobby.getHobbyType().split(",");
             List<String> out = new ArrayList<String>();
             SystemUtils.combineStr(hobbyType, hobbyType.length, out, "OR");
             hobby = out.get(0);
         }
         HotShootRequest hotShootRequest = new HotShootRequest(oneDayago,200,start,fileType,hobby,50);
-        List<Bshoot> bshoots =  bshootServiceImpl.getHotBshoots(hotShootRequest);
+        List<Bshoot> bshoots =  bshootService.getHotBshoots(hotShootRequest);
         return fillBshoot(bshoots);
     }
 
@@ -147,7 +161,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
             userIds.add(bshoot.getUserId());
         StringBuffer out = new StringBuffer();
         for(String user:userIds){
-            out.append(SystemUtils.escapeToSolr(user)).append(" ");
+            out.append(SystemUtils.solrStringTrasfer(user)).append(" ");
         }
         Criterias criterias = new Criterias();
         criterias.addNativeFq("id:("+out.toString()+")");
@@ -165,7 +179,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
                 userEntityMap.put(userEntity.getId(),userEntity);
                 hobbies.addAll(userEntity.getHobby());
             }
-            Map<String,BaseData> baseDatas = basedataServiceImpl.getBaseDatas(hobbies,Map.class);
+            Map<String,BaseData> baseDatas = basedataService.getBaseDatas(hobbies,Map.class);
             List<String> h;
             for(Bshoot bshoot:bshoots){
                 userEntity = userEntityMap.get(bshoot.getUserId());
@@ -209,7 +223,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
         }
 
         //获得当前用户画像
-        UserProfile userProfile = userProfileServiceImpl.get(userId);
+        UserProfile userProfile = userProfileService.get(userId);
 
         //5、可能感兴趣的人 done
         MaybeInterestRequest maybeInterestRequest = new MaybeInterestRequest();
@@ -247,9 +261,11 @@ public class RecommendService extends UserRecommendService implements RecommendS
         Collections.shuffle(bshoots);
         //1.新人推荐 done
         String uid = recommendNewUser(userId,userProfile.getFansNum(),userProfile.getLoginArea(),start);
-        List<Bshoot> newUserBshoot = getLastBshoot(Lists.newArrayList(uid), DateUtil.stringToDate(DateUtil.getDateStart(-1)),GuideType.NEW_USER.getId());
-        if(CollectionUtils.isNotEmpty(newUserBshoot))
-            bshoots.addAll(0, newUserBshoot);//固定在第一位
+        if(null==uid){
+            bshoots.add(0,null);
+        }else {
+            bshoots.addAll(0,getLastBshoot(Lists.newArrayList(uid), DateUtil.stringToDate(DateUtil.getDateStart(-1)), GuideType.NEW_USER.getId()));//固定在第一位
+        }
         return bshoots;
     }
 
@@ -290,7 +306,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
 
     //可能感兴趣的人
     protected List<String> mabyeInterest(MaybeInterestRequest maybeInterestRequest){
-        UserHobby userHobby  = userHobbyServiceImpl.getUserHobby(maybeInterestRequest.getUserId());
+        UserHobby userHobby  = userHobbyService.getUserHobby(maybeInterestRequest.getUserId());
         if(null!=userHobby&& StringUtils.isNotEmpty(userHobby.getHobbyType())){
             maybeInterestRequest.setHobby(Lists.newArrayList(userHobby.getHobbyType().split(",")));
             maybeInterestRequest.setPropertyCount(3);
@@ -397,7 +413,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
 
     protected List<Bshoot> getLastBshoot(List<String> userIds,Date dateLimit,Integer guideType){
         if(CollectionUtils.isEmpty(userIds)) return null;
-        List<Bshoot> bshoots= bshootServiceImpl.getUserLastBshoot(userIds,dateLimit);
+        List<Bshoot> bshoots= bshootService.getUserLastBshoot(userIds,dateLimit);
         for(Bshoot bshoot:bshoots){
             bshoot.setGuideType(guideType);
         }

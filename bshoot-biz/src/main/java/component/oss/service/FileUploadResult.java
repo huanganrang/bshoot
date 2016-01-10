@@ -1,7 +1,6 @@
 package component.oss.service;
 
 /**
- * 文件上传结果
  * Created by zhou on 2015/12/27.
  */
 public class FileUploadResult {
