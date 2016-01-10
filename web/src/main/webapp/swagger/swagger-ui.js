@@ -371,6 +371,14 @@ this["Handlebars"]["templates"]["main"] = Handlebars.template({"1":function(dept
     + escapeExpression(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"url","hash":{},"data":data}) : helper)))
     + "\"></a>\n    </span>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var apisArray = depth0.apisArray;
+  var tags = depth0.swaggerObject.tags;
+  for(var i=0;i<tags.length;i++){
+	for(var j=0;j<apisArray.length;j++){
+	 if(undefined!=apisArray[j]&&tags[i].name.toLowerCase() .indexOf(apisArray[j].name.toLowerCase() )!=-1)
+	    apisArray[j].name=tags[i].description;
+	}
+  }
   var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "<div class='info' id='api_info'>\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.info : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
@@ -1219,6 +1227,7 @@ SwaggerClient.prototype.build = function (mock) {
   var self = this;
 
   this.progress('fetching resource list: ' + this.url + '; Please wait.');
+console.log(this.url);
   var obj = {
     useJQuery: this.useJQuery,
     url: this.url,
