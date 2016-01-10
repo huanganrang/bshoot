@@ -47,4 +47,18 @@ public interface UserPersonGroupServiceI {
      * @param id
      */
     public void delete(String id);
+
+    /**
+     * 添加有脉圈好友分组
+     *
+     * @param userPersonGroup
+     */
+    public int addPersonGroup(UserPersonGroup userPersonGroup);
+
+    /**
+     * 修改人脉圈好友分组名称
+     *
+     * @param userPersonGroup
+     */
+    public int editPersonGroupName(UserPersonGroup userPersonGroup);
 }

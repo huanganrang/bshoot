@@ -105,10 +105,17 @@ public class ApiTestServiceImpl extends BaseServiceImpl<ApiTest> implements ApiT
 
 	@Override
 	public void edit(ApiTest apiTest) {
-		TapiTest t = apiTestDao.get(TapiTest.class, apiTest.getId());
-		if (t != null) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("url", apiTest.getUrl());
+		TapiTest t = apiTestDao.get("from TapiTest t where t.url = :url", params);
+		if(t != null){
 			BeanUtils.copyProperties(apiTest, t, new String[] { "id" , "createdatetime" });
-			//t.setModifydatetime(new Date());
+		}else{
+			TapiTest tt = new TapiTest();
+			BeanUtils.copyProperties(apiTest, tt);
+			tt.setId(UUID.randomUUID().toString());
+			tt.setIsSuccess(0);
+			apiTestDao.save(tt);
 		}
 	}
 

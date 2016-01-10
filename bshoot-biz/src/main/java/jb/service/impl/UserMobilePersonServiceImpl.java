@@ -1,31 +1,31 @@
 package jb.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import jb.absx.F;
+import jb.dao.UserAttentionDaoI;
+import jb.dao.UserDaoI;
 import jb.dao.UserMobilePersonDaoI;
+import jb.model.Tuser;
 import jb.model.TuserMobilePerson;
-import jb.pageModel.UserMobilePerson;
-import jb.pageModel.DataGrid;
-import jb.pageModel.PageHelper;
-import jb.pageModel.UserMobilePersonRequest;
+import jb.pageModel.*;
 import jb.service.UserMobilePersonServiceI;
-
+import jb.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jb.util.MyBeanUtils;
+
+import java.util.*;
 
 @Service
 public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerson> implements UserMobilePersonServiceI {
 
 	@Autowired
 	private UserMobilePersonDaoI userMobilePersonDao;
+
+	@Autowired
+	private UserAttentionDaoI userAttentionDao;
+
+	@Autowired
+	private UserDaoI userDao;
 
 	@Override
 	public DataGrid dataGrid(UserMobilePerson userMobilePerson, PageHelper ph) {
@@ -108,6 +108,137 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 	@Override
 	public List<String> noAttMobilePersonPerson(UserMobilePersonRequest request) {
 		return  userMobilePersonDao.noAttMobilePersonPerson(request);
+	}
+
+	private UserMobilePerson get(String userId, String friendName) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		params.put("friendName", friendName);
+		TuserMobilePerson t = userMobilePersonDao.get("from TuserMobilePerson t  where t.userId = :userId and t.friendName = :friendName", params);
+		if(t==null)
+			return null;
+		UserMobilePerson o = new UserMobilePerson();
+		BeanUtils.copyProperties(t, o);
+		return o;
+	}
+
+	private List<User> mobileUser(String mobile) {
+		List<User> ls = new ArrayList<User>();
+		if(!F.empty(mobile)){
+			String hql = "";
+			if(mobile.contains(",")){
+				String[] mobiles = mobile.split(",");
+				for (int i=0;i<mobiles.length;i++){
+					hql = "from Tuser t where t.mobile like %"+mobiles[i]+"%";
+					List<Tuser> ts = userDao.find(hql);
+					if(ts != null && ts.size()>0){
+						for (Tuser t : ts){
+							User u = new User();
+							BeanUtils.copyProperties(t, u);
+							ls.add(u);
+						}
+					}
+				}
+			}else {
+				hql = "from Tuser t where t.mobile like %"+mobile+"%";
+				List<Tuser> ts = userDao.find(hql);
+				if(ts != null && ts.size()>0){
+					for (Tuser t : ts){
+						User u = new User();
+						BeanUtils.copyProperties(t, u);
+						ls.add(u);
+					}
+				}
+			}
+		}
+		return ls;
+	}
+
+	@Override
+	public int addMobilePerson(UserMobilePerson userMobilePerson) {
+		if(get(userMobilePerson.getUserId(), userMobilePerson.getFriendName())!=null && userMobilePerson.getIsDelete()==0){
+			return -1;//已存在
+		}else if(get(userMobilePerson.getUserId(), userMobilePerson.getFriendName())!=null && userMobilePerson.getIsDelete()!=0){
+			UserMobilePerson ua = get(userMobilePerson.getUserId(), userMobilePerson.getFriendName());
+			TuserMobilePerson t = new TuserMobilePerson();
+			BeanUtils.copyProperties(ua, t);
+			t.setIsDelete(0);
+			userMobilePersonDao.save(t);
+			return 0;
+		}else {
+			TuserMobilePerson t = new TuserMobilePerson();
+			BeanUtils.copyProperties(userMobilePerson, t);
+			t.setId(UUID.randomUUID().toString());
+			t.setCreateDatetime(new Date());
+			t.setIsDelete(0);
+			//friendId，是否有用该手机号码注册或绑定
+			if(!F.empty(userMobilePerson.getMobile())){
+				List<User> ls = mobileUser(userMobilePerson.getMobile());
+				String userIds = null;
+				if(ls != null && ls.size()>0){
+					for (int i=0;i<ls.size();i++){
+						if(i!=ls.size()-1){
+							userIds += ls.get(i).getId()+",";
+						}else {
+							userIds += ls.get(i).getId();
+						}
+					}
+					t.setFriendId(userIds);
+				}
+			}
+			return 0;
+		}
+	}
+
+	@Override
+	public int deleteMobilePerson(UserMobilePerson userMobilePerson) {
+		if(!F.empty(userMobilePerson.getUserId())){
+			TuserMobilePerson um = userMobilePersonDao.get(TuserMobilePerson.class, userMobilePerson.getId());
+			if(um != null){
+				um.setIsDelete(1);
+				userMobilePersonDao.save(um);
+				return 0;
+			}
+		}
+		return -1;
+	}
+
+	@Override
+	public DataGrid dataGridRegMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph) {
+		List<UserMobilePerson> ol = new ArrayList<UserMobilePerson>();
+		Map<String, Object> params = new HashMap<String, Object>();
+		DataGrid dg = new DataGrid();
+		params.put("userId",userMobilePerson.getUserId());
+		String hql = "select t from TuserMobilePerson t ,TuserAttention u where t.friendId is not null and t.userId = :userId and u.userId = :userId and u.attUserId like %t.mobile% and u.isDelete=0 and t.isDelete=0";
+		List<TuserMobilePerson> l = userMobilePersonDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
+		if (l != null && l.size() > 0) {
+			for (TuserMobilePerson t : l) {
+				UserMobilePerson o = new UserMobilePerson();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		dg.setRows(ol);
+		return dg;
+	}
+
+	@Override
+	public DataGrid dataGridNoRegMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph) {
+		List<UserMobilePerson> ol = new ArrayList<UserMobilePerson>();
+		Map<String, Object> params = new HashMap<String, Object>();
+		DataGrid dg = new DataGrid();
+		params.put("userId",userMobilePerson.getUserId());
+		String hql = " from TuserMobilePerson t where t.userId = :userId and t.friendId is null";
+		List<TuserMobilePerson> l = userMobilePersonDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
+		if (l != null && l.size() > 0) {
+			for (TuserMobilePerson t : l) {
+				UserMobilePerson o = new UserMobilePerson();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		dg.setRows(ol);
+		return dg;
 	}
 
 }

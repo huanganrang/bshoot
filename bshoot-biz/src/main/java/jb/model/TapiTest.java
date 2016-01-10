@@ -78,7 +78,7 @@ public class TapiTest implements java.io.Serializable{
 	}
 	
 	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 19)
+	@Column(name = "id", unique = true, nullable = false, length = 36)
 	public String getId() {
 		return this.id;
 	}

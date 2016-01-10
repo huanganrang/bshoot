@@ -44,8 +44,10 @@ public class ApiUserAttentionController extends BaseController {
     public Json userAttention(UserAttention ua, HttpServletRequest request) {
         Json j = new Json();
         try {
-            SessionInfo s = getSessionInfo(request);
-            ua.setUserId(s.getId());
+            if(F.empty(ua.getUserId())){
+                SessionInfo s = getSessionInfo(request);
+                ua.setUserId(s.getId());
+            }
             int r = userAttentionService.addAttention(ua);
             if(r==-1){
                 j.setSuccess(false);
@@ -77,8 +79,10 @@ public class ApiUserAttentionController extends BaseController {
     public Json disUserAttention(UserAttention ua,HttpServletRequest request) {
         Json j = new Json();
         try {
-            SessionInfo s = getSessionInfo(request);
-            ua.setUserId(s.getId());
+            if(F.empty(ua.getUserId())){
+                SessionInfo s = getSessionInfo(request);
+                ua.setUserId(s.getId());
+            }
             int r = userAttentionService.deleteAttention(ua);
             if(r==-1){
                 j.setSuccess(false);
@@ -101,12 +105,14 @@ public class ApiUserAttentionController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/user_isattention")
-    public Json idAttention(UserAttention ua,HttpServletRequest request) {
+    public Json isAttention(UserAttention ua,HttpServletRequest request) {
         Json j = new Json();
         try {
-            SessionInfo s = getSessionInfo(request);
-            ua.setUserId(s.getId());
-            int r = userAttentionService.idAttention(ua);
+            if(F.empty(ua.getUserId())){
+                SessionInfo s = getSessionInfo(request);
+                ua.setUserId(s.getId());
+            }
+            int r = userAttentionService.isAttention(ua);
             if(r==-1){
                 j.setSuccess(false);
                 j.setMsg("未关注");
@@ -121,7 +127,7 @@ public class ApiUserAttentionController extends BaseController {
     }
 
     /**
-     * 查询我关注的好友,可分组查询
+     * 查询我的关注,可分组查询
      * @param userAttention
      * @param ph
      * @param request
@@ -137,6 +143,30 @@ public class ApiUserAttentionController extends BaseController {
                 userAttention.setUserId(s.getId());
             }
             j.setObj(userAttentionService.dataGridUserByGroup(userAttention, ph));
+            j.success();
+        } catch (Exception e) {
+            j.setMsg(e.getMessage());
+        }
+        return j;
+    }
+
+    /**
+     * 查询我的好友,双向好友
+     * @param userAttention
+     * @param ph
+     * @param request
+     * @return
+     */
+    @RequestMapping("/user_myfriend")
+    @ResponseBody
+    public Json dataGridMyFriend(UserAttention userAttention, PageHelper ph, HttpServletRequest request) {
+        Json j = new Json();
+        try {
+            if(F.empty(userAttention.getUserId())){
+                SessionInfo s = getSessionInfo(request);
+                userAttention.setUserId(s.getId());
+            }
+            j.setObj(userAttentionService.dataGridMyFriend(userAttention, ph));
             j.success();
         } catch (Exception e) {
             j.setMsg(e.getMessage());
@@ -177,6 +207,31 @@ public class ApiUserAttentionController extends BaseController {
 
     /**
      * 查询用户关注的朋友圈动态，参数包括userId,attentionGroup,bsFileType
+     * @param userAttention
+     * @param bshoot
+     * @param ph
+     * @param request
+     * @return
+     */
+    @RequestMapping("/user_attentiontime")
+    @ResponseBody
+    public Json dataGridUserAttentionTime(UserAttention userAttention, Bshoot bshoot, PageHelper ph, HttpServletRequest request) {
+        Json j = new Json();
+        try {
+            if(F.empty(userAttention.getUserId())){
+                SessionInfo s = getSessionInfo(request);
+                userAttention.setUserId(s.getId());
+            }
+            j.setObj(userFriendTimeService.dataGridUserAttentionTime(userAttention, bshoot, ph));
+            j.setSuccess(false);
+        } catch (Exception e) {
+            j.setMsg(e.getMessage());
+        }
+        return j;
+    }
+
+    /**
+     * 查询用户好友的朋友圈动态，参数包括userId,bsFileType
      * @param userAttention
      * @param bshoot
      * @param ph

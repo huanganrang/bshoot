@@ -46,8 +46,10 @@ public class ApiUserAttentionGroupController extends BaseController {
     public Json addAttentionGroup(UserAttentionGroup userAttentionGroup, HttpServletRequest request) {
         Json j = new Json();
         try {
-            SessionInfo s = getSessionInfo(request);
-            userAttentionGroup.setUserId(s.getId());
+            if(F.empty(userAttentionGroup.getUserId())){
+                SessionInfo s = getSessionInfo(request);
+                userAttentionGroup.setUserId(s.getId());
+            }
             int r = userAttentionGroupService.addAttention(userAttentionGroup);
             if(r==-1){
                 j.setSuccess(false);
@@ -74,8 +76,10 @@ public class ApiUserAttentionGroupController extends BaseController {
     public Json disAttentionGroup(UserAttentionGroup userAttentionGroup, HttpServletRequest request) {
         Json j = new Json();
         try {
-            SessionInfo s = getSessionInfo(request);
-            userAttentionGroup.setUserId(s.getId());
+            if(F.empty(userAttentionGroup.getUserId())){
+                SessionInfo s = getSessionInfo(request);
+                userAttentionGroup.setUserId(s.getId());
+            }
             if(!F.empty(userAttentionGroup.getId())){//必需传进分组id，否则清除关注表上的分组时会有问题
                 int r = userAttentionGroupService.deleteAttentionGroup(userAttentionGroup);
                 if(r==-1){
@@ -112,8 +116,10 @@ public class ApiUserAttentionGroupController extends BaseController {
     public Json editAttentionGroupName(UserAttentionGroup userAttentionGroup, HttpServletRequest request) {
         Json j = new Json();
         try {
-            SessionInfo s = getSessionInfo(request);
-            userAttentionGroup.setUserId(s.getId());
+            if(F.empty(userAttentionGroup.getUserId())){
+                SessionInfo s = getSessionInfo(request);
+                userAttentionGroup.setUserId(s.getId());
+            }
             if(!F.empty(userAttentionGroup.getId())){//必需传进分组id，否则清除关注表上的分组时会有问题
                 int r = userAttentionGroupService.edit(userAttentionGroup);
                 if(r==-1){

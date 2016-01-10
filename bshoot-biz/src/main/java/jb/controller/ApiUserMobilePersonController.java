@@ -43,16 +43,18 @@ public class ApiUserMobilePersonController extends BaseController {
     public Json addMobilePerson(UserMobilePerson userMobilePerson, HttpServletRequest request) {
         Json j = new Json();
         try {
-            SessionInfo s = getSessionInfo(request);
-            userMobilePerson.setUserId(s.getId());
-            /*int r = userMobilePersonService.add(userMobilePerson);
+            if(F.empty(userMobilePerson.getUserId())){
+                SessionInfo s = getSessionInfo(request);
+                userMobilePerson.setUserId(s.getId());
+            }
+            int r = userMobilePersonService.addMobilePerson(userMobilePerson);
             if(r==-1){
                 j.setSuccess(false);
                 j.setMsg("已经存在");
             }else{
                 j.setSuccess(true);
                 j.setMsg("添加成功");
-            }*/
+            }
         } catch (Exception e) {
             j.setMsg(e.getMessage());
         }
@@ -68,19 +70,21 @@ public class ApiUserMobilePersonController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/dismobileperson")
-    public Json disMobilePerson(UserMobilePerson userMobilePerson,HttpServletRequest request) {
+    public Json disMobilePerson(UserMobilePerson userMobilePerson, HttpServletRequest request) {
         Json j = new Json();
         try {
-            SessionInfo s = getSessionInfo(request);
-            userMobilePerson.setUserId(s.getId());
-          /*  int r = userMobilePersonService.deleteMobilePerson(userMobilePerson);
+            if(F.empty(userMobilePerson.getUserId())){
+                SessionInfo s = getSessionInfo(request);
+                userMobilePerson.setUserId(s.getId());
+            }
+            int r = userMobilePersonService.deleteMobilePerson(userMobilePerson);
             if(r==-1){
                 j.setSuccess(false);
-                j.setMsg("该通讯录不存在");
+                j.setMsg("该通讯录不存在或id不对");
             }else{
                 j.setSuccess(true);
                 j.setMsg("删除成功！");
-            }*/
+            }
         } catch (Exception e) {
             j.setMsg(e.getMessage());
         }
@@ -88,7 +92,7 @@ public class ApiUserMobilePersonController extends BaseController {
     }
 
     /**
-     * 查询通讯录
+     * 查询已注册但没有关注的手机联系人
      * @param userMobilePerson
      * @param ph
      * @param request
@@ -96,14 +100,38 @@ public class ApiUserMobilePersonController extends BaseController {
      */
     @RequestMapping("/userMobilePerson")
     @ResponseBody
-    public Json dataGridMyMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph, HttpServletRequest request) {
+    public Json dataGridRegMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph, HttpServletRequest request) {
         Json j = new Json();
         try {
             if(F.empty(userMobilePerson.getUserId())){
                 SessionInfo s = getSessionInfo(request);
                 userMobilePerson.setUserId(s.getId());
             }
-            j.setObj(userMobilePersonService.dataGrid(userMobilePerson, ph));
+            j.setObj(userMobilePersonService.dataGridRegMobilePerson(userMobilePerson, ph));
+            j.success();
+        } catch (Exception e) {
+            j.setMsg(e.getMessage());
+        }
+        return j;
+    }
+
+    /**
+     * 查询未注册的手机联系人
+     * @param userMobilePerson
+     * @param ph
+     * @param request
+     * @return
+     */
+    @RequestMapping("/userNoRegMobilePerson")
+    @ResponseBody
+    public Json dataGridNoRegMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph, HttpServletRequest request) {
+        Json j = new Json();
+        try {
+            if(F.empty(userMobilePerson.getUserId())){
+                SessionInfo s = getSessionInfo(request);
+                userMobilePerson.setUserId(s.getId());
+            }
+            j.setObj(userMobilePersonService.dataGridNoRegMobilePerson(userMobilePerson, ph));
             j.success();
         } catch (Exception e) {
             j.setMsg(e.getMessage());

@@ -3,6 +3,7 @@ package jb.service.impl;
 import jb.absx.F;
 import jb.dao.BaseDaoI;
 import jb.dao.UserAttentionDaoI;
+import jb.dao.UserDaoI;
 import jb.model.Tuser;
 import jb.model.TuserAttention;
 import jb.pageModel.*;
@@ -19,6 +20,9 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 
 	@Autowired
 	private UserAttentionDaoI userAttentionDao;
+
+	@Autowired
+	private UserDaoI userDao;
 
 	@Override
 	public DataGrid dataGrid(UserAttention userAttention, PageHelper ph) {
@@ -81,7 +85,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	public List<TuserAttention> getUserAttentionList(String attentionGroup) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("attentionGroup", attentionGroup);
-		List<TuserAttention> t = userAttentionDao.find("from TuserAttention t  where t.attentionGroup = :attentionGroup", params);
+		List<TuserAttention> t = userAttentionDao.find("from TuserAttention t where t.attentionGroup = :attentionGroup", params);
 		return t;
 	}
 	
@@ -105,6 +109,30 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	@Override
 	public List<String> singleFriendAtt(AttentionRequest attentionRequest) {
 		return userAttentionDao.singleFriendAtt(attentionRequest);
+	}
+
+	@Override
+	public DataGrid dataGridMyFriend(UserAttention userAttention, PageHelper ph) {
+		DataGrid dg = new DataGrid();
+		String hql = "select u from Tuser u ,TuserAttention t ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		//我的好友
+		if(!F.empty(userAttention.getUserId())){
+			hql +="where u.id = t.attUserId and t.userId = :userId and t.isFriend is not null and t.isDelete=0";
+			params.put("userId",userAttention.getUserId());
+		}
+		List<Tuser> l = userDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
+		dg.setTotal(userDao.count("select count(*) " + hql.substring(8) , params));
+		List<User> ol = new ArrayList<User>();
+		if (l != null && l.size() > 0) {
+			for (Tuser t : l) {
+				User o = new User();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		dg.setRows(ol);
+		return dg;
 	}
 
 	@Override
@@ -192,7 +220,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	}
 
 	@Override
-	public int idAttention(UserAttention userAttention){
+	public int isAttention(UserAttention userAttention){
 		UserAttention ua = get(userAttention.getUserId(), userAttention.getAttUserId());
 		if(ua==null){
 			return -1;//未关注
@@ -352,11 +380,11 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		Map<String, Object> params = new HashMap<String, Object>();
 		//我的关注好友
 		if(!F.empty(userAttention.getUserId())){
-			hql +="where u.id = t.attUserId and t.userId = :userId";
+			hql +="where u.id = t.attUserId and t.userId = :userId and t.isFriend is null and t.isDelete=0 ";
 			params.put("userId",userAttention.getUserId());
 			//按分组查找
 			if(!F.empty(userAttention.getAttentionGroup())){
-				hql +=" and t.attentionGroup = :attentionGroup";
+				hql +="and t.attentionGroup = :attentionGroup";
 				params.put("attentionGroup",userAttention.getAttentionGroup());
 			}
 			//我的粉丝

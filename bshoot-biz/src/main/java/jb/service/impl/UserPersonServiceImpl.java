@@ -1,24 +1,18 @@
 package jb.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import jb.absx.F;
 import jb.dao.UserPersonDaoI;
 import jb.model.TuserPerson;
-import jb.pageModel.UserPerson;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
+import jb.pageModel.UserPerson;
 import jb.service.UserPersonServiceI;
-
+import jb.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jb.util.MyBeanUtils;
+
+import java.util.*;
 
 @Service
 public class UserPersonServiceImpl extends BaseServiceImpl<UserPerson> implements UserPersonServiceI {
@@ -93,6 +87,14 @@ public class UserPersonServiceImpl extends BaseServiceImpl<UserPerson> implement
 	@Override
 	public void delete(String id) {
 		userPersonDao.delete(userPersonDao.get(TuserPerson.class, id));
+	}
+
+	@Override
+	public void delUserPersonGroup(String id) {
+		if(!F.empty(id)){
+			String sql = "update user_person set person_group=null where person_group="+id;
+			userPersonDao.executeSql(sql);
+		}
 	}
 
 }

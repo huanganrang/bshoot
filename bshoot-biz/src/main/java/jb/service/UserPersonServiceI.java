@@ -51,4 +51,10 @@ public interface UserPersonServiceI {
 	 */
 	public void delete(String id);
 
+	/**
+	 * 删除人脉圈好友分组
+	 *
+	 * @param id
+	 */
+	public void delUserPersonGroup(String id);
 }

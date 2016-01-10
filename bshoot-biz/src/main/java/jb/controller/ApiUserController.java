@@ -74,6 +74,7 @@ public class ApiUserController extends BaseController {
 				j.setMsg("用户名或密码错误！");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			j.setMsg(e.getMessage());
 		}
 		return j;
