@@ -33,7 +33,7 @@ public class ApiUserMobilePersonController extends BaseController {
     }
 
     /**
-     * 添加通讯录(添加关注或把is_delete改为0)
+     * 添加通讯录(添加关注或把is_delete改为0)，参数:userId,friendName,mobile
      * @param userMobilePerson
      * @param request
      * @return
@@ -63,7 +63,7 @@ public class ApiUserMobilePersonController extends BaseController {
     }
 
     /**
-     * 删除通讯录(把is_delete参数改为1)
+     * 删除通讯录(把is_delete参数改为1)，参数:id
      * @param userMobilePerson
      * @param request
      * @return
@@ -92,7 +92,7 @@ public class ApiUserMobilePersonController extends BaseController {
     }
 
     /**
-     * 查询已注册但没有关注的手机联系人
+     * 查询已注册但没有关注的手机联系人，参数:userId,page,rows,sort=createDatetime,order=asc
      * @param userMobilePerson
      * @param ph
      * @param request
@@ -116,7 +116,7 @@ public class ApiUserMobilePersonController extends BaseController {
     }
 
     /**
-     * 查询未注册的手机联系人
+     * 查询未注册的手机联系人，参数:userId,page,rows,sort=createDatetime,order=asc
      * @param userMobilePerson
      * @param ph
      * @param request

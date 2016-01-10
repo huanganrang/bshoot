@@ -34,7 +34,7 @@ public class ApiUserAttentionController extends BaseController {
     }
 
     /**
-     * 关注用户(添加关注或把is_delete改为0)
+     * 关注用户(添加关注或把is_delete改为0)，参数:userId,attUserId
      * @param ua
      * @param request
      * @return
@@ -69,7 +69,7 @@ public class ApiUserAttentionController extends BaseController {
     }
 
     /**
-     * 取消关注用户(把is_delete参数改为1)
+     * 取消关注用户(把is_delete参数改为1)，参数:userId,attUserId
      * @param ua
      * @param request
      * @return
@@ -98,7 +98,7 @@ public class ApiUserAttentionController extends BaseController {
     }
 
     /**
-     * 查询是否关注该用户
+     * 查询是否关注该用户，参数:userId,attUserId
      * @param ua
      * @param request
      * @return
@@ -127,7 +127,7 @@ public class ApiUserAttentionController extends BaseController {
     }
 
     /**
-     * 查询我的关注,可分组查询
+     * 查询我的关注,可分组查询，参数:userId,attentionGroup,page,rows,sort=attentionDatetime,order=desc
      * @param userAttention
      * @param ph
      * @param request
@@ -151,7 +151,7 @@ public class ApiUserAttentionController extends BaseController {
     }
 
     /**
-     * 查询我的好友,双向好友
+     * 查询我的好友,双向好友，参数:userId,page,rows,sort=attentionDatetime,order=desc
      * @param userAttention
      * @param ph
      * @param request
@@ -175,7 +175,7 @@ public class ApiUserAttentionController extends BaseController {
     }
 
     /**
-     * 修改关注好友到其他分组
+     * 修改关注好友到其他分组，参数:userId,attUserId,attentionGroup
      * @param userAttention
      * @param request
      * @return
@@ -206,32 +206,8 @@ public class ApiUserAttentionController extends BaseController {
     }
 
     /**
-     * 查询用户关注的朋友圈动态，参数包括userId,attentionGroup,bsFileType
-     * @param userAttention
-     * @param bshoot
-     * @param ph
-     * @param request
-     * @return
-     */
-    @RequestMapping("/user_attentiontime")
-    @ResponseBody
-    public Json dataGridUserAttentionTime(UserAttention userAttention, Bshoot bshoot, PageHelper ph, HttpServletRequest request) {
-        Json j = new Json();
-        try {
-            if(F.empty(userAttention.getUserId())){
-                SessionInfo s = getSessionInfo(request);
-                userAttention.setUserId(s.getId());
-            }
-            j.setObj(userFriendTimeService.dataGridUserAttentionTime(userAttention, bshoot, ph));
-            j.setSuccess(false);
-        } catch (Exception e) {
-            j.setMsg(e.getMessage());
-        }
-        return j;
-    }
-
-    /**
-     * 查询用户好友的朋友圈动态，参数包括userId,bsFileType
+     * 查询用户关注或好友的朋友圈动态，参数包括userId,friendType(0为关注1为好友),attentionGroup,bsFileType,page,rows,sort=createDatetime,order=desc
+     * @param userFriendTime
      * @param userAttention
      * @param bshoot
      * @param ph
@@ -240,14 +216,14 @@ public class ApiUserAttentionController extends BaseController {
      */
     @RequestMapping("/user_friendtime")
     @ResponseBody
-    public Json dataGridUserFriendTime(UserAttention userAttention, Bshoot bshoot, PageHelper ph, HttpServletRequest request) {
+    public Json dataGridUserFriendTime(UserFriendTime userFriendTime, UserAttention userAttention, Bshoot bshoot, PageHelper ph, HttpServletRequest request) {
         Json j = new Json();
         try {
-            if(F.empty(userAttention.getUserId())){
+            if(F.empty(userFriendTime.getUserId())){
                 SessionInfo s = getSessionInfo(request);
-                userAttention.setUserId(s.getId());
+                userFriendTime.setUserId(s.getId());
             }
-//            j.setObj(userFriendTimeService.dataGridUserFriendTime(userAttention, bshoot, ph));
+            j.setObj(userFriendTimeService.dataGridUserFriendTime(userFriendTime, userAttention, bshoot, ph));
             j.setSuccess(false);
         } catch (Exception e) {
             j.setMsg(e.getMessage());

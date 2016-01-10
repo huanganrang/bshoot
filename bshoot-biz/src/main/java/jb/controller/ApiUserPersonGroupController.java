@@ -36,7 +36,7 @@ public class ApiUserPersonGroupController extends BaseController {
     }
 
     /**
-     * 添加人脉圈好友分组(添加分组或把is_delete改为0)
+     * 添加人脉圈好友分组(添加分组或把is_delete改为0)，参数:userId,groupName
      * @param userPersonGroup
      * @param request
      * @return
@@ -66,7 +66,7 @@ public class ApiUserPersonGroupController extends BaseController {
     }
 
     /**
-     * 删除人脉圈好友分组(把is_delete参数改为1,并把关注好友表上的该分组id清除)
+     * 删除人脉圈好友分组(把is_delete参数改为1,并把关注好友表上的该分组id清除)，参数:userId,id
      * @param userPersonGroup
      * @param request
      * @return
@@ -96,7 +96,7 @@ public class ApiUserPersonGroupController extends BaseController {
     }
 
     /**
-     * 修改人脉圈好友分组名称
+     * 修改人脉圈好友分组名称，参数:userId,groupName,id
      * @param userPersonGroup
      * @param request
      * @return

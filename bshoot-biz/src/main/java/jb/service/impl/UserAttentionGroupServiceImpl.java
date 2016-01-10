@@ -120,20 +120,15 @@ public class UserAttentionGroupServiceImpl extends BaseServiceImpl<UserAttention
 
     @Override
     public int deleteAttentionGroup(UserAttentionGroup userAttentionGroup){
-        if(!F.empty(userAttentionGroup.getGroupName())){
-            UserAttentionGroup ua = get(userAttentionGroup.getUserId(),userAttentionGroup.getGroupName());
-            TuserAttentionGroup t = new TuserAttentionGroup();
-            BeanUtils.copyProperties(ua, t);
+        if(!F.empty(userAttentionGroup.getId())){
+            TuserAttentionGroup t = userAttentionGroupDao.get(TuserAttentionGroup.class, userAttentionGroup.getId());
+            if(t==null){
+                return -1;
+            }
             t.setIsDelete(1);
             userAttentionGroupDao.save(t);
-            return 1;//删除分组成功
+            return 1;
         }
-        TuserAttentionGroup t = userAttentionGroupDao.get(TuserAttentionGroup.class, userAttentionGroup.getId());
-        if(t==null){
-            return -1;//删除分组失败,未传入分组id或者分组名称
-        }
-        t.setIsDelete(1);
-        userAttentionGroupDao.save(t);
-        return 1;//删除分组成功
+        return -1;
     }
 }
