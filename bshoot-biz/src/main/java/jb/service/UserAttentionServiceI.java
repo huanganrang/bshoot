@@ -27,6 +27,11 @@ public interface UserAttentionServiceI {
 	public DataGrid dataGridUser(UserAttention userAttention, PageHelper ph,
 								 String id);
 
+	/**
+	 * 查询我的关注,可分组查询
+	 *
+	 * @param userAttention
+	 */
 	public DataGrid dataGridUserByGroup(UserAttention userAttention, PageHelper ph);
 
 	/**
@@ -59,7 +64,7 @@ public interface UserAttentionServiceI {
 	 * 查询是否关注该用户
 	 * @param userAttention
 	 */
-	public int idAttention(UserAttention userAttention);
+	public int isAttention(UserAttention userAttention);
 
 	/**
 	 * 获得UserAttention对象
@@ -111,4 +116,10 @@ public interface UserAttentionServiceI {
 	public List<String> friendCommonAtt(AttentionRequest attentionRequest);
 
 	List<String> singleFriendAtt(AttentionRequest attentionRequest);
+
+	/**
+	 * 查询我的好友,双向好友
+	 * @return
+	 */
+	public DataGrid dataGridMyFriend(UserAttention userAttention, PageHelper ph);
 }

@@ -62,5 +62,31 @@ public interface UserMobilePersonServiceI {
 
 	public List<String> noAttMobilePersonPerson(UserMobilePersonRequest request);
 
+	/**
+	 * 添加添加进入手机通讯录
+	 *
+	 * @param userMobilePerson
+	 */
+	public int addMobilePerson(UserMobilePerson userMobilePerson);
 
+	/**
+	 * 删除手机通讯录
+	 *
+	 * @param userMobilePerson
+	 */
+	public int deleteMobilePerson(UserMobilePerson userMobilePerson);
+
+	/**
+	 * 查询已注册但未关注的手机联系人
+	 *
+	 * @param userMobilePerson
+	 */
+	public DataGrid dataGridRegMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph);
+
+	/**
+	 * 查询未注册但的手机联系人
+	 *
+	 * @param userMobilePerson
+	 */
+	public DataGrid dataGridNoRegMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph);
 }
