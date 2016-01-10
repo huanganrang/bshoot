@@ -11,7 +11,6 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-
 	<!-- 引入项目配置文件 -->
 	<!-- <context:property-placeholder location="classpath:config.properties" /> -->
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -26,8 +25,7 @@
 	</bean>
 
 	<!-- 自动扫描dao和service包(自动注入) -->
-	<context:component-scan base-package="jb.dao,jb.service,component,solr.model.query,solr.service,solr.cores,solr.controller" />
-
+	<context:component-scan base-package="jb.dao,component.redis,component.message.service,jb.service,solr.model.query,solr.service,solr.cores" />
 	<!-- 引入同文件夹下的redis配置文件 -->
 	<import resource="spring-redis.xml"/>
 
