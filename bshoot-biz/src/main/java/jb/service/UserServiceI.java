@@ -35,6 +35,12 @@ public interface UserServiceI {
 	public void reg(User user) throws Exception;
 
 	/**
+	 * 修改密码
+	 * @param user
+	 */
+	public void updatePwd(User user);
+
+	/**
 	 * 获取用户数据表格
 	 * 
 	 * @param user

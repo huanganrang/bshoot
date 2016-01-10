@@ -1,8 +1,6 @@
 package jb.service;
 
-import jb.pageModel.UserPersonTime;
-import jb.pageModel.DataGrid;
-import jb.pageModel.PageHelper;
+import jb.pageModel.*;
 
 /**
  * 
@@ -51,4 +49,11 @@ public interface UserPersonTimeServiceI {
 	 */
 	public void delete(String id);
 
+	/**
+	 * 查询人脉圈好友动态,需要的参数为:
+	 * @param bshoot
+	 * @param userPersonTime
+	 * @return
+	 */
+	public DataGrid dataGridUserPersonTime(UserPersonTime userPersonTime, Bshoot bshoot, PageHelper ph);
 }

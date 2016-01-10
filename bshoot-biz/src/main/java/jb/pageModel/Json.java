@@ -1,5 +1,7 @@
 package jb.pageModel;
 
+import jb.listener.Application;
+
 /**
  * 
  * JSON模型
@@ -24,6 +26,11 @@ public class Json implements java.io.Serializable {
 	}
 	public void fail(){
 		this.success = false;
+	}
+	public void fail(String errorCode){
+		this.success = false;
+		setErrorCode(errorCode);
+		setErrorMsg(Application.getString(errorCode));
 	}
 
 	public boolean isSuccess() {

@@ -118,7 +118,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		Map<String, Object> params = new HashMap<String, Object>();
 		//我的好友
 		if(!F.empty(userAttention.getUserId())){
-			hql +="where u.id = t.attUserId and t.userId = :userId and t.isFriend is not null and t.isDelete=0";
+			hql += "where u.id = t.attUserId and t.userId = :userId and t.isFriend is not null and t.isDelete=0";
 			params.put("userId",userAttention.getUserId());
 		}
 		List<Tuser> l = userDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
@@ -146,34 +146,25 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 
 	@Override
 	public int editAttentionGroup(UserAttention userAttention) {
-		if(!F.empty(userAttention.getAttUserId())){
+		if(!F.empty(userAttention.getUserId()) && !F.empty(userAttention.getAttUserId())){
 			UserAttention ua = get(userAttention.getUserId(),userAttention.getAttUserId());
 			TuserAttention t = new TuserAttention();
 			BeanUtils.copyProperties(ua, t);
 			t.setAttentionGroup(userAttention.getAttentionGroup());
 			userAttentionDao.save(t);
-			return 1;//修改分组成功
+			return 1;
 		}
-		TuserAttention t = userAttentionDao.get(TuserAttention.class, userAttention.getId());
-		if(t==null){
-			return -1;//修改分组失败,未传入关注id或者被关注用户id
-		}
-		t.setAttentionGroup(userAttention.getAttentionGroup());
-		userAttentionDao.save(t);
-		return 1;//修改分组成功
+		return -1;
 	}
 
 	@Override
 	public int delUserAtteGroup(UserAttentionGroup userAttentionGroup){
 		if(!F.empty(userAttentionGroup.getId())){
-			List<TuserAttention> list = getUserAttentionList(userAttentionGroup.getId());
-			for(TuserAttention tuserAttention : list){
-				tuserAttention.setAttentionGroup(null);
-				userAttentionDao.save(tuserAttention);
-			}
-			return 1;//删除分组成功
+			String sql = "update user_attention set attention_group=null where attention_group="+userAttentionGroup.getId();
+			userAttentionDao.executeSql(sql);
+			return 1;
 		}
-		return -1;//删除分组失败
+		return -1;
 	}
 
 	@Override
@@ -359,8 +350,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	@Override
 	public DataGrid dataGridUserByGroup(UserAttention userAttention, PageHelper ph) {
 		List<User> ol = new ArrayList<User>();
-
-		DataGrid dg = dataGridByGroup(ph, userAttention, userAttentionDao);
+		DataGrid dg = dataGridByGroup(userAttention, ph, userAttentionDao);
 		@SuppressWarnings("unchecked")
 		List<Tuser> l = dg.getRows();
 		if (l != null && l.size() > 0) {
@@ -374,23 +364,19 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		return dg;
 	}
 
-	private DataGrid dataGridByGroup(PageHelper ph,UserAttention userAttention,BaseDaoI dao){
+	private DataGrid dataGridByGroup(UserAttention userAttention, PageHelper ph, BaseDaoI dao){
 		DataGrid dg = new DataGrid();
-		String hql = "select u from Tuser u ,TuserAttention t  ";
+		String hql = "select u from Tuser u ,TuserAttention t ";
 		Map<String, Object> params = new HashMap<String, Object>();
-		//我的关注好友
+		//我的关注
 		if(!F.empty(userAttention.getUserId())){
-			hql +="where u.id = t.attUserId and t.userId = :userId and t.isFriend is null and t.isDelete=0 ";
+			hql += "where u.id = t.attUserId and t.userId = :userId and t.isFriend is null and t.isDelete=0 ";
 			params.put("userId",userAttention.getUserId());
 			//按分组查找
 			if(!F.empty(userAttention.getAttentionGroup())){
-				hql +="and t.attentionGroup = :attentionGroup";
+				hql += "and t.attentionGroup = :attentionGroup";
 				params.put("attentionGroup",userAttention.getAttentionGroup());
 			}
-			//我的粉丝
-		}else if(!F.empty(userAttention.getAttUserId())){
-			hql +="where u.id = t.userId and t.attUserId = :userId";
-			params.put("userId",userAttention.getAttUserId());
 		}
 		List<Tuser> l = dao.find(hql   + orderHql(ph), params, ph.getPage(), ph.getRows());
 		dg.setTotal(dao.count("select count(*) " + hql.substring(8) , params));

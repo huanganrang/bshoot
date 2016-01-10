@@ -6,6 +6,8 @@ import jb.dao.UserFriendTimeDaoI;
 import jb.model.TuserAttention;
 import jb.model.TuserFriendTime;
 import jb.pageModel.*;
+import jb.service.BshootServiceI;
+import jb.service.UserAttentionServiceI;
 import jb.service.UserFriendTimeServiceI;
 import jb.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
@@ -22,6 +24,12 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 
 	@Autowired
 	private UserAttentionDaoI userAttentionDao;
+
+	@Autowired
+	private BshootServiceI bshootService;
+
+	@Autowired
+	private UserAttentionServiceI userAttentionService;
 
 	@Override
 	public DataGrid dataGrid(UserFriendTime userFriendTime, PageHelper ph) {
@@ -105,60 +113,63 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 	}
 
 	@Override
-	public DataGrid dataGridUserAttentionTime(UserAttention userAttention, Bshoot bshoot, PageHelper ph) {
+	public DataGrid dataGridUserFriendTime(UserFriendTime userFriendTime, UserAttention userAttention, Bshoot bshoot, PageHelper ph) {
 		DataGrid dg = new DataGrid();
-		String hql = "select u from TuserFriendTime u ,Tbshoot t ,TuserAttention a ";
+		List<UserFriendTime> ol = new ArrayList<UserFriendTime>();
+		String hql = "select u from TuserFriendTime u ,Tbshoot t where u.isDelete=0 ";
 		Map<String, Object> params = new HashMap<String, Object>();
-		if(!F.empty(userAttention.getUserId())){
-			hql +="where u.bsId = t.id and u.userId = a.userId and u.friendType=0 and u.isDelete=0 ";
+		if(!F.empty(userFriendTime.getUserId())){
+			hql += "and u.bsId = t.id and u.userId = :userId ";
+			params.put("userId",userFriendTime.getUserId());
 			if(bshoot.getBsFileType() != null){
-				hql +="and t.bsFileType = :bsFileType ";
+				hql += "and t.bsFileType = :bsFileType ";
 				params.put("bsFileType",bshoot.getBsFileType());
 			}
-			if(!F.empty(userAttention.getAttentionGroup())){
-				hql +="and a.attentionGroup = :attentionGroup and a.userId = :userId";
-				params.put("userId",userAttention.getUserId());
-				params.put("attentionGroup",userAttention.getAttentionGroup());
+			if(userFriendTime.getFriendType() != null){
+				hql += "and u.friendType = :friendType ";
+				params.put("friendType",userFriendTime.getFriendType());
+			}
+			List<TuserFriendTime> l = userFriendTimeDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
+			if (l != null && l.size() > 0) {
+				//查询关注动态
+				if(userFriendTime.getFriendType() == 0){
+					//分组查询
+					if(!F.empty(userAttention.getAttentionGroup())){
+						for (TuserFriendTime t : l) {
+							Bshoot bs = bshootService.get(t.getBsId());
+							String us = bs.getUserId();
+							UserAttention ua = 	userAttentionService.get(userFriendTime.getUserId(), us);
+							if(userAttention.getAttentionGroup().equals(ua.getAttentionGroup())){
+								UserFriendTime o = new UserFriendTime();
+								BeanUtils.copyProperties(t, o);
+								ol.add(o);
+							}
+						}
+						dg.setTotal((long) ol.size());
+						dg.setRows(ol);
+						return dg;
+					}else {
+						for (TuserFriendTime t : l) {
+							UserFriendTime o = new UserFriendTime();
+							BeanUtils.copyProperties(t, o);
+							ol.add(o);
+						}
+						dg.setTotal((long) ol.size());
+						dg.setRows(ol);
+						return dg;
+					}
+				}else if(userFriendTime.getFriendType() == 1){//查询好友动态
+					for (TuserFriendTime t : l) {
+						UserFriendTime o = new UserFriendTime();
+						BeanUtils.copyProperties(t, o);
+						ol.add(o);
+					}
+					dg.setTotal((long) ol.size());
+					dg.setRows(ol);
+					return dg;
+				}
 			}
 		}
-		List<TuserFriendTime> l = userFriendTimeDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
-		List<UserFriendTime> ol = new ArrayList<UserFriendTime>();
-		if (l != null && l.size() > 0) {
-			for (TuserFriendTime t : l) {
-				UserFriendTime o = new UserFriendTime();
-				BeanUtils.copyProperties(t, o);
-				ol.add(o);
-			}
-		}
-		dg.setTotal(userFriendTimeDao.count("select count(*) " + hql.substring(8) , params));
-		dg.setRows(ol);
-		return dg;
-	}
-
-	@Override
-	public DataGrid dataGridUserFriendTime(UserAttention userAttention, Bshoot bshoot, PageHelper ph) {
-		DataGrid dg = new DataGrid();
-		String hql = "select u from TuserFriendTime u ,Tbshoot t ";
-		Map<String, Object> params = new HashMap<String, Object>();
-		if(!F.empty(userAttention.getUserId())){
-			hql +="where u.bsId = t.id and u.userId = :userId and u.friendType=1 and u.isDelete=0 ";
-			params.put("userId",userAttention.getUserId());
-			if(bshoot.getBsFileType() != null){
-				hql +="and t.bsFileType = :bsFileType";
-				params.put("bsFileType",bshoot.getBsFileType());
-			}
-		}
-		List<TuserFriendTime> l = userFriendTimeDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
-		List<UserFriendTime> ol = new ArrayList<UserFriendTime>();
-		if (l != null && l.size() > 0) {
-			for (TuserFriendTime t : l) {
-				UserFriendTime o = new UserFriendTime();
-				BeanUtils.copyProperties(t, o);
-				ol.add(o);
-			}
-		}
-		dg.setTotal(userFriendTimeDao.count("select count(*) " + hql.substring(8) , params));
-		dg.setRows(ol);
 		return dg;
 	}
 

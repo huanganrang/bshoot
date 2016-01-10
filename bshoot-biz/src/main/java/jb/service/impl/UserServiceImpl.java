@@ -1,10 +1,12 @@
 package jb.service.impl;
 
+import component.redis.service.RedisUserServiceImpl;
 import jb.absx.F;
 import jb.dao.ResourceDaoI;
 import jb.dao.RoleDaoI;
 import jb.dao.UserAttentionDaoI;
 import jb.dao.UserDaoI;
+import jb.listener.Application;
 import jb.model.Tresource;
 import jb.model.Trole;
 import jb.model.Tuser;
@@ -23,6 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 @Service
@@ -39,6 +42,9 @@ public class UserServiceImpl implements UserServiceI {
 	
 	@Autowired
 	private UserAttentionDaoI userAttentionDao;
+
+	@Resource
+	private RedisUserServiceImpl redisUserService;
 
 	@Override
 	public User login(User user) {
@@ -61,10 +67,20 @@ public class UserServiceImpl implements UserServiceI {
 	@Override
 	synchronized public void reg(User user) throws Exception {
 		Map<String, Object> params = new HashMap<String, Object>();
+		String validateCode = redisUserService.getValidateCode(user.getMobile());
+		if(F.empty(user.getValidateCode())||!user.getValidateCode().equals(validateCode)){
+			throw new Exception(Application.getString("EX0002"));
+		}
 		params.put("name", user.getName());
 		if (userDao.count("select count(*) from Tuser t where t.name = :name", params) > 0) {
 			throw new Exception("登录名已存在！");
-		} 
+		}
+		if(!F.empty(user.getMobile())) {
+			params.put("mobile", user.getMobile());
+			if (userDao.count("select count(*) from Tuser t where t.mobile = :mobile", params) > 0) {
+				throw new Exception("手机号已存在！");
+			}
+		}
 		params = new HashMap<String, Object>();
 		params.put("email", user.getEmail());
 		if(!F.empty(user.getEmail())
@@ -99,6 +115,17 @@ public class UserServiceImpl implements UserServiceI {
 		BeanUtils.copyProperties(user, u);
 		u.setUtype("UT02");
 		userDao.save(u);
+	}
+
+	@Override
+	public void updatePwd(User user) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("mobile",user.getMobile());
+		Tuser tuser = userDao.get("from Tuser t  where t.mobile = :mobile", params);
+		if (tuser!=null) {
+			tuser.setPwd(MD5Util.md5(user.getPwd()));
+			tuser.setModifydatetime(new Date());
+		}
 	}
 
 	@Override

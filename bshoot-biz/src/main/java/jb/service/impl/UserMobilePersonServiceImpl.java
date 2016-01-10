@@ -1,12 +1,12 @@
 package jb.service.impl;
 
 import jb.absx.F;
-import jb.dao.UserAttentionDaoI;
 import jb.dao.UserDaoI;
 import jb.dao.UserMobilePersonDaoI;
 import jb.model.Tuser;
 import jb.model.TuserMobilePerson;
 import jb.pageModel.*;
+import jb.service.UserAttentionServiceI;
 import jb.service.UserMobilePersonServiceI;
 import jb.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
@@ -22,7 +22,7 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 	private UserMobilePersonDaoI userMobilePersonDao;
 
 	@Autowired
-	private UserAttentionDaoI userAttentionDao;
+	private UserAttentionServiceI userAttentionService;
 
 	@Autowired
 	private UserDaoI userDao;
@@ -171,7 +171,7 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 			t.setId(UUID.randomUUID().toString());
 			t.setCreateDatetime(new Date());
 			t.setIsDelete(0);
-			//friendId，是否有用该手机号码注册或绑定
+			//friendId，用户id，是否有用该手机号码注册或绑定
 			if(!F.empty(userMobilePerson.getMobile())){
 				List<User> ls = mobileUser(userMobilePerson.getMobile());
 				String userIds = null;
@@ -207,15 +207,39 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 	public DataGrid dataGridRegMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph) {
 		List<UserMobilePerson> ol = new ArrayList<UserMobilePerson>();
 		Map<String, Object> params = new HashMap<String, Object>();
+		Boolean isAtten = false;
 		DataGrid dg = new DataGrid();
 		params.put("userId",userMobilePerson.getUserId());
-		String hql = "select t from TuserMobilePerson t ,TuserAttention u where t.friendId is not null and t.userId = :userId and u.userId = :userId and u.attUserId like %t.mobile% and u.isDelete=0 and t.isDelete=0";
+		String hql = "select t from TuserMobilePerson t where t.friendId is not null and t.userId = :userId and t.isDelete=0";
 		List<TuserMobilePerson> l = userMobilePersonDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
 		if (l != null && l.size() > 0) {
 			for (TuserMobilePerson t : l) {
-				UserMobilePerson o = new UserMobilePerson();
-				BeanUtils.copyProperties(t, o);
-				ol.add(o);
+				//已注册的手机联系人
+				if(!F.empty(t.getFriendId())){
+					if(t.getFriendId().contains(",")){
+						String[] friendIds = t.getFriendId().split(",");
+						for (int i=0;i<friendIds.length;i++){
+							UserAttention ua = new UserAttention();
+							ua.setUserId(userMobilePerson.getUserId());
+							ua.setAttUserId(friendIds[i]);
+							if(userAttentionService.isAttention(ua)==1){
+								isAtten = true;
+							}
+						}
+					}else {
+						UserAttention ua = new UserAttention();
+						ua.setUserId(userMobilePerson.getUserId());
+						ua.setAttUserId(t.getFriendId());
+						if(userAttentionService.isAttention(ua)==1){
+							isAtten = true;
+						}
+					}
+					if(!isAtten){
+						UserMobilePerson o = new UserMobilePerson();
+						BeanUtils.copyProperties(t, o);
+						ol.add(o);
+					}
+				}
 			}
 		}
 		dg.setRows(ol);

@@ -1,10 +1,13 @@
 package jb.service.impl;
 
 import jb.absx.F;
+import jb.dao.UserDaoI;
 import jb.dao.UserPersonDaoI;
+import jb.model.Tuser;
 import jb.model.TuserPerson;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
+import jb.pageModel.User;
 import jb.pageModel.UserPerson;
 import jb.service.UserPersonServiceI;
 import jb.util.MyBeanUtils;
@@ -19,6 +22,9 @@ public class UserPersonServiceImpl extends BaseServiceImpl<UserPerson> implement
 
 	@Autowired
 	private UserPersonDaoI userPersonDao;
+
+	@Autowired
+	private UserDaoI userDao;
 
 	@Override
 	public DataGrid dataGrid(UserPerson userPerson, PageHelper ph) {
@@ -94,6 +100,91 @@ public class UserPersonServiceImpl extends BaseServiceImpl<UserPerson> implement
 		if(!F.empty(id)){
 			String sql = "update user_person set person_group=null where person_group="+id;
 			userPersonDao.executeSql(sql);
+		}
+	}
+
+	private UserPerson get(String userId, String attUserId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		params.put("attUserId", attUserId);
+		TuserPerson t = userPersonDao.get("from TuserPerson t where t.userId = :userId and t.attUserId = :attUserId", params);
+		if(t==null)
+			return null;
+		UserPerson o = new UserPerson();
+		BeanUtils.copyProperties(t, o);
+		return o;
+	}
+
+	@Override
+	public int addUserPerson(UserPerson userPerson) {
+		if(get(userPerson.getUserId(), userPerson.getAttUserId())!=null && userPerson.getIsDelete()==0){
+			return -1;//已是人脉圈好友
+		}else if(get(userPerson.getUserId(), userPerson.getAttUserId())!=null && userPerson.getIsDelete()!=0){
+			UserPerson ua = get(userPerson.getUserId(), userPerson.getAttUserId());
+			TuserPerson t = new TuserPerson();
+			BeanUtils.copyProperties(ua, t);
+			t.setIsDelete(0);
+			userPersonDao.save(t);
+			return 1;
+		}else {
+			TuserPerson t = new TuserPerson();
+			BeanUtils.copyProperties(userPerson, t);
+			t.setId(UUID.randomUUID().toString());
+			t.setCreateDatetime(new Date());
+			t.setIsDelete(0);
+			userPersonDao.save(t);
+			return 1;
+		}
+	}
+
+	@Override
+	public int deleteUserPerson(UserPerson userPerson) {
+		UserPerson ua = get(userPerson.getUserId(), userPerson.getAttUserId());
+		if(ua==null){
+			return -1;
+		}else{
+			TuserPerson t = new TuserPerson();
+			BeanUtils.copyProperties(ua, t);
+			t.setIsDelete(1);
+			userPersonDao.save(t);
+			return 1;
+		}
+	}
+
+	@Override
+	public DataGrid dataGridMyUserPerson(UserPerson userPerson, PageHelper ph) {
+		DataGrid dg = new DataGrid();
+		String hql = "select u from Tuser u ,TuserPerson t ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		if(!F.empty(userPerson.getUserId())){
+			hql +="where u.id = t.attUserId and t.userId = :userId and t.isDelete=0";
+			params.put("userId",userPerson.getUserId());
+		}
+		List<Tuser> l = userDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
+		dg.setTotal(userDao.count("select count(*) " + hql.substring(8) , params));
+		List<User> ol = new ArrayList<User>();
+		if (l != null && l.size() > 0) {
+			for (Tuser t : l) {
+				User o = new User();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		dg.setRows(ol);
+		return dg;
+	}
+
+	@Override
+	public int isUserPerson(UserPerson userPerson) {
+		UserPerson u = get(userPerson.getUserId(), userPerson.getAttUserId());
+		if(u == null){
+			return -1;
+		}else {
+			if(u.getIsDelete()==0){
+				return 0;
+			}else {
+				return -1;
+			}
 		}
 	}
 
