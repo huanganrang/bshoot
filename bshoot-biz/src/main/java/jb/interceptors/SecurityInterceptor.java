@@ -59,7 +59,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
 		String url = requestUri.substring(contextPath.length());
 		// logger.info(url);
 
-		if (url.indexOf("/baseController/") > -1 || excludeUrls.contains(url)||url.indexOf("/api-docs/")>-1) {// 如果要访问的资源是不需要验证的
+		if (url.indexOf("/baseController/") > -1 || excludeUrls.contains(url)) {// 如果要访问的资源是不需要验证的
 			return true;
 		}
 
@@ -69,7 +69,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
 			request.getRequestDispatcher("/error/noSession.jsp").forward(request, response);
 			return false;
 		}
-
+       if(url.indexOf("/api-docs")>-1) return true;
 		if (!sessionInfo.getResourceList().contains(url)) {// 如果当前用户没有访问此资源的权限
 			request.setAttribute("msg", "您没有访问此资源的权限！<br/>请联系超管赋予您<br/>[" + url + "]<br/>的资源访问权限！");
 			request.getRequestDispatcher("/error/noSecurity.jsp").forward(request, response);

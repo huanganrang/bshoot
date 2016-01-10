@@ -47,7 +47,7 @@ public class HotGuideService extends  RecommendService implements HotGuideServic
 
         //4.可能感兴趣的人
         //获得当前用户画像
-        UserProfile userProfile = userProfileServiceImpl.get(userId);
+        UserProfile userProfile = userProfileService.get(userId);
         MaybeInterestRequest maybeInterestRequest = new MaybeInterestRequest();
         maybeInterestRequest.setUserId(userId);
         maybeInterestRequest.setLoginArea(userProfile.getLoginArea());
@@ -91,7 +91,7 @@ public class HotGuideService extends  RecommendService implements HotGuideServic
             if(CollectionUtils.isNotEmpty(friendPraise))
                 bshoots.addAll(getMaxPraiseBshoot(friendPraise, oneMonthAgo, GuideType.FRIEND_PRAISE.getId()));
         }else if(guideType==GuideType.MAYBE_INTEREST.getId()){
-            UserProfile userProfile = userProfileServiceImpl.get(userId);
+            UserProfile userProfile = userProfileService.get(userId);
             MaybeInterestRequest maybeInterestRequest = new MaybeInterestRequest();
             maybeInterestRequest.setUserId(userId);
             maybeInterestRequest.setLoginArea(userProfile.getLoginArea());
@@ -114,7 +114,7 @@ public class HotGuideService extends  RecommendService implements HotGuideServic
     }
 
     private List<Bshoot> getMaxPraiseBshoot(List<String> userIds,Date dateLimit,Integer guideType){
-        List<Bshoot> bshoots = bshootServiceImpl.getMaxPraiseBshoot(userIds,dateLimit);
+        List<Bshoot> bshoots = bshootService.getMaxPraiseBshoot(userIds,dateLimit);
         for(Bshoot bshoot:bshoots){
             bshoot.setGuideType(guideType);
         }

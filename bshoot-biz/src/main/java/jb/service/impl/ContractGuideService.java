@@ -26,17 +26,17 @@ public class ContractGuideService extends RecommendService implements ContractGu
     @Override
     public Map<Integer,List<RecommendUser>> guideExternalPage(String userId, Integer start, Integer rows) {
         Map<Integer,List<RecommendUser>> listMap = new HashMap<Integer,List<RecommendUser>>();
-        UserProfile userProfile = userProfileServiceImpl.get(userId);
+        UserProfile userProfile = userProfileService.get(userId);
         //1.可能感兴趣的人
         List<RecommendUser> maybeInterestedUser = maybeInterestedUser(userProfile,start,rows);
         listMap.put(GuideType.MAYBE_INTEREST.getId(),maybeInterestedUser);
         //2.好友关注的人
         List<RecommendUser>  friendCommonAtt = friendCommonAtt(userId,start,rows);
-        listMap.put(GuideType.MAYBE_INTEREST.getId(),friendCommonAtt);
+        listMap.put(GuideType.FRIEND_ATT.getId(),friendCommonAtt);
 
         //3.附近的人
         List<RecommendUser>  nearByUser = nearByUser(userProfile,start,rows);
-        listMap.put(GuideType.MAYBE_INTEREST.getId(),nearByUser);
+        listMap.put(GuideType.NEARBY_PEOPLE.getId(),nearByUser);
         return listMap;
     }
 
@@ -82,12 +82,12 @@ public class ContractGuideService extends RecommendService implements ContractGu
     @Override
     public List<RecommendUser> guideInternalPage(String userId, Integer guideType, Integer start, Integer rows) {
         if(guideType==GuideType.MAYBE_INTEREST.getId()){
-            UserProfile userProfile = userProfileServiceImpl.get(userId);
+            UserProfile userProfile = userProfileService.get(userId);
             return maybeInterestedUser(userProfile,start,rows);
-        }else if(guideType==GuideType.NEARBY_PEOPLE.getId()){
-            return friendCommonAtt(userId,start,rows);
         }else if(guideType==GuideType.FRIEND_ATT.getId()){
-            UserProfile userProfile = userProfileServiceImpl.get(userId);
+            return friendCommonAtt(userId, start, rows);
+        }else if(guideType==GuideType.NEARBY_PEOPLE.getId()){
+            UserProfile userProfile = userProfileService.get(userId);
             return nearByUser(userProfile,start,rows);
         }
         return null;
@@ -97,10 +97,10 @@ public class ContractGuideService extends RecommendService implements ContractGu
         Criterias criterias = new Criterias();
         StringBuffer out = new StringBuffer();
         for(String user:userIds){
-            out.append(SystemUtils.escapeToSolr(user)).append(" ");
+            out.append(SystemUtils.solrStringTrasfer(user)).append(" ");
         }
         criterias.addNativeFq("id:("+out.toString()+")");
-        criterias.addField(new String[]{"id","headImg","bardian","utype","usex","member_v","hobby","nickname","is_star","is_tarento","att_square","login_area"});
+        criterias.addField(new String[]{"id","headImg","bardian","utype","usex","member_v","hobby","nickname","is_star","is_tarento","att_square","login_area","job"});
         criterias.setStart(0);
         criterias.setRows(userIds.size());
         SolrResponse<UserEntity> userEntitySolrResponse = solrUserService.query(criterias);

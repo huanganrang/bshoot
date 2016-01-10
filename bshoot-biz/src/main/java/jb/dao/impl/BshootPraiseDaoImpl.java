@@ -48,7 +48,7 @@ public class BshootPraiseDaoImpl extends BaseDaoImpl<TbshootPraise> implements B
 		query.setParameter("userId", praiseCommentRequest.getUserId());
 		query.setParameter("start", praiseCommentRequest.getPage());
 		if(null!=praiseCommentRequest.getPraiseCommentAfterDate())
-			query.setParameter("praiseDatetTime",praiseCommentRequest.getPraiseCommentAfterDate());
+			query.setParameter("praiseDateTime",praiseCommentRequest.getPraiseCommentAfterDate());
 		query.setParameter("rows",praiseCommentRequest.getRows());
 		List<String> l = query.list();
 		return l;
