@@ -54,12 +54,11 @@
                         <td width="30%">
                             <label style="font-weight: bolder;">url：</label>
                             <input type="hidden" name="id" id="id">
-                            <input type="hidden" name="name" id="name">
                             <input type="text" name="url" style="width: 320px; height: 20px;" id="url">
                         </td>
                         <td width="70%">
-                            <label style="font-weight: bolder;">接口描述<font style="color: blue;">(名称按两级手工填写，接口列表order by接口描述,OPT）</font>：</label>
-                            <input type="text" name="info" style="width: 700px;height: 20px;" id="info">
+                            <label style="font-weight: bolder;">接口描述<font style="color: blue;">(名称）</font>：</label>
+                            <input type="text" name="name" style="width: 700px;height: 20px;" id="info">
                         </td>
                     </tr>
                     <tr>
@@ -84,7 +83,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="checkbox" name="isSuccess" value="1" id="isSuccess">
+                            <input type="checkbox" name="is" id="is">
+                            <input type="hidden" name="isSuccess" id="isSuccess">
                             <label for="isSuccess" style="font-weight: bolder; color: blue;">是否调试失败(调试失败则勾选)</label>
                         </td>
                         <td>
@@ -109,35 +109,35 @@
         </tbody></table>
 
     <script type="text/javascript">
-        var is_test = false;
         $(function() {
             $("#btn").click(function() {
-                var url = $.trim($("#url").val()+"?"+$("#param").val());
+                var url = $.trim($("#url").val());
+                if($("#param").val()!=""){
+                    url += $.trim("?"+$("#param").val());
+                }
                 if(url == '') {
                     $("#url").focus();
                     return;
                 }
-
                 $.getJSON(url,function(data){
-//                    alert(JSON.stringify(data), null, 4);
                     try {
-                        $("#result").val(JSON.stringify(data), null, 4);
+                        $("#result").val(JSON.stringify(data));
                     } catch(e) {
                         $("#result").val("传入接口地址或参数有误！");
                     }
                     $("#completeUrl_test").attr("href", url).html(url);
                     $("#completeUrl").val(url);
-                    is_test = true;
                 });
             });
 
             $("#save").click(function() {
-                if(!is_test) {
-                    alert("请先在线测试后再保存");
-                    return;
-                }
                 var url = $.trim($("#url").val());
-                var ids = $.trim($("#id").val());
+                var id = $.trim($("#id").val());
+                if($("#is").is(':checked')){
+                    $("#isSuccess").val(1);
+                }else{
+                    $("#isSuccess").val(0);
+                }
                 if(url == '') {
                     $("#url").focus();
                     return;
@@ -146,11 +146,10 @@
                     url : "${pageContext.request.contextPath}/api/apiTestController/edit",
                     success : function(data) {
                         alert("保存成功！");
-                        is_test = false;
-                        if($("#isSuccess").is(':checked')) {
-                            $("#" + ids).css("background", "red");
+                        if($("#is").is(':checked')) {
+                            $("#" + id).css("background", "red");
                         } else {
-                            $("#" + ids).css("background", "");
+                            $("#" + id).css("background", "");
                         }
                     }
                 });
@@ -158,27 +157,23 @@
         });
 
         function getResult(id) {
-            if(is_test && !confirm("调试数据未保存是否继续？")) {
-                return;
-            }
             $.getJSON("${pageContext.request.contextPath}/api/apiTestController/apitest?id="+id,function(data){
                 $("#id").val(data.id);
                 $("#name").val(data.name);
                 $("#url").val(data.url);
-                $("#info").val(data.info);
+                $("#info").val(data.name);
                 $("#param").val(data.param);
-                $("#result").val(data.paramDes);
+                $("#paramDes").val(data.paramDes);
                 $("#result").val(data.result);
                 $("#resultDes").val(data.resultDes);
                 $("#completeUrl_test").attr("href", data.completeUrl).html(data.completeUrl);
                 $("#completeUrl").val(data.completeUrl);
                 $("#remark").val(data.remark);
                 if(data.isSuccess != 0) {
-                    document.getElementById("isSuccess").checked = true;
+                    document.getElementById("is").checked = true;
                 } else {
                     $("#isSuccess").removeAttr("checked");
                 }
-                is_test = false;
             });
         }
 
