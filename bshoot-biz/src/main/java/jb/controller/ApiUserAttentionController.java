@@ -247,7 +247,7 @@ public class ApiUserAttentionController extends BaseController {
                 SessionInfo s = getSessionInfo(request);
                 userAttention.setUserId(s.getId());
             }
-            j.setObj(userFriendTimeService.dataGridUserFriendTime(userAttention, bshoot, ph));
+//            j.setObj(userFriendTimeService.dataGridUserFriendTime(userAttention, bshoot, ph));
             j.setSuccess(false);
         } catch (Exception e) {
             j.setMsg(e.getMessage());

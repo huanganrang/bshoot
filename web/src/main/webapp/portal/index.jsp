@@ -27,35 +27,11 @@
 			href : '${pageContext.request.contextPath}/baseController/portal/about'
 		}, {
 			id : 'p2',
-			title : 'link',
-			height : 200,
-			collapsible : true,
-			href : '${pageContext.request.contextPath}/baseController/portal/link'
-		}, {
-			id : 'p3',
-			title : '修复数据库',
-			height : 200,
-			collapsible : true,
-			href : '${pageContext.request.contextPath}/baseController/portal/repair'
-		}, {
-			id : 'p4',
-			title : '面板顺序说明',
-			height : 200,
-			collapsible : true,
-			href : '${pageContext.request.contextPath}/baseController/portal/seq'
-		}, {
-			id : 'p5',
-			title : 'ChangeLog',
+			title : '其他',
 			height : 200,
 			collapsible : true,
 			href : '${pageContext.request.contextPath}/baseController/portal/about2'
-		}, {
-			id : 'p6',
-			title : 'EasyUI的QQ群',
-			height : 200,
-			collapsible : true,
-			href : '${pageContext.request.contextPath}/baseController/portal/qun'
-		} ];
+		}];
 
 		portal = $('#portal').portal({
 			border : false,

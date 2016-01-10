@@ -9,6 +9,7 @@ import jb.pageModel.UserProfile;
 import jb.service.ContractGuideServiceI;
 import jb.util.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.stereotype.Service;
 import solr.common.SystemUtils;
 import solr.model.SolrResponse;
 import solr.model.UserEntity;
@@ -19,6 +20,7 @@ import java.util.*;
 /**
  * Created by Zhou Yibing on 2016/1/8.
  */
+@Service
 public class ContractGuideService extends RecommendService implements ContractGuideServiceI{
 
     @Override

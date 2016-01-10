@@ -23,7 +23,7 @@ public class IMessageServiceImpl implements IMessageService {
     public boolean sendMessage(String userId, String jsonText) {
         String messageServerIp = (String)redisService.getString(Key.build(Namespace.USER_LOGIN_SERVER_HOST, userId));
         if(F.empty(messageServerIp))return false;
-        String url = messageServerIp +":7070/messageCenterController/sendMessage";
+        String url = messageServerIp +":8080/messageCenterController/sendMessage";
         Map<String,String> map = new HashMap<String,String>();
         map.put("userId",userId);
         map.put("content",jsonText);
