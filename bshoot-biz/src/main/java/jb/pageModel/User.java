@@ -38,6 +38,8 @@ public class User implements java.io.Serializable {
 
 	private Boolean isStar;
 	private Boolean isTarento;
+	private String validateCode;
+	private String mobile;
 
 	private String headImageAbsolute;
 
@@ -243,6 +245,21 @@ public class User implements java.io.Serializable {
 
 	public String getHeadImageAbsolute() {
 		return PathUtil.getHeadImagePath(headImage);
-	}	
-	
+	}
+
+	public String getValidateCode() {
+		return validateCode;
+	}
+
+	public void setValidateCode(String validateCode) {
+		this.validateCode = validateCode;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
 }

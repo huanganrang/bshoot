@@ -1,5 +1,7 @@
 package jb.controller;
 
+import component.message.service.IMessageService;
+import component.redis.service.RedisUserServiceImpl;
 import jb.absx.F;
 import jb.interceptors.TokenManage;
 import jb.pageModel.*;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.*;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -48,6 +52,10 @@ public class ApiUserController extends BaseController {
 	
 	@Autowired
 	private BshootSkillServiceI bshootSkillService;
+	@javax.annotation.Resource
+	private IMessageService messageService;
+	@Resource
+	private RedisUserServiceImpl redisUserService;
 	
 	/**
 	 * 用户登录
@@ -92,6 +100,7 @@ public class ApiUserController extends BaseController {
 	public Json register(User user,@RequestParam(required=false) MultipartFile headImageFile, HttpServletRequest request) {
 		Json j = new Json();
 		try {
+
 			user.setMemberV(null);
 			user.setUtype(null);
 			user.setThirdUser(null);
@@ -103,10 +112,49 @@ public class ApiUserController extends BaseController {
 		} catch (Exception e) {
 			// e.printStackTrace();
 			j.setMsg(e.getMessage());
+			j.setErrorMsg(e.getMessage());
 		}
 		return j;
 	}
-	
+
+	@ResponseBody
+	@RequestMapping("/getValidateCode")
+	public Json getValidateCode(String mobile) {
+		Json j = new Json();
+		try {
+			if(F.empty(redisUserService.getValidateCode(mobile))){
+				String validateCode = messageService.sendMobileValidateCodeForRegister(mobile);
+				j.setSuccess(!F.empty(validateCode));
+				j.setObj(validateCode);
+			}else{
+				j.fail("EX0004");
+			}
+		} catch (Exception e) {
+			// e.printStackTrace();
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	@ResponseBody
+	@RequestMapping("/findPwd")
+	public Json findPwd(User user) {
+		Json j = new Json();
+		try {
+			String validateCode = redisUserService.getValidateCode(user.getMobile());
+			if(F.empty(validateCode)||!validateCode.equals(user.getValidateCode())){
+				//验证码错误
+				j.fail("EX0002");
+				return j;
+			}
+			userService.updatePwd(user);
+			j.success();
+		} catch (Exception e) {
+			// e.printStackTrace();
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+
 	/**
 	 * 头像上传
 	 * @param request

@@ -5,6 +5,6 @@ package component.redis.util;
  */
 public abstract class Key {
     public static String build(String namespace,String key){
-        return namespace+"."+key;
+        return namespace+":"+key;
     }
 }
