@@ -57,4 +57,32 @@ public interface UserPersonServiceI {
 	 * @param id
 	 */
 	public void delUserPersonGroup(String id);
+
+	/**
+	 * 添加人脉圈好友
+	 *
+	 * @param userPerson
+	 */
+	public int addUserPerson(UserPerson userPerson);
+
+	/**
+	 * 删除人脉圈好友
+	 *
+	 * @param userPerson
+	 */
+	public int deleteUserPerson(UserPerson userPerson);
+
+	/**
+	 * 查询人脉圈好友
+	 *
+	 * @param userPerson
+	 */
+	public DataGrid dataGridMyUserPerson(UserPerson userPerson, PageHelper ph);
+
+	/**
+	 * 查询是否是人脉圈好友
+	 *
+	 * @param userPerson
+	 */
+	public int isUserPerson(UserPerson userPerson);
 }

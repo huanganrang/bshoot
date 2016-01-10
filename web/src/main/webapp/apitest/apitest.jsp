@@ -111,7 +111,7 @@
     <script type="text/javascript">
         $(function() {
             $("#btn").click(function() {
-                var url = $.trim($("#url").val());
+                var url = $.trim("${pageContext.request.contextPath}"+$("#url").val());
                 if($("#param").val()!=""){
                     url += $.trim("?"+$("#param").val());
                 }

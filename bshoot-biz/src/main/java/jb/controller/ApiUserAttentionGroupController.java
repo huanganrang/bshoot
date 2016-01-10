@@ -36,7 +36,7 @@ public class ApiUserAttentionGroupController extends BaseController {
     }
 
     /**
-     * 添加用户好友分组(添加分组或把is_delete改为0)
+     * 添加用户好友分组(添加分组或把is_delete改为0)，参数:userId,groupName
      * @param userAttentionGroup
      * @param request
      * @return
@@ -66,7 +66,7 @@ public class ApiUserAttentionGroupController extends BaseController {
     }
 
     /**
-     * 删除用户好友分组(把is_delete参数改为1,并把关注好友表上的该分组id清除)
+     * 删除用户好友分组(把is_delete参数改为1,并把关注好友表上的该分组id清除)，参数:userId,id
      * @param userAttentionGroup
      * @param request
      * @return
@@ -80,7 +80,7 @@ public class ApiUserAttentionGroupController extends BaseController {
                 SessionInfo s = getSessionInfo(request);
                 userAttentionGroup.setUserId(s.getId());
             }
-            if(!F.empty(userAttentionGroup.getId())){//必需传进分组id，否则清除关注表上的分组时会有问题
+            if(!F.empty(userAttentionGroup.getId())){
                 int r = userAttentionGroupService.deleteAttentionGroup(userAttentionGroup);
                 if(r==-1){
                     j.setSuccess(false);
@@ -106,7 +106,7 @@ public class ApiUserAttentionGroupController extends BaseController {
     }
 
     /**
-     * 修改用户好友分组名称
+     * 修改用户好友分组名称，参数:id,userId,groupName
      * @param userAttentionGroup
      * @param request
      * @return
@@ -120,7 +120,7 @@ public class ApiUserAttentionGroupController extends BaseController {
                 SessionInfo s = getSessionInfo(request);
                 userAttentionGroup.setUserId(s.getId());
             }
-            if(!F.empty(userAttentionGroup.getId())){//必需传进分组id，否则清除关注表上的分组时会有问题
+            if(!F.empty(userAttentionGroup.getId())){
                 int r = userAttentionGroupService.edit(userAttentionGroup);
                 if(r==-1){
                     j.setSuccess(false);

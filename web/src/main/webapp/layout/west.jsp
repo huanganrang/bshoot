@@ -17,7 +17,7 @@
 					var url;
 					if (node.attributes.url.indexOf('/') == 0) {/*如果url第一位字符是"/"，那么代表打开的是本地的资源*/
 						url = '${pageContext.request.contextPath}' + node.attributes.url;
-						if (url.indexOf('/druidController') == -1) {/*如果不是druid相关的控制器连接，那么进行遮罩层屏蔽*/
+						if (url.indexOf('/druidController') == -1&&url.indexOf('/swagger')==-1) {/*如果不是druid相关的控制器连接，那么进行遮罩层屏蔽*/
 							parent.$.messager.progress({
 								title : '提示',
 								text : '数据处理中，请稍后....'

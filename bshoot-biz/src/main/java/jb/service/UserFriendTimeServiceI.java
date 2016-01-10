@@ -50,7 +50,7 @@ public interface UserFriendTimeServiceI {
 	public void delete(String id);
 
 	/**
-	 * 获取我的关注朋友圈动态
+	 * 获取我的关注或好友朋友圈动态
 	 *
 	 * @param userAttention
 	 *            参数
@@ -59,17 +59,5 @@ public interface UserFriendTimeServiceI {
 	 *            分页帮助类
 	 * @return
 	 */
-	public DataGrid dataGridUserAttentionTime(UserAttention userAttention, Bshoot bshoot, PageHelper ph);
-
-	/**
-	 * 获取我的好友的朋友圈动态
-	 *
-	 * @param userAttention
-	 *            参数
-	 * @param bshoot
-	 * @param ph
-	 *            分页帮助类
-	 * @return
-	 */
-	public DataGrid dataGridUserFriendTime(UserAttention userAttention, Bshoot bshoot, PageHelper ph);
+	public DataGrid dataGridUserFriendTime(UserFriendTime userFriendTime, UserAttention userAttention, Bshoot bshoot, PageHelper ph);
 }

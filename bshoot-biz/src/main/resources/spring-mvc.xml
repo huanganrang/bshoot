@@ -11,10 +11,11 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-
 	<!-- 自动扫描controller包下的所有类，使其认为spring mvc的控制器 -->
-	<context:component-scan base-package="jb.controller" />
+	<mvc:annotation-driven/>
+	<bean class="component.MySwaggerConfig"/>
 
+	<context:component-scan base-package="jb.controller,solr.controller" />
 	<!-- Spring MVC JSON配置 -->
 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<property name="messageConverters">
@@ -62,6 +63,7 @@
 						<value>/userController/currentUserRolePage</value><!-- 查看自己的角色页面 -->
 						<value>/userController/currentUserResourcePage</value><!-- 查看自己的权限页面 -->
 						<value>/fileController/download</value><!-- 下载 -->
+						<value>/api-docs</value>
 					</list>
 				</property>
 			</bean>
@@ -80,23 +82,23 @@
 						<value>/api/apiFinderController/cityBshoot</value><!-- 同城 -->
 						<value>/api/apiFinderController/domesticBshoot</value><!-- 国内 -->
 						<value>/api/apiFinderController/abroadBshoot</value><!-- 国外 -->
-						<value>/api/apiFinderController/bshootSquare</value><!-- 广场页 -->	
-						<value>/api/apiFinderController/bshootSquareTopic</value><!-- 广场话题页 -->	
-						<value>/api/apiFinderController/getBshootSquareDetail</value><!-- 广场详情 -->	
-						<value>/api/apiFinderController/getBshootBySquare</value><!-- 广场视频列表 -->											
+						<value>/api/apiFinderController/bshootSquare</value><!-- 广场页 -->
+						<value>/api/apiFinderController/bshootSquareTopic</value><!-- 广场话题页 -->
+						<value>/api/apiFinderController/getBshootSquareDetail</value><!-- 广场详情 -->
+						<value>/api/apiFinderController/getBshootBySquare</value><!-- 广场视频列表 -->
 						<value>/api/bshootController/bshoot_detail</value><!-- 详情 -->
-						<value>/api/bshootController/bshoot_comments</value><!-- 评论 -->	
-						<value>/api/bshootController/bshoot_addPlay</value><!-- 播放次数 -->	
-						<value>/api/bshootController/bshoot_bshootSearch</value><!-- 首页搜索（美拍列表） -->	
-						<value>/api/bshootController/bshoot_userSearch</value><!-- 首页搜索（相关用户） -->	
-						<value>/api/apiUserController/user_index</value><!--个人首页接口 -->	
-						<value>/api/apiUserController/user_mybshoots</value><!--个人美拍 -->	
-						<value>/api/apiUserController/user_mytranspond</value><!--个人转发 -->			
-						<value>/api/apiUserController/user_myattruser</value><!--个人关注 -->			
-						<value>/api/apiUserController/user_myattreduser</value><!--个人粉丝 -->	
-						<value>/api/apiUserController/bshootSkill</value><!--美拍小技巧 -->	
-						<value>/api/apiCommon/error</value><!-- token过期错误返回 -->								
-						<value>/api/apiCommon/upload_errorlog</value><!-- token过期错误返回 -->								
+						<value>/api/bshootController/bshoot_comments</value><!-- 评论 -->
+						<value>/api/bshootController/bshoot_addPlay</value><!-- 播放次数 -->
+						<value>/api/bshootController/bshoot_bshootSearch</value><!-- 首页搜索（美拍列表） -->
+						<value>/api/bshootController/bshoot_userSearch</value><!-- 首页搜索（相关用户） -->
+						<value>/api/apiUserController/user_index</value><!--个人首页接口 -->
+						<value>/api/apiUserController/user_mybshoots</value><!--个人美拍 -->
+						<value>/api/apiUserController/user_mytranspond</value><!--个人转发 -->
+						<value>/api/apiUserController/user_myattruser</value><!--个人关注 -->
+						<value>/api/apiUserController/user_myattreduser</value><!--个人粉丝 -->
+						<value>/api/apiUserController/bshootSkill</value><!--美拍小技巧 -->
+						<value>/api/apiCommon/error</value><!-- token过期错误返回 -->
+						<value>/api/apiCommon/upload_errorlog</value><!-- token过期错误返回 -->
 						<value>/api/apiCommon/html</value>							
 						<value>/api/apiMessageController/message_test</value>
 						<value>/api/apiUserController/getValidateCode</value><!-- 发送验证码 -->
@@ -113,16 +115,16 @@
 		</mvc:interceptor>
 	</mvc:interceptors>
 	<bean id="tokenManage" class="jb.interceptors.TokenManage" init-method="init"/>
-	<!-- SpringMVC上传文件时，需要配置MultipartResolver处理器 -->  
+	<!-- SpringMVC上传文件时，需要配置MultipartResolver处理器 -->
     <bean id="multipartResolver" class="jb.util.MyMultipartResolver">  
         <property name="defaultEncoding" value="UTF-8"/>  
-        <!-- 指定所上传文件的总大小不能超过200KB。注意maxUploadSize属性的限制不是针对单个文件，而是所有文件的容量之和 -->  
+        <!-- 指定所上传文件的总大小不能超过200KB。注意maxUploadSize属性的限制不是针对单个文件，而是所有文件的容量之和 -->
         <property name="maxUploadSize" value="20000000"/>  
     </bean>  
 	<bean id="exceptionResolver" class="jb.exception.CustomMappingExceptionResolver"> 
 		<property name="exceptionMappings">   
 	        <props>   
-	         <!--  <prop key="com.jason.exception.SystemException">error/500</prop>   
+	         <!--  <prop key="com.jason.exception.SystemException">error/500</prop>
 	          <prop key="com.jason.exception.BusinessException">error/errorpage</prop>   -->
 	          <prop key="java.lang.exception">error/500</prop>  	            
 	       </props>   
@@ -131,4 +133,5 @@
     </bean>
     <bean id="methodHandler" class="jb.exception.AnnotationMethodHandler">        
     </bean>
+
 </beans>
