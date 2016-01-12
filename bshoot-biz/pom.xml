@@ -20,9 +20,6 @@
                     <source>1.7</source>
                     <target>1.7</target>
                     <encoding>UTF-8</encoding>
-                    <compilerArguments>
-                        <extdirs>src\main\resources\libs</extdirs>
-                    </compilerArguments>
                 </configuration>
             </plugin>
             <plugin>
@@ -66,7 +63,6 @@
             <artifactId>ehcache</artifactId>
             <version>2.7.0</version>
         </dependency>
-
         <!-- 加入hibernate依赖包 -->
         <dependency>
             <groupId>org.hibernate</groupId>
