@@ -13,7 +13,7 @@ public class FakeSolrParamTest {
         Criterias criterias = new Criterias();
         criterias.qc("provinceId:2");
         criterias.between("rentPrice","3000","6000");
-        criterias.or("town",new String[]{"ÕÅ½­","Ðìãþ"});
+        criterias.or("town",new String[]{"12321","12321"});
         criterias.addOrder("rentPrice",FakeSolrParam.SORT_ASC);
         criterias.addOrder("town",FakeSolrParam.SORT_ASC);
         criterias.addLocation("location","31.204892,121.63328",3,null);
