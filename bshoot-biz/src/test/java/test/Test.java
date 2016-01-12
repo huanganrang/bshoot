@@ -40,8 +40,11 @@ public class Test {
         //System.out.println(1<<8);
        /* Class c = List.class;
         System.out.println(c==List.class);*/
-        List<String> list = Lists.newArrayList();
-        list.addAll(null);
+       /* List<String> list = Lists.newArrayList();
+        list.addAll(null);*/
+        StringBuffer sb = new StringBuffer("asfsd,afds,a,fsd,afd,");
+        sb.deleteCharAt(sb.length()-1);
+        System.out.println(sb.toString());
     }
 
     public static void stringCombine(String[] str,List<String> out,int matchFactor){
