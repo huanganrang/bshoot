@@ -110,16 +110,12 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 		return  userMobilePersonDao.noAttMobilePersonPerson(request);
 	}
 
-	private UserMobilePerson get(String userId, String friendName) {
+	private TuserMobilePerson get(String userId, String friendName) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
 		params.put("friendName", friendName);
 		TuserMobilePerson t = userMobilePersonDao.get("from TuserMobilePerson t  where t.userId = :userId and t.friendName = :friendName", params);
-		if(t==null)
-			return null;
-		UserMobilePerson o = new UserMobilePerson();
-		BeanUtils.copyProperties(t, o);
-		return o;
+		return t;
 	}
 
 	private List<User> mobileUser(String mobile) {
@@ -156,15 +152,15 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 
 	@Override
 	public int addMobilePerson(UserMobilePerson userMobilePerson) {
-		if(get(userMobilePerson.getUserId(), userMobilePerson.getFriendName())!=null && userMobilePerson.getIsDelete()==0){
-			return -1;//已存在
-		}else if(get(userMobilePerson.getUserId(), userMobilePerson.getFriendName())!=null && userMobilePerson.getIsDelete()!=0){
-			UserMobilePerson ua = get(userMobilePerson.getUserId(), userMobilePerson.getFriendName());
-			TuserMobilePerson t = new TuserMobilePerson();
-			BeanUtils.copyProperties(ua, t);
-			t.setIsDelete(0);
-			userMobilePersonDao.save(t);
-			return 0;
+		if(get(userMobilePerson.getUserId(), userMobilePerson.getFriendName())!=null){
+			TuserMobilePerson t = get(userMobilePerson.getUserId(), userMobilePerson.getFriendName());
+			if(t.getIsDelete()==0){
+				return -1;//已存在
+			}else {
+				t.setIsDelete(0);
+				userMobilePersonDao.save(t);
+				return 0;
+			}
 		}else {
 			TuserMobilePerson t = new TuserMobilePerson();
 			BeanUtils.copyProperties(userMobilePerson, t);

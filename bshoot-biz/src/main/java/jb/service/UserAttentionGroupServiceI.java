@@ -1,5 +1,6 @@
 package jb.service;
 
+import jb.model.TuserAttentionGroup;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.pageModel.UserAttentionGroup;
@@ -41,7 +42,7 @@ public interface UserAttentionGroupServiceI {
      * * @param groupName
      * @return
      */
-    public UserAttentionGroup get(String userId,String groupName);
+    public TuserAttentionGroup get(String userId, String groupName);
 
     /**
      * 修改UserAttentionGroup

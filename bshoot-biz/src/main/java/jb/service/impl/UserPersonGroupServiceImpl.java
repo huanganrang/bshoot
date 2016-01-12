@@ -91,30 +91,26 @@ public class UserPersonGroupServiceImpl extends BaseServiceImpl<UserPersonGroup>
     }
 
 
-    private UserPersonGroup get(String userId, String groupName) {
+    private TuserPersonGroup get(String userId, String groupName) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
         params.put("groupName", groupName);
         TuserPersonGroup t = userPersonGroupDao.get("from TuserPersonGroup t  where t.userId = :userId and t.groupName = :groupName", params);
-        if(t==null)
-            return null;
-        UserPersonGroup o = new UserPersonGroup();
-        BeanUtils.copyProperties(t, o);
-        return o;
+        return t;
     }
 
     @Override
     public int addPersonGroup(UserPersonGroup userPersonGroup) {
-        if(get(userPersonGroup.getUserId(), userPersonGroup.getGroupName())!=null && userPersonGroup.getIsDelete()==0){
-            return -1;//已存在分组
-        }else if(get(userPersonGroup.getUserId(), userPersonGroup.getGroupName())!=null && userPersonGroup.getIsDelete()!=0){
-            UserPersonGroup ua = get(userPersonGroup.getUserId(), userPersonGroup.getGroupName());
-            TuserPersonGroup t = new TuserPersonGroup();
-            BeanUtils.copyProperties(ua, t);
-            t.setIsDelete(0);
-            t.setUpdateDatetime(new Date());
-            userPersonGroupDao.save(t);
-            return 1;
+        if(get(userPersonGroup.getUserId(), userPersonGroup.getGroupName())!=null){
+            TuserPersonGroup t = get(userPersonGroup.getUserId(), userPersonGroup.getGroupName());
+            if(t.getIsDelete()==0){
+                return -1;//已存在分组
+            }else {
+                t.setIsDelete(0);
+                t.setUpdateDatetime(new Date());
+                userPersonGroupDao.save(t);
+                return 1;
+            }
         }else {
             TuserPersonGroup t = new TuserPersonGroup();
             BeanUtils.copyProperties(userPersonGroup, t);

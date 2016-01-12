@@ -138,7 +138,7 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 						for (TuserFriendTime t : l) {
 							Bshoot bs = bshootService.get(t.getBsId());
 							String us = bs.getUserId();
-							UserAttention ua = 	userAttentionService.get(userFriendTime.getUserId(), us);
+							TuserAttention ua = userAttentionService.get(userFriendTime.getUserId(), us);
 							if(userAttention.getAttentionGroup().equals(ua.getAttentionGroup())){
 								UserFriendTime o = new UserFriendTime();
 								BeanUtils.copyProperties(t, o);

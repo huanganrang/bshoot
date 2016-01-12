@@ -103,29 +103,25 @@ public class UserPersonServiceImpl extends BaseServiceImpl<UserPerson> implement
 		}
 	}
 
-	private UserPerson get(String userId, String attUserId) {
+	private TuserPerson get(String userId, String attUserId) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
 		params.put("attUserId", attUserId);
 		TuserPerson t = userPersonDao.get("from TuserPerson t where t.userId = :userId and t.attUserId = :attUserId", params);
-		if(t==null)
-			return null;
-		UserPerson o = new UserPerson();
-		BeanUtils.copyProperties(t, o);
-		return o;
+		return t;
 	}
 
 	@Override
 	public int addUserPerson(UserPerson userPerson) {
-		if(get(userPerson.getUserId(), userPerson.getAttUserId())!=null && userPerson.getIsDelete()==0){
-			return -1;//已是人脉圈好友
-		}else if(get(userPerson.getUserId(), userPerson.getAttUserId())!=null && userPerson.getIsDelete()!=0){
-			UserPerson ua = get(userPerson.getUserId(), userPerson.getAttUserId());
-			TuserPerson t = new TuserPerson();
-			BeanUtils.copyProperties(ua, t);
-			t.setIsDelete(0);
-			userPersonDao.save(t);
-			return 1;
+		if(get(userPerson.getUserId(), userPerson.getAttUserId())!=null){
+			TuserPerson t = get(userPerson.getUserId(), userPerson.getAttUserId());
+			if(t.getIsDelete()==0){
+				return -1;//已是人脉圈好友
+			}else {
+				t.setIsDelete(0);
+				userPersonDao.save(t);
+				return 1;
+			}
 		}else {
 			TuserPerson t = new TuserPerson();
 			BeanUtils.copyProperties(userPerson, t);
@@ -139,12 +135,10 @@ public class UserPersonServiceImpl extends BaseServiceImpl<UserPerson> implement
 
 	@Override
 	public int deleteUserPerson(UserPerson userPerson) {
-		UserPerson ua = get(userPerson.getUserId(), userPerson.getAttUserId());
-		if(ua==null){
+		TuserPerson t = get(userPerson.getUserId(), userPerson.getAttUserId());
+		if(t==null){
 			return -1;
 		}else{
-			TuserPerson t = new TuserPerson();
-			BeanUtils.copyProperties(ua, t);
 			t.setIsDelete(1);
 			userPersonDao.save(t);
 			return 1;
@@ -176,7 +170,7 @@ public class UserPersonServiceImpl extends BaseServiceImpl<UserPerson> implement
 
 	@Override
 	public int isUserPerson(UserPerson userPerson) {
-		UserPerson u = get(userPerson.getUserId(), userPerson.getAttUserId());
+		TuserPerson u = get(userPerson.getUserId(), userPerson.getAttUserId());
 		if(u == null){
 			return -1;
 		}else {

@@ -67,30 +67,26 @@ public class UserAttentionGroupServiceImpl extends BaseServiceImpl<UserAttention
     }
 
     @Override
-    public UserAttentionGroup get(String userId,String groupName) {
+    public TuserAttentionGroup get(String userId,String groupName) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
         params.put("groupName", groupName);
         TuserAttentionGroup t = userAttentionGroupDao.get("from TuserAttentionGroup t  where t.userId = :userId and t.groupName = :groupName", params);
-        if(t==null)
-            return null;
-        UserAttentionGroup o = new UserAttentionGroup();
-        BeanUtils.copyProperties(t, o);
-        return o;
+        return t;
     }
 
     @Override
     public int addAttention(UserAttentionGroup userAttentionGroup) {
-        if(get(userAttentionGroup.getUserId(), userAttentionGroup.getGroupName())!=null && userAttentionGroup.getIsDelete()==0){
-            return -1;//已存在分组
-        }else if(get(userAttentionGroup.getUserId(), userAttentionGroup.getGroupName())!=null && userAttentionGroup.getIsDelete()!=0){
-            UserAttentionGroup ua = get(userAttentionGroup.getUserId(), userAttentionGroup.getGroupName());
-            TuserAttentionGroup t = new TuserAttentionGroup();
-            BeanUtils.copyProperties(ua, t);
-            t.setIsDelete(0);
-            t.setUpdateDatetime(new Date());
-            userAttentionGroupDao.save(t);
-            return 1;
+        if(get(userAttentionGroup.getUserId(), userAttentionGroup.getGroupName())!=null){
+            TuserAttentionGroup t = get(userAttentionGroup.getUserId(), userAttentionGroup.getGroupName());
+            if(t.getIsDelete()==0){
+                return -1;//已存在分组
+            }else {
+                t.setIsDelete(0);
+                t.setUpdateDatetime(new Date());
+                userAttentionGroupDao.save(t);
+                return 1;
+            }
         }else {
             TuserAttentionGroup t = new TuserAttentionGroup();
             BeanUtils.copyProperties(userAttentionGroup, t);

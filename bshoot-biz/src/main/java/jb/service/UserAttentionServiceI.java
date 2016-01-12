@@ -1,5 +1,6 @@
 package jb.service;
 
+import jb.model.TuserAttention;
 import jb.pageModel.*;
 
 import java.util.List;
@@ -107,7 +108,7 @@ public interface UserAttentionServiceI {
 	 * @param attUserId
 	 * @return
 	 */
-	public UserAttention get(String userId, String attUserId);
+	public TuserAttention get(String userId, String attUserId);
 
 	/**
 	 * 好友共同关注的人
