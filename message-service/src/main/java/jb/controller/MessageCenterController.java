@@ -3,15 +3,9 @@ package jb.controller;
 import jb.android.push.NotificationManager;
 import jb.pageModel.Json;
 import org.androidpn.server.xmpp.XmppServer;
-import org.androidpn.server.xmpp.session.ClientSession;
-import org.androidpn.server.xmpp.session.SessionManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.xmpp.packet.JID;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 消息发送服务
