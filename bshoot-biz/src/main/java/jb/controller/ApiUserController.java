@@ -91,20 +91,19 @@ public class ApiUserController extends BaseController {
 	/**
 	 * 用户注册
 	 * @param user
-	 * @param headImageFile
 	 * @param request
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping("/register")
-	public Json register(User user,@RequestParam(required=false) MultipartFile headImageFile, HttpServletRequest request) {
+	public Json register(User user, HttpServletRequest request) {
 		Json j = new Json();
 		try {
 
 			user.setMemberV(null);
 			user.setUtype(null);
 			user.setThirdUser(null);
-			uploadFile(request, user, headImageFile);
+			//uploadFile(request, user, headImageFile);
 			userService.reg(user);	
 			j.setObj(tokenManage.buildToken(user.getId(),user.getName()));
 			j.setSuccess(true);
@@ -329,7 +328,6 @@ public class ApiUserController extends BaseController {
 	
 	/**
 	 * 个人信息修改
-	 * @param lvAccount
 	 * @param request
 	 * @return
 	 */
