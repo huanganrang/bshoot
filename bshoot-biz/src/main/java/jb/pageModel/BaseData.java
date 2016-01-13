@@ -1,5 +1,8 @@
 package jb.pageModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("serial")
 public class BaseData implements java.io.Serializable{
 	private String id;
@@ -9,6 +12,7 @@ public class BaseData implements java.io.Serializable{
 	private String basetypeCode;
 	private String codeName;
 	private String description;
+	private List<BaseData> children = new ArrayList<>();
 	public String getId() {
 		return id;
 	}
@@ -51,5 +55,26 @@ public class BaseData implements java.io.Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
+	public List<BaseData> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<BaseData> children) {
+		this.children = children;
+	}
+
+	@Override
+	public String toString() {
+		return "BaseData{" +
+				"id='" + id + '\'' +
+				", pid='" + pid + '\'' +
+				", name='" + name + '\'' +
+				", seq=" + seq +
+				", basetypeCode='" + basetypeCode + '\'' +
+				", codeName='" + codeName + '\'' +
+				", description='" + description + '\'' +
+				", children=" + children +
+				'}';
+	}
 }
