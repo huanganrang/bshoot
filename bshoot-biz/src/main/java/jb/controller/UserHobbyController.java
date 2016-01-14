@@ -161,36 +161,16 @@ public class UserHobbyController extends BaseController {
 		return j;
 	}
 
-	/**
-	 * 删除UserHobby
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@ApiOperation(value = "删除兴趣", notes = "删除兴趣", position = 1,httpMethod = "POST",response = Json.class,produces = "application/json; charset=utf-8")
-	@RequestMapping("/delete")
-	@ResponseBody
-	public Json delete(@ApiParam(value = "兴趣id",required = true) @RequestParam String id) {
-		Json j = new Json();
-		userHobbyService.delete(id);
-		j.setMsg("删除成功！");
-		j.setSuccess(true);
-		return j;
-	}
-
 	@ApiOperation(value = "保存用户兴趣", notes = "保存用户兴趣", position = 2,httpMethod = "POST",response = Json.class,produces = "application/json; charset=utf-8")
 	@RequestMapping("/saveUserHobby")
 	@ResponseBody
-	public Json saveUserHobby(@ApiParam(value = "兴趣列表",required = true) @RequestBody List<String> hobbyIds,@ApiIgnore HttpSession session){
+	public Json saveUserHobby(@ApiParam(value = "兴趣列表(逗号分割，如:HO101,HO201,HO301)",required = true) @RequestParam String hobbies,@ApiIgnore HttpSession session){
 		Json j = new Json();
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		UserHobby userHobby = new UserHobby();
-		for(String hobby:hobbyIds){
-			userHobby.setId(jb.absx.UUID.uuid());
-			userHobby.setUserId(sessionInfo.getId());
-			userHobby.setHobbyType(hobby);
-			userHobbyService.add(userHobby);
-		}
+		userHobby.setUserId(sessionInfo.getId());
+		userHobby.setHobbyType(hobbies);
+		userHobbyService.saveOrUpdateUserHobby(userHobby);
 		j.setMsg("保存成功");
 		j.setSuccess(true);
 		return j;
