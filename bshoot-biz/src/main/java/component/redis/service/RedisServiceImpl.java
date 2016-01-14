@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.query.SortQueryBuilder;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -533,4 +534,24 @@ public class RedisServiceImpl {
 		this.redisTemplate = redisTemplate;
 	}
 
+	public void hincreby(String key,Object field,Integer delta){
+		hashOps.increment(key,field,delta);
+	}
+
+	public Map<String,Map<byte[],byte[]>> hGetAll(final List<String> keys){
+		List<Object> results = redisTemplate.executePipelined(new RedisCallback<Map<byte[],byte[]>>(){
+			@Override
+			public Map<byte[],byte[]> doInRedis(RedisConnection redisConnection) throws DataAccessException {
+				for(String key:keys){
+					redisConnection.hGetAll(key.getBytes());
+				}
+				return null;
+			}
+		});
+		Map<String,Map<byte[],byte[]>> resultMap = new HashMap();
+		for(int i=0;i<keys.size();i++){
+			resultMap.put(keys.get(i), (Map<byte[], byte[]>) results.get(i));
+		}
+		return resultMap;
+	}
 }
