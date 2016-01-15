@@ -10,10 +10,7 @@ import org.springframework.data.redis.core.query.SortQueryBuilder;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -553,5 +550,9 @@ public class RedisServiceImpl {
 			resultMap.put(keys.get(i), (Map<byte[], byte[]>) results.get(i));
 		}
 		return resultMap;
+	}
+
+	public void delete(List<String> keys){
+		redisTemplate.delete((Collection)keys);
 	}
 }

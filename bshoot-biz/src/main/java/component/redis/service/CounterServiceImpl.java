@@ -91,11 +91,19 @@ public class CounterServiceImpl implements CounterServiceI{
 
     @Override
     public void deleteCounterByBshoot(String bshootId) throws CounterException {
-
+         try {
+             redisService.delete(bshootId);
+         }catch (Exception e){
+             throw new CounterException("deleteCounterByBshoot has occured an exception,"+e.getMessage());
+         }
     }
 
     @Override
     public void deleteCounterByBshoots(List<String> bshootIds) throws CounterException {
-
+        try {
+            redisService.delete(bshootIds);
+        }catch (Exception e){
+            throw new CounterException("deleteCounterByBshoots has occured an exception,"+e.getMessage());
+        }
     }
 }
