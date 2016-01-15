@@ -15,6 +15,7 @@ import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.service.UserHobbyServiceI;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,7 +92,7 @@ public class UserHobbyServiceImpl extends BaseServiceImpl<UserHobby> implements 
 		BeanUtils.copyProperties(userHobby, t);
 		t.setId(UUID.randomUUID().toString());
 		//t.setCreatedatetime(new Date());
-		userHobbyDao.save(t);
+		userHobbyDao.saveOrUpdate(t);
 	}
 
 	@Override
@@ -116,6 +117,24 @@ public class UserHobbyServiceImpl extends BaseServiceImpl<UserHobby> implements 
 	@Override
 	public void delete(String id) {
 		userHobbyDao.delete(userHobbyDao.get(TuserHobby.class, id));
+	}
+
+	@Override
+	public void saveOrUpdateUserHobby(UserHobby userHobby){
+		Map<String,Object> param = new HashMap<>();
+		param.put("userId",userHobby.getUserId());
+		//保存或更新用户兴趣
+		TuserHobby u = userHobbyDao.get("from TuserHobby t where t.userId=:userId", param);
+		if(null!=u) {
+			u.setHobbyType(userHobby.getHobbyType());
+			userHobbyDao.update(u);
+		}else{
+			u = new TuserHobby();
+			BeanUtils.copyProperties(userHobby,u);
+			u.setCreateDatetime(new Date());
+			u.setId(UUID.randomUUID().toString());
+			userHobbyDao.save(u);
+		}
 	}
 
 }

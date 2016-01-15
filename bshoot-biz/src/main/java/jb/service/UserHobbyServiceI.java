@@ -62,4 +62,5 @@ public interface UserHobbyServiceI {
 	 */
 	public void delete(String id);
 
+	void saveOrUpdateUserHobby(UserHobby userHobby);
 }
