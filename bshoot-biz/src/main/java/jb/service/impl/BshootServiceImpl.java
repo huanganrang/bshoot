@@ -1,5 +1,8 @@
 package jb.service.impl;
 
+import component.redis.model.CounterType;
+import component.redis.service.CounterServiceI;
+import component.redis.service.FetchValue;
 import jb.absx.F;
 import jb.dao.BaseDaoI;
 import jb.dao.BshootDaoI;
@@ -49,6 +52,8 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	
 	@Autowired
 	private BshootCommentServiceI bshootCommentService;
+	@Autowired
+	private CounterServiceI counterService;
 	
 	@Override
 	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph) {
@@ -713,7 +718,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	}
 	
 	@Override
-	public void updatePlayNum(String id) {
+	public void updatePlayNum(final String id) {
 		int addNum = 1;
 		try {
 			String numStr = Application.getString("SV400");
@@ -732,5 +737,12 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		bshootDao.executeSql("update bshoot t set t.bs_play = ifnull(t.bs_play, 0) + "+addNum+" where t.id=:id", params);
+		counterService.automicChangeCount(id, CounterType.PLAY, addNum, new FetchValue() {
+			@Override
+			public Integer fetchValue() {
+				Bshoot bshoot = get(id);
+				return bshoot.getBsPlay();
+			}
+		});
 	}
 }

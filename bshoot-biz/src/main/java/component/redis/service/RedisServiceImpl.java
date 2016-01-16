@@ -555,4 +555,12 @@ public class RedisServiceImpl {
 	public void delete(List<String> keys){
 		redisTemplate.delete((Collection)keys);
 	}
+
+	public boolean hexists(String key,Object field){
+		return hashOps.hasKey(key,field);
+	}
+
+	public boolean hsetnx(String key,Object field,Object value){
+		return hashOps.putIfAbsent(key,field,value);
+	}
 }

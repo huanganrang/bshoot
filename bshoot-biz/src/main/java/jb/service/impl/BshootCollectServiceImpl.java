@@ -1,5 +1,8 @@
 package jb.service.impl;
 
+import component.redis.model.CounterType;
+import component.redis.service.CounterServiceI;
+import component.redis.service.FetchValue;
 import jb.absx.F;
 import jb.dao.BshootCollectDaoI;
 import jb.dao.BshootDaoI;
@@ -22,7 +25,9 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 	
 	@Autowired
 	private BshootDaoI bshootDao;
-	
+	@Autowired
+	private CounterServiceI counterService;
+
 	@Override
 	public DataGrid dataGrid(BshootCollect bshootCollect, PageHelper ph) {
 		List<BshootCollect> ol = new ArrayList<BshootCollect>();
@@ -59,17 +64,29 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 	}
 
 	@Override
-	public int add(BshootCollect bshootCollect) {
+	public int add(final BshootCollect bshootCollect) {
 		if(get(bshootCollect.getBshootId(), bshootCollect.getUserId())!=null)
 			return -1;
-		TbshootCollect t = new TbshootCollect();
+		final TbshootCollect t = new TbshootCollect();
 		BeanUtils.copyProperties(bshootCollect, t);
 		t.setId(UUID.randomUUID().toString());
 		//t.setCreatedatetime(new Date());
 		t.setCollectDatetime(new Date());
 		bshootCollectDao.save(t);
 		updateCount(bshootCollect.getBshootId());
+		counterService.automicChangeCount(bshootCollect.getBshootId(), CounterType.COLLECT, 1, new FetchValue() {
+			@Override
+			public Integer fetchValue() {
+				return getCount(bshootCollect.getBshootId()).intValue();
+			}
+		});
 		return 1;
+	}
+
+	private Long getCount(String bshootId){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("bshootId", bshootId);
+		return bshootDao.count("select count(1) from TbshootCollect t where t.bshootId =:bshootId)", params);
 	}
 
 	@Override
@@ -93,9 +110,15 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 
 	@Override
 	public void delete(String id) {
-		TbshootCollect t = bshootCollectDao.get(TbshootCollect.class, id);
+		final TbshootCollect t = bshootCollectDao.get(TbshootCollect.class, id);
 		bshootCollectDao.delete(t);
 		updateCountReduce(t.getBshootId());
+		counterService.automicChangeCount(t.getBshootId(), CounterType.COLLECT, -1, new FetchValue() {
+			@Override
+			public Integer fetchValue() {
+				return getCount(t.getBshootId()).intValue();
+			}
+		});
 	}
 
 	private void updateCount(String bshootId){

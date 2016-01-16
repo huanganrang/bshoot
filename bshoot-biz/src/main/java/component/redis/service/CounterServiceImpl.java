@@ -33,6 +33,27 @@ public class CounterServiceImpl implements CounterServiceI{
     }
 
     @Override
+    public void automicChangeCount(String bshootId,CounterType counterType,Integer num,FetchValue fetchValue) throws CounterException {
+        if(null==fetchValue) throw new CounterException("you must implemnts the FetchValue,tell me how to fetch the value!");
+        try {
+            //1.先查看指定的count字段是否存在
+            if (!redisService.hexists(bshootId, counterType.getType())) {
+                //1.1不存在则从数据库中获取值，并设置进去
+                Integer value = fetchValue.fetchValue();
+                //没有则set
+                if (!redisService.hsetnx(bshootId, counterType.getType(), value)) {//如果设置失败，则可能有其他线程设置了该字段，那么就则值上+或-num
+                    redisService.hincreby(bshootId, counterType.getType(), num);
+                }
+            } else {
+                //1.2存在则直接更新字段值
+                redisService.hincreby(bshootId, counterType.getType(), num);
+            }
+        }catch (Exception e){
+            throw new CounterException("automicChangeCount has occured an exception,"+e.getMessage());
+        }
+    }
+
+    @Override
     public void decrement(String bshootId, CounterType countType) throws CounterException {
         this.changeCount(bshootId,countType,-1);
     }
@@ -63,25 +84,25 @@ public class CounterServiceImpl implements CounterServiceI{
     @Override
     public List<BshootCounter> getCounterByBshoots(List<String> bshootIds) throws CounterException {
         try{
-        Map<String,Map<byte[],byte[]>> results = redisService.hGetAll(bshootIds);
-        List<BshootCounter> bshoots = new ArrayList<>();
-        Field[] fields = BshootCounter.class.getFields();
-        for(Map.Entry<String,Map<byte[],byte[]>> entry:results.entrySet()){
-            BshootCounter bshootCounter = new BshootCounter();
-            bshootCounter.setBshootId( entry.getKey());
-            Map<byte[],byte[]> fieldValues = entry.getValue();
-            if(null==fieldValues||fieldValues.size()==0) {
-                bshoots.add(bshootCounter);
-                continue;
-            }
-            for(Field field:fields){
-                if(field.isAnnotationPresent(Counter.class)){
-                    Counter counter = field.getAnnotation(Counter.class);
-                    field.set(bshootCounter,fieldValues.get(counter.value()));
+            Map<String,Map<byte[],byte[]>> results = redisService.hGetAll(bshootIds);
+            List<BshootCounter> bshoots = new ArrayList<>();
+            Field[] fields = BshootCounter.class.getFields();
+            for(String bshootId:bshootIds){
+                BshootCounter bshootCounter = new BshootCounter();
+                bshootCounter.setBshootId( bshootId);
+                Map<byte[],byte[]> fieldValues = results.get(bshootId);
+                if(null==fieldValues||fieldValues.size()==0) {
+                    bshoots.add(bshootCounter);
+                    continue;
                 }
+                for(Field field:fields){
+                    if(field.isAnnotationPresent(Counter.class)){
+                        Counter counter = field.getAnnotation(Counter.class);
+                        field.set(bshootCounter,fieldValues.get(counter.value()));
+                    }
+                }
+                bshoots.add(bshootCounter);
             }
-            bshoots.add(bshootCounter);
-        }
             return bshoots;
         }catch (Exception e){
             e.printStackTrace();
@@ -105,5 +126,10 @@ public class CounterServiceImpl implements CounterServiceI{
         }catch (Exception e){
             throw new CounterException("deleteCounterByBshoots has occured an exception,"+e.getMessage());
         }
+    }
+
+    @Override
+    public void deleteCounterByBshoot(String bshootId, CounterType counterType) throws CounterException {
+
     }
 }

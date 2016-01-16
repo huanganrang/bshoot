@@ -2,6 +2,8 @@ package jb.service.impl;
 
 import com.alibaba.druid.support.json.JSONUtils;
 import com.google.common.collect.Lists;
+import component.redis.model.BshootCounter;
+import component.redis.service.CounterServiceI;
 import jb.bizmodel.GuideType;
 import jb.bizmodel.RecommendUser;
 import jb.pageModel.*;
@@ -37,6 +39,8 @@ public class RecommendService extends UserRecommendService implements RecommendS
     protected UserProfileServiceI userProfileService;
     @Autowired
     private UserHobbyServiceI userHobbyService;
+    @Autowired
+    private CounterServiceI counterService;
     @Autowired
     private BshootSquareServiceI bshootSquareService;
 
@@ -157,8 +161,11 @@ public class RecommendService extends UserRecommendService implements RecommendS
     protected List<Bshoot> fillBshoot(List<Bshoot> bshoots){
         if(CollectionUtils.isEmpty(bshoots)) return bshoots;
         Set<String> userIds = new HashSet<String>();
-        for(Bshoot bshoot:bshoots)
+        List<String> bshootIds = new ArrayList<>();
+        for(Bshoot bshoot:bshoots) {
             userIds.add(bshoot.getUserId());
+            bshootIds.add(bshoot.getId());
+        }
         StringBuffer out = new StringBuffer();
         for(String user:userIds){
             out.append(SystemUtils.solrStringTrasfer(user)).append(" ");
@@ -181,7 +188,12 @@ public class RecommendService extends UserRecommendService implements RecommendS
             }
             Map<String,BaseData> baseDatas = basedataService.getBaseDatas(hobbies,Map.class);
             List<String> h;
-            for(Bshoot bshoot:bshoots){
+            //获得各动态的计数
+            List<BshootCounter> bshootCounters = counterService.getCounterByBshoots(bshootIds);
+            Bshoot bshoot = null;
+            BshootCounter bshootCounter = null;
+            for(int i=0;i<bshoots.size();i++){
+                bshoot = bshoots.get(i);
                 userEntity = userEntityMap.get(bshoot.getUserId());
                 bshoot.setUserName(userEntity.getNickname());
                 bshoot.setMemberV(userEntity.getMember_v());
@@ -191,6 +203,15 @@ public class RecommendService extends UserRecommendService implements RecommendS
                     h.add(baseDatas.get(hob).getName());
                 }
                 bshoot.setHobby(h);
+                bshootCounter = bshootCounters.get(i);
+                if(null!=bshootCounter){
+                    bshoot.setBsCollect(bshootCounter.getCollectCount());
+                    bshoot.setBsComment(bshootCounter.getCommentCount());
+                    bshoot.setBsForward(bshootCounter.getForwardCount());
+                    bshoot.setBsPlay(bshootCounter.getPlayCount());
+                    bshoot.setBsShare(bshootCounter.getShareCount());
+                    bshoot.setBsPraise(bshootCounter.getPraiseCount());
+                }
             }
         }
         return bshoots;

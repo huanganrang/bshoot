@@ -30,6 +30,20 @@ public interface CounterServiceI {
     void changeCount(String bshootId,CounterType countType,Integer num)  throws CounterException;
 
     /**
+     * 原子更新计数器
+     * @param bshootId
+     * @param counterType
+     * @param num
+     * @param fetchValue 没有值时进行取值的操作
+     * @throws CounterException
+     */
+    void automicChangeCount(String bshootId,CounterType counterType,Integer num,FetchValue fetchValue) throws CounterException;
+
+    //boolean isExists(String bshootId,CounterType counterType) throws CounterException;
+
+    //boolean hsetnx(String bshootId,CounterType counterType,int num) throws  CounterException;
+
+    /**
      * 计数-1
      * @param bshootId
      * @param countType
@@ -51,4 +65,6 @@ public interface CounterServiceI {
     void deleteCounterByBshoot(String bshootId) throws CounterException;
 
     void deleteCounterByBshoots(List<String> bshootIds) throws CounterException;
+
+    void deleteCounterByBshoot(String bshootId,CounterType counterType) throws  CounterException;
 }

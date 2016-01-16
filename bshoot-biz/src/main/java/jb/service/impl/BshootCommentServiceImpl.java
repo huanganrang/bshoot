@@ -1,5 +1,8 @@
 package jb.service.impl;
 
+import component.redis.model.CounterType;
+import component.redis.service.CounterServiceI;
+import component.redis.service.FetchValue;
 import jb.absx.F;
 import jb.dao.BshootCommentDaoI;
 import jb.dao.BshootDaoI;
@@ -27,6 +30,8 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 	
 	@Autowired
 	private CommentPraiseDaoI commentPraiseDao;
+	@Autowired
+	private CounterServiceI counterService;
 	
 	@Autowired
 	private UserDaoI userDao;
@@ -133,14 +138,28 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 	}
 
 	@Override
-	public TbshootComment add(BshootComment bshootComment) {
+	public TbshootComment add(final BshootComment bshootComment) {
 		TbshootComment t = new TbshootComment();
 		BeanUtils.copyProperties(bshootComment, t);
 		t.setId(UUID.randomUUID().toString());
 		t.setCommentDatetime(new Date());
 		bshootCommentDao.save(t);
 		updateCount(bshootComment.getBshootId());
+		//打赏计数+1
+		//动态的打赏计数+1
+		counterService.automicChangeCount(bshootComment.getBshootId(), CounterType.COMMENT, 1, new FetchValue() {
+			@Override
+			public Integer fetchValue() {
+				return getCount(bshootComment.getBshootId()).intValue();
+			}
+		});
 		return t;
+	}
+
+	private Long getCount(String bshootId){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("bshootId", bshootId);
+		return bshootDao.count("select count(1) from TbshootComment t where t.bshootId =:bshootId)", params);
 	}
 
 	@Override
@@ -164,10 +183,17 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 
 	@Override
 	public void delete(String id) {
-		TbshootComment t = bshootCommentDao.get(TbshootComment.class, id);
+		final TbshootComment t = bshootCommentDao.get(TbshootComment.class, id);
 		bshootCommentDao.delete(t);
 		deleteCommentPraise(id);
 		updateCountReduce(t.getBshootId());
+		//打赏计数-1
+		counterService.automicChangeCount(t.getBshootId(), CounterType.COMMENT, -1, new FetchValue() {
+			@Override
+			public Integer fetchValue() {
+				return getCount(t.getBshootId()).intValue();
+			}
+		});
 	}
 
 

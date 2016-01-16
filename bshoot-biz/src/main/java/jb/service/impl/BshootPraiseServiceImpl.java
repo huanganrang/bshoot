@@ -1,5 +1,8 @@
 package jb.service.impl;
 
+import component.redis.model.CounterType;
+import component.redis.service.CounterServiceI;
+import component.redis.service.FetchValue;
 import jb.absx.F;
 import jb.dao.BshootDaoI;
 import jb.dao.BshootPraiseDaoI;
@@ -20,10 +23,12 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 
 	@Autowired
 	private BshootPraiseDaoI bshootPraiseDao;
-	
+	@Autowired
+	private CounterServiceI counterService;
+
 	@Autowired
 	private BshootDaoI bshootDao;
-	
+
 
 	@Override
 	public DataGrid dataGrid(BshootPraise bshootPraise, PageHelper ph) {
@@ -42,26 +47,26 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		dg.setRows(ol);
 		return dg;
 	}
-	
+
 
 	protected String whereHql(BshootPraise bshootPraise, Map<String, Object> params) {
-		String whereHql = "";	
+		String whereHql = "";
 		if (bshootPraise != null) {
 			whereHql += " where 1=1 ";
 			if (!F.empty(bshootPraise.getUserId())) {
 				whereHql += " and t.userId = :userId";
 				params.put("userId", bshootPraise.getUserId());
-			}		
+			}
 			if (!F.empty(bshootPraise.getBshootId())) {
 				whereHql += " and t.bshootId = :bshootId";
 				params.put("bshootId", bshootPraise.getBshootId());
-			}		
-		}	
+			}
+		}
 		return whereHql;
 	}
 
 	@Override
-	public int add(BshootPraise bshootPraise) {
+	public int add(final BshootPraise bshootPraise) {
 		if(get(bshootPraise.getBshootId(), bshootPraise.getUserId())!=null)
 			return -1;
 		TbshootPraise t = new TbshootPraise();
@@ -72,6 +77,13 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		t.setPraiseDatetime(new Date());
 		bshootPraiseDao.save(t);
 		updateCount(bshootPraise.getBshootId());
+		//动态的打赏计数+1
+		counterService.automicChangeCount(bshootPraise.getBshootId(), CounterType.PRAISE, 1, new FetchValue() {
+			@Override
+			public Integer fetchValue() {
+				return getCount(bshootPraise.getBshootId()).intValue();
+			}
+		});
 		return 1;
 	}
 
@@ -96,9 +108,16 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 
 	@Override
 	public void delete(String id) {
-		TbshootPraise t = bshootPraiseDao.get(TbshootPraise.class, id);
+		final TbshootPraise t = bshootPraiseDao.get(TbshootPraise.class, id);
 		bshootPraiseDao.delete(t);
 		updateCountReduce(t.getBshootId());
+		//打赏计数-1,如果这里出了错，后面可以通过job去纠正
+		counterService.automicChangeCount(t.getBshootId(), CounterType.PRAISE, -1, new FetchValue() {
+			@Override
+			public Integer fetchValue() {
+				return getCount(t.getBshootId()).intValue();
+			}
+		});
 	}
 
 
@@ -111,14 +130,20 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 			delete(bc.getId());
 		}
 		return 0;
-		
+
 	}
-	
+
 	private void updateCount(String bshootId){
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bshootId", bshootId);
 		params.put("id", bshootId);
 		bshootDao.executeSql("update bshoot t set t.bs_praise = (select count(*)+1 from bshoot_praise b where b.bshoot_id =:bshootId) where t.id=:id", params);
+	}
+
+	private Long getCount(String bshootId){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("bshootId", bshootId);
+		return bshootDao.count("select count(1) from TbshootPraise t where t.bshootId =:bshootId)", params);
 	}
 
 	private void updateCountReduce(String bshootId){
