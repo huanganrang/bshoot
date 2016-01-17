@@ -33,7 +33,7 @@ public class ApiUserMobilePersonController extends BaseController {
     }
 
     /**
-     * 添加通讯录(添加关注或把is_delete改为0)，参数:userId,friendName,mobile
+     * 添加通讯录(添加通讯录或把is_delete改为0)，参数:userId,friendName,mobile
      * @param userMobilePerson
      * @param request
      * @return
@@ -63,7 +63,7 @@ public class ApiUserMobilePersonController extends BaseController {
     }
 
     /**
-     * 删除通讯录(把is_delete参数改为1)，参数:id
+     * 删除通讯录(把is_delete参数改为1)，参数:userId,id
      * @param userMobilePerson
      * @param request
      * @return

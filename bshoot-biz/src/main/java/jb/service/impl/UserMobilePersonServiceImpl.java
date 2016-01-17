@@ -120,13 +120,15 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 
 	private List<User> mobileUser(String mobile) {
 		List<User> ls = new ArrayList<User>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		if(!F.empty(mobile)){
 			String hql = "";
 			if(mobile.contains(",")){
 				String[] mobiles = mobile.split(",");
 				for (int i=0;i<mobiles.length;i++){
-					hql = "from Tuser t where t.mobile like %"+mobiles[i]+"%";
-					List<Tuser> ts = userDao.find(hql);
+					hql = "from Tuser t where t.mobile = :mobile";
+					params.put("mobile", mobiles[i]);
+					List<Tuser> ts = userDao.find(hql, params);
 					if(ts != null && ts.size()>0){
 						for (Tuser t : ts){
 							User u = new User();
@@ -136,8 +138,9 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 					}
 				}
 			}else {
-				hql = "from Tuser t where t.mobile like %"+mobile+"%";
-				List<Tuser> ts = userDao.find(hql);
+				hql = "from Tuser t where t.mobile = :mobile";
+				params.put("mobile", mobile);
+				List<Tuser> ts = userDao.find(hql, params);
 				if(ts != null && ts.size()>0){
 					for (Tuser t : ts){
 						User u = new User();
@@ -164,6 +167,7 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 		}else {
 			TuserMobilePerson t = new TuserMobilePerson();
 			BeanUtils.copyProperties(userMobilePerson, t);
+			System.out.print(t.getFriendName());
 			t.setId(UUID.randomUUID().toString());
 			t.setCreateDatetime(new Date());
 			t.setIsDelete(0);
@@ -182,6 +186,7 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 					t.setFriendId(userIds);
 				}
 			}
+			userMobilePersonDao.save(t);
 			return 0;
 		}
 	}
