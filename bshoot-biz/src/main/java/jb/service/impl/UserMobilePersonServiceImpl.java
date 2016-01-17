@@ -167,7 +167,6 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 		}else {
 			TuserMobilePerson t = new TuserMobilePerson();
 			BeanUtils.copyProperties(userMobilePerson, t);
-			System.out.print(t.getFriendName());
 			t.setId(UUID.randomUUID().toString());
 			t.setCreateDatetime(new Date());
 			t.setIsDelete(0);
