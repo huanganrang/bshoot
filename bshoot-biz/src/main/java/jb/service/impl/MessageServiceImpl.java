@@ -1,5 +1,7 @@
 package jb.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import component.message.service.IMessageService;
 import jb.absx.F;
 import jb.dao.MessageCountDaoI;
 import jb.dao.MessageDaoI;
@@ -24,6 +26,9 @@ public class MessageServiceImpl extends BaseServiceImpl<Message> implements Mess
 	private MessageDaoI messageDao;
 	@Autowired
 	private MessageCountDaoI messageCountDao;
+
+	@Autowired
+	private IMessageService messageService;
 
 	@Override
 	public DataGrid dataGrid(Message message, PageHelper ph) {
@@ -225,6 +230,18 @@ public class MessageServiceImpl extends BaseServiceImpl<Message> implements Mess
 		}
 		dg.setRows(l);
 		return dg;
+	}
+
+	@Override
+	public String addAndSendMessage(String mType, String userId, String relationId, String content) {
+		Message message = new Message();
+		message.setUserId(userId);
+		message.setMtype(mType);
+		message.setRelationId(relationId);
+		message.setContent(content);
+		add(message);
+		messageService.sendMessage(userId, JSON.toJSONString(message));
+		return message.getId();
 	}
 
 }

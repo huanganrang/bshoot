@@ -11,6 +11,7 @@ import jb.pageModel.PageHelper;
  * 
  */
 public interface MessageServiceI {
+	 static final String MT_04 = "MT04";
 
 	/**
 	 * 获取Message数据表格
@@ -81,5 +82,15 @@ public interface MessageServiceI {
 	 * @return
 	 */
 	public DataGrid dataGridPraise(Message message, PageHelper ph);
+
+	/**
+	 * 添加并发送消息
+	 * @param mType
+	 * @param userId
+	 * @param relationId
+	 * @param content
+	 * @return
+	 */
+	String addAndSendMessage(String mType,String userId,String relationId,String content);
 
 }

@@ -86,15 +86,11 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 				return getCount(bshootPraise.getBshootId()).intValue();
 			}
 		});
-		//TODO 消息发送
-		/*Message message = new Message();
-		message.setUserId(bshootPraise.getUserId());
-		message.setMtype("MT04");
-		message.setRelationId(bshootPraise.getId());
-		messageServiceImpl.add(message);
-		messageService.sendMessage(bshootPraise.getUserId(),"用户["+bshootPraise.getUserId()+"]打赏了您的动态");*/
+		messageServiceImpl.addAndSendMessage(MessageServiceI.MT_04,bshootPraise.getUserId(),bshootPraise.getId(),"用户["+bshootPraise.getUserId()+"]打赏了您的动态");
 		return 1;
 	}
+
+
 
 	@Override
 	public BshootPraise get(String id) {
