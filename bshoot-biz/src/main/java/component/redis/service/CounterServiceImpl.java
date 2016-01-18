@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by zhou on 2016/1/14.
@@ -46,6 +47,8 @@ public class CounterServiceImpl implements CounterServiceI{
                 //没有则set
                 if (!redisService.hsetnx(bshootId, counterType.getType(), String.valueOf(value))) {//如果设置失败，则可能有其他线程设置了该字段，那么就则值上+或-num
                     redisService.hincreby(bshootId, counterType.getType(), num);
+                }else{
+                   redisService.expire(bshootId,1, TimeUnit.DAYS);//保存一天
                 }
             } else {
                 //1.2存在则直接更新字段值
