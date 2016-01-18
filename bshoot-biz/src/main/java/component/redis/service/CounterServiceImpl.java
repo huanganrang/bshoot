@@ -5,6 +5,8 @@ import component.redis.model.BshootCounter;
 import component.redis.model.Counter;
 import component.redis.model.CounterType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Map;
 /**
  * Created by zhou on 2016/1/14.
  */
+@Service
 public class CounterServiceImpl implements CounterServiceI{
     @Autowired
     private RedisServiceImpl redisService;
@@ -41,7 +44,7 @@ public class CounterServiceImpl implements CounterServiceI{
                 //1.1不存在则从数据库中获取值，并设置进去
                 Integer value = fetchValue.fetchValue();
                 //没有则set
-                if (!redisService.hsetnx(bshootId, counterType.getType(), value)) {//如果设置失败，则可能有其他线程设置了该字段，那么就则值上+或-num
+                if (!redisService.hsetnx(bshootId, counterType.getType(), String.valueOf(value))) {//如果设置失败，则可能有其他线程设置了该字段，那么就则值上+或-num
                     redisService.hincreby(bshootId, counterType.getType(), num);
                 }
             } else {
@@ -64,12 +67,14 @@ public class CounterServiceImpl implements CounterServiceI{
              Map<Object,Object> fieldValues = redisService.getHash(bshootId);
              if(null!=fieldValues&&fieldValues.size()>0){
                  BshootCounter bshootCounter = new BshootCounter();
-                 Field[] fields = bshootCounter.getClass().getFields();
+                 Field[] fields = bshootCounter.getClass().getDeclaredFields();
                  bshootCounter.setBshootId(bshootId);
                  for(Field field:fields){
+                     field.setAccessible(true);
                    if(field.isAnnotationPresent(Counter.class)){
                        Counter counter = field.getAnnotation(Counter.class);
-                       field.set(bshootCounter,fieldValues.get(counter.value()));
+                       if(null!=fieldValues.get(counter.value().getType()))
+                       field.set(bshootCounter,Integer.parseInt(String.valueOf(fieldValues.get(counter.value().getType()))));
                    }
                  }
                  return bshootCounter;
@@ -86,7 +91,7 @@ public class CounterServiceImpl implements CounterServiceI{
         try{
             Map<String,Map<byte[],byte[]>> results = redisService.hGetAll(bshootIds);
             List<BshootCounter> bshoots = new ArrayList<>();
-            Field[] fields = BshootCounter.class.getFields();
+            Field[] fields = BshootCounter.class.getDeclaredFields();
             for(String bshootId:bshootIds){
                 BshootCounter bshootCounter = new BshootCounter();
                 bshootCounter.setBshootId( bshootId);
@@ -96,9 +101,11 @@ public class CounterServiceImpl implements CounterServiceI{
                     continue;
                 }
                 for(Field field:fields){
+                    field.setAccessible(true);
                     if(field.isAnnotationPresent(Counter.class)){
                         Counter counter = field.getAnnotation(Counter.class);
-                        field.set(bshootCounter,fieldValues.get(counter.value()));
+                        if(null!=fieldValues.get(counter.value().getType()))
+                        field.set(bshootCounter,Integer.parseInt(String.valueOf(fieldValues.get(counter.value().getType()))));
                     }
                 }
                 bshoots.add(bshootCounter);

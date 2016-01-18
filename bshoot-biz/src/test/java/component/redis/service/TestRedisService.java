@@ -17,7 +17,7 @@ public class TestRedisService extends TestConfig{
 
     @Test
     public void testMgetAll(){
-        List<String> keys = Lists.newArrayList(new String[]{"ad","test","test1"});
+        List<String> keys = Lists.newArrayList(new String[]{"ad", "test", "test1"});
         Map<String,Map<byte[],byte[]>> results =redisService.hGetAll(keys);
         System.out.println(results);
     }

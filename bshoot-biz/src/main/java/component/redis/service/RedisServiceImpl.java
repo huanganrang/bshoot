@@ -532,22 +532,23 @@ public class RedisServiceImpl {
 	}
 
 	public void hincreby(String key,Object field,Integer delta){
+		hashOps = redisTemplate.opsForHash();
 		hashOps.increment(key,field,delta);
 	}
 
-	public Map<String,Map<byte[],byte[]>> hGetAll(final List<String> keys){
-		List<Object> results = redisTemplate.executePipelined(new RedisCallback<Map<byte[],byte[]>>(){
+	public Map<String, Map<byte[], byte[]>> hGetAll(final List<String> keys){
+		List<Object> results = redisTemplate.executePipelined(new RedisCallback<Map<byte[], byte[]>>() {
 			@Override
-			public Map<byte[],byte[]> doInRedis(RedisConnection redisConnection) throws DataAccessException {
-				for(String key:keys){
+			public Map<byte[], byte[]> doInRedis(RedisConnection redisConnection) throws DataAccessException {
+				for (String key : keys) {
 					redisConnection.hGetAll(key.getBytes());
 				}
 				return null;
 			}
 		});
-		Map<String,Map<byte[],byte[]>> resultMap = new HashMap();
+		Map<String, Map<byte[], byte[]>> resultMap = new HashMap();
 		for(int i=0;i<keys.size();i++){
-			resultMap.put(keys.get(i), (Map<byte[], byte[]>) results.get(i));
+			resultMap.put(keys.get(i),(Map<byte[], byte[]>) results.get(i));
 		}
 		return resultMap;
 	}
@@ -557,10 +558,12 @@ public class RedisServiceImpl {
 	}
 
 	public boolean hexists(String key,Object field){
+		hashOps = redisTemplate.opsForHash();
 		return hashOps.hasKey(key,field);
 	}
 
-	public boolean hsetnx(String key,Object field,Object value){
+	public boolean hsetnx(String key,Object field,String value){
+		hashOps = redisTemplate.opsForHash();
 		return hashOps.putIfAbsent(key,field,value);
 	}
 }
