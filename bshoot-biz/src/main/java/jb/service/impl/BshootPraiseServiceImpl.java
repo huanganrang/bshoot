@@ -1,5 +1,6 @@
 package jb.service.impl;
 
+import component.message.service.IMessageService;
 import component.redis.model.CounterType;
 import component.redis.service.CounterServiceI;
 import component.redis.service.FetchValue;
@@ -7,11 +8,9 @@ import jb.absx.F;
 import jb.dao.BshootDaoI;
 import jb.dao.BshootPraiseDaoI;
 import jb.model.TbshootPraise;
-import jb.pageModel.BshootPraise;
-import jb.pageModel.DataGrid;
-import jb.pageModel.PageHelper;
-import jb.pageModel.PraiseCommentRequest;
+import jb.pageModel.*;
 import jb.service.BshootPraiseServiceI;
+import jb.service.MessageServiceI;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,10 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 	private BshootPraiseDaoI bshootPraiseDao;
 	@Autowired
 	private CounterServiceI counterService;
-
+    @Autowired
+	private IMessageService messageService;
+	@Autowired
+	private MessageServiceI messageServiceImpl;
 	@Autowired
 	private BshootDaoI bshootDao;
 
@@ -84,6 +86,13 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 				return getCount(bshootPraise.getBshootId()).intValue();
 			}
 		});
+		//TODO 消息发送
+		/*Message message = new Message();
+		message.setUserId(bshootPraise.getUserId());
+		message.setMtype("MT04");
+		message.setRelationId(bshootPraise.getId());
+		messageServiceImpl.add(message);
+		messageService.sendMessage(bshootPraise.getUserId(),"用户["+bshootPraise.getUserId()+"]打赏了您的动态");*/
 		return 1;
 	}
 
