@@ -30,7 +30,7 @@ public interface BshootPraiseServiceI {
 	 * 
 	 * @param bshootPraise
 	 */
-	public int add(BshootPraise bshootPraise);
+	public int add(BshootPraise bshootPraise,String currentUser);
 	
 	/**
 	 * 取消赞

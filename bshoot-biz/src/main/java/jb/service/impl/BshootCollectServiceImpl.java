@@ -6,11 +6,13 @@ import component.redis.service.FetchValue;
 import jb.absx.F;
 import jb.dao.BshootCollectDaoI;
 import jb.dao.BshootDaoI;
+import jb.model.Tbshoot;
 import jb.model.TbshootCollect;
 import jb.pageModel.BshootCollect;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.service.BshootCollectServiceI;
+import jb.service.MessageServiceI;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,8 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 	private BshootDaoI bshootDao;
 	@Autowired
 	private CounterServiceI counterService;
+	@Autowired
+	private MessageServiceI messageServiceImpl;
 
 	@Override
 	public DataGrid dataGrid(BshootCollect bshootCollect, PageHelper ph) {
@@ -64,7 +68,7 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 	}
 
 	@Override
-	public int add(final BshootCollect bshootCollect) {
+	public int add(final BshootCollect bshootCollect,String currentUser) {
 		if(get(bshootCollect.getBshootId(), bshootCollect.getUserId())!=null)
 			return -1;
 		final TbshootCollect t = new TbshootCollect();
@@ -80,6 +84,8 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 				return getCount(bshootCollect.getBshootId()).intValue();
 			}
 		});
+		Tbshoot bshoot = bshootDao.get(Tbshoot.class,bshootCollect.getBshootId());
+		messageServiceImpl.addAndSendMessage(MessageServiceI.MT_05,bshoot.getUserId(),bshootCollect.getId(),"用户["+currentUser+"]评论了您的动态");
 		return 1;
 	}
 

@@ -34,10 +34,7 @@ import java.util.Map;
 public class ApiUserController extends BaseController {
 	@Autowired
 	private UserServiceI userService;
-	
-	@Autowired
-	private TokenManage tokenManage;
-	
+
 	@Autowired
 	private BshootServiceI bshootService;
 	
@@ -74,7 +71,7 @@ public class ApiUserController extends BaseController {
 			user.setUtype("UT02");
 			User u = userService.login(user);
 			if (u != null) {
-				String tid = tokenManage.buildToken(user.getId(),user.getName());
+				String tid = buildToken(user.getId(),user.getName());
 				j.setObj(tid);
 				j.setSuccess(true);
 				j.setMsg("登陆成功！");
@@ -105,7 +102,7 @@ public class ApiUserController extends BaseController {
 			user.setThirdUser(null);
 			//uploadFile(request, user, headImageFile);
 			userService.reg(user);	
-			j.setObj(tokenManage.buildToken(user.getId(),user.getName()));
+			j.setObj(buildToken(user.getId(),user.getName()));
 			j.setSuccess(true);
 			j.setMsg("注册成功");
 		} catch (Exception e) {
@@ -176,11 +173,6 @@ public class ApiUserController extends BaseController {
 			throw new RuntimeException(e);
 		}
 		
-	}
-	
-	private SessionInfo getSessionInfo(HttpServletRequest request){
-		SessionInfo s = tokenManage.getSessionInfo(request);
-		return s;		
 	}
 	
 	/**

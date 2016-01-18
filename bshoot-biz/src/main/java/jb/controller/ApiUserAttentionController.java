@@ -1,7 +1,6 @@
 package jb.controller;
 
 import jb.absx.F;
-import jb.interceptors.TokenManage;
 import jb.pageModel.*;
 import jb.service.UserAttentionServiceI;
 import jb.service.UserFriendTimeServiceI;
@@ -24,14 +23,6 @@ public class ApiUserAttentionController extends BaseController {
 
     @Autowired
     private UserFriendTimeServiceI userFriendTimeService;
-
-    @Autowired
-    private TokenManage tokenManage;
-
-    private SessionInfo getSessionInfo(HttpServletRequest request){
-        SessionInfo s = tokenManage.getSessionInfo(request);
-        return s;
-    }
 
     /**
      * 关注用户(添加关注或把is_delete改为0)，参数:userId,attUserId

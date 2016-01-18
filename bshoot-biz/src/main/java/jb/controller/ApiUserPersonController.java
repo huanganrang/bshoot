@@ -1,7 +1,6 @@
 package jb.controller;
 
 import jb.absx.F;
-import jb.interceptors.TokenManage;
 import jb.pageModel.*;
 import jb.service.UserPersonServiceI;
 import jb.service.UserPersonTimeServiceI;
@@ -24,14 +23,6 @@ public class ApiUserPersonController extends BaseController {
 
     @Autowired
     private UserPersonTimeServiceI userPersonTimeService;
-
-    @Autowired
-    private TokenManage tokenManage;
-
-    private SessionInfo getSessionInfo(HttpServletRequest request){
-        SessionInfo s = tokenManage.getSessionInfo(request);
-        return s;
-    }
 
     /**
      * 添加人脉圈好友(添加好友或把is_delete改为0)，需要的参数为:userId,attUserId

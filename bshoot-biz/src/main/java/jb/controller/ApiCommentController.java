@@ -1,6 +1,5 @@
 package jb.controller;
 
-import jb.interceptors.TokenManage;
 import jb.pageModel.CommentPraise;
 import jb.pageModel.Json;
 import jb.pageModel.SessionInfo;
@@ -22,11 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/api/apiCommentController")
 public class ApiCommentController extends BaseController {
 
-	
-	@Autowired
-	private TokenManage tokenManage;
-	
-
 	@Autowired
 	private CommentPraiseServiceI commentPraiseService;
 	
@@ -42,7 +36,7 @@ public class ApiCommentController extends BaseController {
 	public Json commentPraise(CommentPraise commentPraise,HttpServletRequest request) {
 		Json j = new Json();	
 		try {
-			SessionInfo s = tokenManage.getSessionInfo(request);
+			SessionInfo s = getSessionInfo(request);
 			commentPraise.setUserId(s.getId());		
 			int r = commentPraiseService.add(commentPraise);
 			if(r==-1){
@@ -69,7 +63,7 @@ public class ApiCommentController extends BaseController {
 	public Json disCommentPraise(CommentPraise commentPraise,HttpServletRequest request) {
 		Json j = new Json();
 		try {
-			SessionInfo s = tokenManage.getSessionInfo(request);
+			SessionInfo s = getSessionInfo(request);
 			commentPraise.setUserId(s.getId());
 			int r = commentPraiseService.deleteCommentPraise(commentPraise);
 			if(r==-1){

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,8 @@ public class ContractGuideController extends BaseController{
     @ApiOperation(value = "通讯录引导外页", notes = "引导外页(引导类型取值仅支持 2:好友关注的人 5:可能感兴趣的人 7:附近的人)", position = 1,httpMethod = "POST", response = RecommendUser.class,produces = "application/json; charset=utf-8")
     @RequestMapping("/external")
     @ResponseBody
-    public Map<Integer,List<RecommendUser>> guideExternalPage( @ApiParam(value = "页数",required = true, defaultValue = "0") @RequestParam Integer start,@ApiIgnore HttpSession session) {
-        SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+    public Map<Integer,List<RecommendUser>> guideExternalPage( @ApiParam(value = "页数",required = true, defaultValue = "0") @RequestParam Integer start,@ApiIgnore HttpServletRequest request) {
+        SessionInfo sessionInfo = getSessionInfo(request);
         return  contractGuideService.guideExternalPage(sessionInfo.getId(), start,1);
     }
 
@@ -44,8 +45,8 @@ public class ContractGuideController extends BaseController{
     @RequestMapping("/internal")
     @ResponseBody
     public List<RecommendUser> guideInternalPage(@ApiParam(value = "引导类型(引导类型取值仅支持 2:好友关注的人 5:可能感兴趣的人 7:附近的人)",required = true, defaultValue = "2") @RequestParam Integer guideType,
-                                                 @ApiParam(value = "页数",required = true, defaultValue = "0") @RequestParam Integer start,@ApiIgnore HttpSession session) {
-        SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+                                                 @ApiParam(value = "页数",required = true, defaultValue = "0") @RequestParam Integer start,@ApiIgnore HttpServletRequest request) {
+        SessionInfo sessionInfo = getSessionInfo(request);
         return  contractGuideService.guideInternalPage(sessionInfo.getId(), guideType, start,6);
     }
 

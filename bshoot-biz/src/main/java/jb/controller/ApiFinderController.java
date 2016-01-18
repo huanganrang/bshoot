@@ -1,6 +1,5 @@
 package jb.controller;
 
-import jb.interceptors.TokenManage;
 import jb.pageModel.*;
 import jb.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,6 @@ import java.util.Map;
 public class ApiFinderController extends BaseController {
 	@Autowired
 	private UserServiceI userService;
-	
-	@Autowired
-	private TokenManage tokenManage;
 	
 	@Autowired
 	private BshootServiceI bshootService;
@@ -249,11 +245,5 @@ public class ApiFinderController extends BaseController {
 			j.setMsg(e.getMessage());
 		}
 		return j;
-	}
-	
-	private SessionInfo getSessionInfo(HttpServletRequest request){
-		SessionInfo s = tokenManage.getSessionInfo(request);
-		return s;
-		
 	}
 }

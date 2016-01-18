@@ -11,11 +11,11 @@ import jb.service.impl.RecommendService;
 import jb.util.ConfigUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +40,8 @@ public class RecommendController extends  BaseController{
     public List<Bshoot> recommentHost(@ApiParam(value = "页数",required = true, defaultValue = "0")  @RequestParam Integer start,
                                       @ApiParam(value = "只看（-1全部/1图文/2视频/3音乐）",required = false)  @RequestParam Integer fileType,
                                       @ApiParam(value = "看同兴趣（0全部/1是）",required = false)  @RequestParam Integer interested,
-                                      @ApiIgnore HttpSession session) {
-        SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+                                      @ApiIgnore HttpServletRequest request) {
+        SessionInfo sessionInfo = getSessionInfo(request);
         return  recommendService.recommendHot(sessionInfo.getId(),start,fileType,interested);
     }
 
@@ -59,8 +59,8 @@ public class RecommendController extends  BaseController{
     @ApiOperation(value = "首页推荐", notes = "首页推荐", position = 3,httpMethod = "POST", response = Bshoot.class,produces = "application/json; charset=utf-8")
     @RequestMapping("/recommend")
     @ResponseBody
-    public List<Bshoot> recommend(@ApiParam(value = "页数",required = true, defaultValue = "0")   @RequestParam Integer start,@ApiIgnore HttpSession session) {
-        SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+    public List<Bshoot> recommend(@ApiParam(value = "页数",required = true, defaultValue = "0")   @RequestParam Integer start,@ApiIgnore HttpServletRequest request) {
+        SessionInfo sessionInfo = getSessionInfo(request);
         return  recommendService.recommend(sessionInfo.getId(),start,6);
     }
 }

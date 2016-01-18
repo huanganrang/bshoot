@@ -1,7 +1,6 @@
 package jb.controller;
 
 import jb.absx.F;
-import jb.interceptors.TokenManage;
 import jb.pageModel.Json;
 import jb.pageModel.SessionInfo;
 import jb.pageModel.UserAttentionGroup;
@@ -26,14 +25,6 @@ public class ApiUserAttentionGroupController extends BaseController {
 
     @Autowired
     private UserAttentionServiceI userAttentionService;
-
-    @Autowired
-    private TokenManage tokenManage;
-
-    private SessionInfo getSessionInfo(HttpServletRequest request){
-        SessionInfo s = tokenManage.getSessionInfo(request);
-        return s;
-    }
 
     /**
      * 添加用户好友分组(添加分组或把is_delete改为0)，参数:userId,groupName

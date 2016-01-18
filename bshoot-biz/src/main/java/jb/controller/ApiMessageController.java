@@ -1,6 +1,5 @@
 package jb.controller;
 
-import jb.interceptors.TokenManage;
 import jb.pageModel.*;
 import jb.service.BshootPraiseServiceI;
 import jb.service.MessageCountServiceI;
@@ -30,20 +29,11 @@ public class ApiMessageController extends BaseController {
 	private UserServiceI userService;
 	
 	@Autowired
-	private TokenManage tokenManage;
-	
-	@Autowired
 	private MessageCountServiceI messageCountService; 
 	
 	@Autowired
 	private BshootPraiseServiceI bshootPraiseService;
-	
-	
-	private SessionInfo getSessionInfo(HttpServletRequest request){
-		SessionInfo s = tokenManage.getSessionInfo(request);
-		return s;		
-	}
-	
+
 	/**
 	 * 新朋友
 	 * 

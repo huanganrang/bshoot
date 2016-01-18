@@ -90,9 +90,10 @@ public class BshootCommentController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(BshootComment bshootComment) {
-		Json j = new Json();		
-		bshootCommentService.add(bshootComment);
+	public Json add(BshootComment bshootComment,HttpServletRequest request) {
+		Json j = new Json();
+		SessionInfo s = getSessionInfo(request);
+		bshootCommentService.add(bshootComment,s.getName());
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
 		return j;

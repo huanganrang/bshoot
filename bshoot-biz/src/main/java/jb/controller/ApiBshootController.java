@@ -1,7 +1,6 @@
 package jb.controller;
 
 import jb.absx.F;
-import jb.interceptors.TokenManage;
 import jb.model.TbshootComment;
 import jb.pageModel.*;
 import jb.service.*;
@@ -35,9 +34,6 @@ public class ApiBshootController extends BaseController {
 	private UserServiceI userService;
 	
 	@Autowired
-	private TokenManage tokenManage;
-	
-	@Autowired
 	private BshootServiceI bshootService;
 	
 	@Autowired
@@ -65,7 +61,7 @@ public class ApiBshootController extends BaseController {
 		try {
 			SessionInfo s = getSessionInfo(request);
 			bshootPraise.setUserId(s.getId());
-			int r = bshootPraiseService.add(bshootPraise);
+			int r = bshootPraiseService.add(bshootPraise,s.getName());
 			if(r==-1){
 				j.setSuccess(false);
 				j.setMsg("已经赞过了！");
@@ -295,7 +291,7 @@ public class ApiBshootController extends BaseController {
 		
 		Json j = new Json();	
 		try {
-			SessionInfo s = tokenManage.getSessionInfo(request);
+			SessionInfo s = getSessionInfo(request);
 			ph.setSort("commentDatetime");
 			j.setObj(bshootCommentService.dataGrid(bshootComment, ph, s.getId()));
 			j.setSuccess(true);
@@ -317,7 +313,7 @@ public class ApiBshootController extends BaseController {
 		try {
 			SessionInfo s = getSessionInfo(request);
 			bshootComment.setUserId(s.getId());
-			TbshootComment tbc = bshootCommentService.add(bshootComment);
+			TbshootComment tbc = bshootCommentService.add(bshootComment,s.getName());
 			Bshoot bshoot = bshootService.get(bshootComment.getBshootId());
 			if(!s.getId().equals(bshoot.getUserId())) {
 				addMessage("MT03", bshoot.getUserId(), tbc.getId());
@@ -375,12 +371,6 @@ public class ApiBshootController extends BaseController {
 			j.setMsg(e.getMessage());
 		}
 		return j;
-	}
-	
-	private SessionInfo getSessionInfo(HttpServletRequest request){
-		SessionInfo s = tokenManage.getSessionInfo(request);
-		return s;
-		
 	}
 	
 	/**
@@ -470,7 +460,7 @@ public class ApiBshootController extends BaseController {
 		Json j = new Json();
 		SessionInfo s = getSessionInfo(request);
 		bshoot.setUserId(s.getId());
-		int r = bshootCollectService.add(bshoot);
+		int r = bshootCollectService.add(bshoot,s.getName());
 		if(r==-1){
 			j.setSuccess(false);
 			j.setMsg("已经收藏！");
