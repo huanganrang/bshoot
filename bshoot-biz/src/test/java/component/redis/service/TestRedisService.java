@@ -22,4 +22,9 @@ public class TestRedisService extends TestConfig{
         System.out.println(results);
     }
 
+    @Test
+    public void testHincrebyAndReturn(){
+            Object value = redisService.hincrebyAndReturn("a", "1", 1L);
+            System.out.println((String)value);
+    }
 }

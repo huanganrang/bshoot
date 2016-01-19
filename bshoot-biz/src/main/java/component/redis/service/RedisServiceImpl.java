@@ -566,4 +566,28 @@ public class RedisServiceImpl {
 		hashOps = redisTemplate.opsForHash();
 		return hashOps.putIfAbsent(key,field,value);
 	}
+
+	public Object hincrebyAndReturn(final String key, final String field, final Long delta){
+		List<Object> result = redisTemplate.executePipelined(new RedisCallback<byte[]>() {
+			@Override
+			public byte[] doInRedis(RedisConnection connection) throws DataAccessException {
+				connection.hIncrBy(key.getBytes(),field.getBytes(),delta);
+				connection.hGet(key.getBytes(),field.getBytes());
+				return null;
+			}
+		});
+		return result.get(0);
+	}
+
+	public boolean setnx(final String key,final String value, Long expireTime){
+		Boolean result =  redisTemplate.execute(new RedisCallback<Boolean>() {
+			@Override
+			public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+				return connection.setNX(key.getBytes(), value.getBytes());
+			}
+		});
+		if(result)
+			redisTemplate.expire(key,expireTime,TimeUnit.MILLISECONDS);
+		return result;
+	}
 }

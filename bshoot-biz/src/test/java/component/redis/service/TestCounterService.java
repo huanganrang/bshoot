@@ -39,7 +39,7 @@ public class TestCounterService extends TestConfig{
 
     @Test
     public void testAutomicChangeCount(){
-        counterService.automicChangeCount("a", CounterType.PRAISE, 12, new FetchValue() {
+        counterService.automicChangeCount("a", CounterType.PRAISE, -112, new FetchValue() {
             @Override
             public Integer fetchValue() {
                 return 100;

@@ -37,7 +37,7 @@ public interface CounterServiceI {
      * @param fetchValue 没有值时进行取值的操作
      * @throws CounterException
      */
-    void automicChangeCount(String bshootId,CounterType counterType,Integer num,FetchValue fetchValue) throws CounterException;
+    boolean automicChangeCount(String bshootId,CounterType counterType,Integer num,FetchValue fetchValue) throws CounterException;
 
     //boolean isExists(String bshootId,CounterType counterType) throws CounterException;
 

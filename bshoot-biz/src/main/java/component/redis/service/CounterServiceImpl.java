@@ -4,6 +4,8 @@ import component.redis.exception.CounterException;
 import component.redis.model.BshootCounter;
 import component.redis.model.Counter;
 import component.redis.model.CounterType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +19,13 @@ import java.util.Map;
  */
 @Service
 public class CounterServiceImpl implements CounterServiceI{
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private RedisServiceImpl redisService;
+    @Autowired
+    private RedisLock redisLock;
 
     @Override
     public void increment(String bshootId, CounterType countType) throws CounterException {
@@ -36,23 +43,31 @@ public class CounterServiceImpl implements CounterServiceI{
     }
 
     @Override
-    public void automicChangeCount(String bshootId,CounterType counterType,Integer num,FetchValue fetchValue) throws CounterException {
+    public boolean automicChangeCount(String bshootId,CounterType counterType,Integer num,FetchValue fetchValue) throws CounterException {
         if(null==fetchValue) throw new CounterException("you must implemnts the FetchValue,tell me how to fetch the value!");
         try {
-            //1.先查看指定的count字段是否存在
-            if (!redisService.hexists(bshootId, counterType.getType())) {
-                //1.1不存在则从数据库中获取值，并设置进去
-                Integer value = fetchValue.fetchValue();
-                //没有则set
-                if (!redisService.hsetnx(bshootId, counterType.getType(), String.valueOf(value))) {//如果设置失败，则可能有其他线程设置了该字段，那么就则值上+或-num
-                    redisService.hincreby(bshootId, counterType.getType(), num);
+            //获得redis锁，并设置拥有时间600ms,等待锁时间1s
+            if(redisLock.lock("lock_"+bshootId,"1",600L,30000L)){
+                Object countValue = redisService.getHashValue(bshootId,counterType.getType());
+                //1.先查看指定的count字段是否存在
+                if(null!=countValue){
+                    //count字段与num计算后是否小于0
+                    Integer exceptValue = Integer.parseInt(String.valueOf(countValue))+num;
+                    if(exceptValue<0) {
+                        throw new CounterException("the counter value can not less than 0 after change.[bshootId="+bshootId+",counterType="+counterType.getType()+",num="+num+"]");
+                    }
+                }else{
+                    //1.1不存在则从数据库中获取值，并设置进去
+                    num = fetchValue.fetchValue();
                 }
-            } else {
-                //1.2存在则直接更新字段值
                 redisService.hincreby(bshootId, counterType.getType(), num);
+                return true;
             }
+            return false;
         }catch (Exception e){
             throw new CounterException("automicChangeCount has occured an exception,"+e.getMessage());
+        }finally {
+            //redisLock.unlock("lock_"+bshootId);
         }
     }
 
