@@ -53,6 +53,7 @@ public class CounterServiceImpl implements CounterServiceI{
                         throw new CounterException("the counter value can not less than 0 after change.[bshootId="+bshootId+",counterType="+counterType.getType()+",num="+num+"]");
                     }
                     redisService.hincreby(bshootId, counterType.getType(), num);
+
                 }else{
                     //1.1不存在则从数据库中获取值，并设置进去
                     num = fetchValue.fetchValue();
