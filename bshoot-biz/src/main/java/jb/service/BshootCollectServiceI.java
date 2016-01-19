@@ -27,7 +27,7 @@ public interface BshootCollectServiceI {
 	 * 
 	 * @param bshootCollect
 	 */
-	public int add(BshootCollect bshootCollect);
+	public int add(BshootCollect bshootCollect,String currentUser);
 	
 	/**
 	 * 取消关注

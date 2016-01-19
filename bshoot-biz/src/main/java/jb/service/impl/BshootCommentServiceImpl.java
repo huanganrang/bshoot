@@ -8,6 +8,7 @@ import jb.dao.BshootCommentDaoI;
 import jb.dao.BshootDaoI;
 import jb.dao.CommentPraiseDaoI;
 import jb.dao.UserDaoI;
+import jb.model.Tbshoot;
 import jb.model.TbshootComment;
 import jb.model.TcommentPraise;
 import jb.model.Tuser;
@@ -15,6 +16,7 @@ import jb.pageModel.BshootComment;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.service.BshootCommentServiceI;
+import jb.service.MessageServiceI;
 import jb.util.Constants;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,9 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 	
 	@Autowired
 	private UserDaoI userDao;
-	
+	@Autowired
+	private MessageServiceI messageServiceImpl;
+
 	@Autowired
 	private BshootDaoI bshootDao;
 
@@ -138,7 +142,7 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 	}
 
 	@Override
-	public TbshootComment add(final BshootComment bshootComment) {
+	public TbshootComment add(final BshootComment bshootComment,String currentUser) {
 		TbshootComment t = new TbshootComment();
 		BeanUtils.copyProperties(bshootComment, t);
 		t.setId(UUID.randomUUID().toString());
@@ -153,6 +157,8 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 				return getCount(bshootComment.getBshootId()).intValue();
 			}
 		});
+		Tbshoot bshoot = bshootDao.get(Tbshoot.class,bshootComment.getBshootId());
+		messageServiceImpl.addAndSendMessage(MessageServiceI.MT_03,bshoot.getUserId(),bshootComment.getId(),"用户["+currentUser+"]评论了您的动态");
 		return t;
 	}
 

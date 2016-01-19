@@ -3,12 +3,10 @@ package jb.controller;
 import com.alibaba.fastjson.JSON;
 import com.mangofactory.swagger.annotations.ApiIgnore;
 import jb.absx.F;
+import jb.interceptors.TokenManage;
 import jb.listener.Application;
 import jb.model.TmessageCount;
-import jb.pageModel.Colum;
-import jb.pageModel.DataGrid;
-import jb.pageModel.Json;
-import jb.pageModel.Message;
+import jb.pageModel.*;
 import jb.service.MessageServiceI;
 import jb.service.UserServiceI;
 import jb.util.Constants;
@@ -58,7 +56,9 @@ public class BaseController {
 	protected MessageServiceI messageService;
 	@Autowired
 	private UserServiceI userService;
-	
+	@Autowired
+	private TokenManage tokenManage;
+
 	@InitBinder
 	public void initBinder(ServletRequestDataBinder binder) {
 		/**
@@ -236,5 +236,13 @@ public class BaseController {
 		return uploadFile(request, dirName, file, dirName);
 		
 	}
-	
+
+	protected SessionInfo getSessionInfo(HttpServletRequest request){
+		SessionInfo s = tokenManage.getSessionInfo(request);
+		return s;
+	}
+
+	protected  String buildToken(String userId,String userName){
+		return tokenManage.buildToken(userId,userName);
+	}
 }

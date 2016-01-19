@@ -11,6 +11,11 @@ import jb.pageModel.PageHelper;
  * 
  */
 public interface MessageServiceI {
+	 static final String MT_03 = "MT03";//评论
+	 static final String MT_04 = "MT04";
+	 static final String MT_05 = "MT05";//收藏
+	 static final String MT_06 = "MT06";//分享
+	 static final String MT_07 = "MT07";//转发
 
 	/**
 	 * 获取Message数据表格
@@ -81,5 +86,15 @@ public interface MessageServiceI {
 	 * @return
 	 */
 	public DataGrid dataGridPraise(Message message, PageHelper ph);
+
+	/**
+	 * 添加并发送消息
+	 * @param mType
+	 * @param userId
+	 * @param relationId
+	 * @param content
+	 * @return
+	 */
+	String addAndSendMessage(String mType,String userId,String relationId,String content);
 
 }

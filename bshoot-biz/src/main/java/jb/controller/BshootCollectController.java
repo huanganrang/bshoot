@@ -90,9 +90,10 @@ public class BshootCollectController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(BshootCollect bshootCollect) {
-		Json j = new Json();		
-		bshootCollectService.add(bshootCollect);
+	public Json add(BshootCollect bshootCollect,HttpServletRequest request) {
+		Json j = new Json();
+		SessionInfo s = getSessionInfo(request);
+		bshootCollectService.add(bshootCollect,s.getName());
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
 		return j;

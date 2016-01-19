@@ -1,12 +1,12 @@
 package jb.service.impl;
 
-import component.message.service.IMessageService;
 import component.redis.model.CounterType;
 import component.redis.service.CounterServiceI;
 import component.redis.service.FetchValue;
 import jb.absx.F;
 import jb.dao.BshootDaoI;
 import jb.dao.BshootPraiseDaoI;
+import jb.model.Tbshoot;
 import jb.model.TbshootPraise;
 import jb.pageModel.*;
 import jb.service.BshootPraiseServiceI;
@@ -24,13 +24,10 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 	private BshootPraiseDaoI bshootPraiseDao;
 	@Autowired
 	private CounterServiceI counterService;
-    @Autowired
-	private IMessageService messageService;
 	@Autowired
 	private MessageServiceI messageServiceImpl;
 	@Autowired
 	private BshootDaoI bshootDao;
-
 
 	@Override
 	public DataGrid dataGrid(BshootPraise bshootPraise, PageHelper ph) {
@@ -68,7 +65,7 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 	}
 
 	@Override
-	public int add(final BshootPraise bshootPraise) {
+	public int add(final BshootPraise bshootPraise, String currentUser) {
 		if(get(bshootPraise.getBshootId(), bshootPraise.getUserId())!=null)
 			return -1;
 		TbshootPraise t = new TbshootPraise();
@@ -86,15 +83,12 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 				return getCount(bshootPraise.getBshootId()).intValue();
 			}
 		});
-		//TODO 消息发送
-		/*Message message = new Message();
-		message.setUserId(bshootPraise.getUserId());
-		message.setMtype("MT04");
-		message.setRelationId(bshootPraise.getId());
-		messageServiceImpl.add(message);
-		messageService.sendMessage(bshootPraise.getUserId(),"用户["+bshootPraise.getUserId()+"]打赏了您的动态");*/
+		Tbshoot bshoot = bshootDao.get(Tbshoot.class,bshootPraise.getBshootId());
+		messageServiceImpl.addAndSendMessage(MessageServiceI.MT_04,bshoot.getUserId(),bshootPraise.getId(),"用户["+currentUser+"]打赏了您的动态");
 		return 1;
 	}
+
+
 
 	@Override
 	public BshootPraise get(String id) {
@@ -152,7 +146,7 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 	private Long getCount(String bshootId){
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bshootId", bshootId);
-		return bshootDao.count("select count(1) from TbshootPraise t where t.bshootId =:bshootId)", params);
+		return bshootPraiseDao.count("select count(1) from TbshootPraise t where t.bshootId =:bshootId)", params);
 	}
 
 	private void updateCountReduce(String bshootId){

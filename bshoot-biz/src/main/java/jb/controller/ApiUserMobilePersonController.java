@@ -1,7 +1,6 @@
 package jb.controller;
 
 import jb.absx.F;
-import jb.interceptors.TokenManage;
 import jb.pageModel.Json;
 import jb.pageModel.PageHelper;
 import jb.pageModel.SessionInfo;
@@ -23,14 +22,6 @@ public class ApiUserMobilePersonController extends BaseController {
 
     @Autowired
     private UserMobilePersonServiceI userMobilePersonService;
-
-    @Autowired
-    private TokenManage tokenManage;
-
-    private SessionInfo getSessionInfo(HttpServletRequest request){
-        SessionInfo s = tokenManage.getSessionInfo(request);
-        return s;
-    }
 
     /**
      * 添加通讯录(添加通讯录或把is_delete改为0)，参数:userId,friendName,mobile

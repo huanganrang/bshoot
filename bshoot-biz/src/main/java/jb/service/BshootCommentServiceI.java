@@ -31,7 +31,7 @@ public interface BshootCommentServiceI {
 	 * @param bshootComment
 	 */
 	
-	public TbshootComment add(BshootComment bshootComment);
+	public TbshootComment add(BshootComment bshootComment,String currentUser);
 
 	/**
 	 * 获得BshootComment对象

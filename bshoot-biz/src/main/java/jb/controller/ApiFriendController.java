@@ -1,6 +1,5 @@
 package jb.controller;
 
-import jb.interceptors.TokenManage;
 import jb.pageModel.Json;
 import jb.pageModel.PageHelper;
 import jb.pageModel.SessionInfo;
@@ -27,10 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ApiFriendController extends BaseController {
 	@Autowired
 	private UserServiceI userService;
-	
-	@Autowired
-	private TokenManage tokenManage;
-	
+
 	@Autowired
 	private BshootServiceI bshootService;
 	
@@ -39,13 +35,7 @@ public class ApiFriendController extends BaseController {
 	
 	@Autowired
 	private UserAttentionServiceI userAttentionService;
-	
-	
-	private SessionInfo getSessionInfo(HttpServletRequest request){
-		SessionInfo s = tokenManage.getSessionInfo(request);
-		return s;		
-	}
-	
+
 	/**
 	 * 关注好友视频列表
 	 * 
