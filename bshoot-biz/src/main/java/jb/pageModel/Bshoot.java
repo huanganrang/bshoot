@@ -1,5 +1,7 @@
 package jb.pageModel;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import jb.util.PathUtil;
 
 import java.util.Date;
@@ -7,48 +9,81 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings({"unused", "rawtypes"})
+@ApiModel
 public class Bshoot implements java.io.Serializable {
 
 	private static final long serialVersionUID = 5454155825314635342L;
 
 	private String id;
+	@ApiModelProperty(value = "动态标题",notes = "动态标题")
 	private String bsTitle;
+	@ApiModelProperty(value = "动态话题")
 	private String bsTopic;
+	@ApiModelProperty(value = "动态图标")
 	private String bsIcon;
+	@ApiModelProperty(value = "视频/音频/图片地址")
 	private String bsStream;
+	@ApiModelProperty(value = "收藏数")
 	private Integer bsCollect;
+	@ApiModelProperty(value = "点赞数")
 	private Integer bsPraise;
+	@ApiModelProperty(value = "转发数")
 	private Integer bsForward;
+	@ApiModelProperty(value = "分享数")
 	private Integer bsShare;
+	@ApiModelProperty(value = "播放数")
 	private Integer bsPlay;
+	@ApiModelProperty(value = "动态类型")
 	private String bsType;
+	@ApiModelProperty(value = "文件类型")
 	private Integer bsFileType;//文件类型
+	@ApiModelProperty(value = "评论数")
 	private Integer bsComment;
+	@ApiModelProperty(value = "创建人id")
 	private String userId;
+	@ApiModelProperty(value = "创建人头像地址")
 	private String userHeadImage;
+	@ApiModelProperty(value = "创建人昵称")
 	private String userName;
+	@ApiModelProperty(value = "用户兴趣")
 	private List<String> hobby;//用户兴趣
+	@ApiModelProperty(value = "发布来源")
 	private String publishFrom;//发布来源
+	@ApiModelProperty(value = "引导类型 1:新人推荐 2:好友关注的人 3：我评论/打赏过的人 4：好友打赏过的人 5：可能感兴趣的人 6：可能认识的人 7：附近的人")
 	private Integer guideType;//引导类型 1:新人推荐 2:好友关注的人 3：我评论/打赏过的人 4：好友打赏过的人 5：可能感兴趣的人 6：可能认识的人 7：附近的人
 	private String userHeadImageAbsolute;
 	private String bsIconAbsolute;
 	private String bsStreamAbsolute;
 
+	@ApiModelProperty(value = "动态内容")
 	private String bsDescription;
+	@ApiModelProperty(value = "备注")
 	private String bsRemark;
+	@ApiModelProperty(value = "创建时间")
 	private Date createDatetime;
+	@ApiModelProperty(value = "修改时间")
 	private Date updateDatetime;
+	@ApiModelProperty(value = "创建人")
 	private String createPerson;
+	@ApiModelProperty(value = "更新人")
 	private String updatePerson;
+	@ApiModelProperty(value = "发布位置经度")
 	private String lgX;
+	@ApiModelProperty(value = "发布位置纬度")
 	private String lgY;
 	private String lgName;
+	@ApiModelProperty(value = "上级id")
 	private String parentId;
+	@ApiModelProperty(value = "状态")
 	private String status;
 	private String bsArea;
+	@ApiModelProperty(value = "距离")
 	private double distance; //距离
+	@ApiModelProperty(value = "是否赞过")
 	private String praised; //是否赞过
+	@ApiModelProperty(value = "转发的美拍")
 	private Bshoot parentBshoot; // 转发的美拍
+	@ApiModelProperty(value = "用户等级")
 	private String memberV;//用户等级
 	private String squareIds; // 广场分类id集合
 
