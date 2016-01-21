@@ -47,7 +47,7 @@ public class RecommendController extends  BaseController{
 
 
     //新人推荐
-    @ApiOperation(value = "新人推荐", notes = "新人推荐", position = 2,httpMethod = "POST", response = Bshoot.class,produces = "application/json; charset=utf-8")
+    @ApiOperation(value = "新人推荐", notes = "新人推荐", position = 2,httpMethod = "POST", response = RecommendUser.class,produces = "application/json; charset=utf-8")
     @RequestMapping("/recommendUser")
     @ResponseBody
     public List<RecommendUser> recommendUser(@ApiIgnore HttpSession session) {

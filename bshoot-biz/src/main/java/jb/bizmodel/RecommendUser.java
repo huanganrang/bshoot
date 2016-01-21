@@ -1,24 +1,42 @@
 package jb.bizmodel;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
 /**
  * Created by zhou on 2016/1/1.
  */
+@ApiModel("RecommendUser")
 public class RecommendUser {
+    @ApiModelProperty("用户id")
     private String id;//用户id
+    @ApiModelProperty("用户昵称")
     private String nickname;//用户昵称
+    @ApiModelProperty("兴趣")
     private List<String> hobby;//兴趣
+    @ApiModelProperty("地区")
     private String area;//地区
+    @ApiModelProperty("个性签名")
     private String bardian;//个性签名
+    @ApiModelProperty("用户类型")
     private String uType;
+    @ApiModelProperty("是否明星")
     private Integer isStar;
+    @ApiModelProperty("是否达人")
     private Integer isTarento;
+    @ApiModelProperty("关注的吧")
     private List<String> attSquare;
+    @ApiModelProperty("用户级别")
     private String memberV;//级别
+    @ApiModelProperty("用户头像地址")
     private String headImage;//头像
+    @ApiModelProperty("用户昵称")
     private String sex;//性别
+    @ApiModelProperty("职业")
     private List<String> job;//职业
+    @ApiModelProperty("推荐类型")
     private Integer recommendType;//1:新人推荐 2:好友关注的人 3：我评论/打赏过的人 4：好友打赏过的人 5：可能感兴趣的人 6：可能认识的人 7：附近的人
 
     public String getId() {
