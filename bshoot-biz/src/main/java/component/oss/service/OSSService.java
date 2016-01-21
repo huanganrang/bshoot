@@ -1,7 +1,9 @@
 package component.oss.service;
 
 import com.aliyun.oss.model.CopyObjectResult;
+import com.aliyun.oss.model.PutObjectResult;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.util.Daemon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,13 +25,24 @@ public class OSSService {
 
     public static Logger logger = LoggerFactory.getLogger(OSSUtils.class);
     private static OSSUtils ossUtils = null;
-
+    private static OSSService instance;
     @PostConstruct
     private void init(){
        ossUtils = new OSSUtils(OSSUtils.getOssProperty("OSS.ACCESSKEYID"),OSSUtils.getOssProperty("OSS.ACCESSKEYSECRET"),
                OSSUtils.getOssProperty("OSS.BUCKETNAME"),OSSUtils.getOssPropertyInt("OSS.TIMEOUT"));
     }
 
+    public static OSSService getInstance(){
+        if(instance == null){
+            synchronized (OSSService.class){
+                if(instance == null){
+                    instance = new OSSService();
+                    instance.init();
+                }
+            }
+        }
+        return instance;
+    }
    public static void main(String[] args){
        OSSService ossService = new OSSService();
        ossService.init();
@@ -86,6 +101,10 @@ public class OSSService {
             }
     }
 
+    public String uploadFile(String fileName,InputStream input){
+        PutObjectResult putObjectResult = ossUtils.uploadStream(fileName,input);
+        return putObjectResult.getETag();
+    }
     public void deleteFile(String key) throws Exception{
         ossUtils.deleteFile(key);
     }

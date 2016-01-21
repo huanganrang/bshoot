@@ -182,7 +182,7 @@ public class UserHobbyController extends BaseController {
 	public  Collection<BaseData> getHobbyList(){
         List<BaseData> hobbies = basedataService.getBaseDatas(HOBBYTYPE);
 		//对兴趣按分类组织
-		Map<String,BaseData> category = new HashMap<>();
+		Map<String,BaseData> category = new HashMap<String,BaseData>();
 		BaseData parent = null;
 		for(BaseData baseData:hobbies){
 			if(StringUtils.isEmpty(baseData.getPid())){

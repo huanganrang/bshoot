@@ -161,7 +161,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
     protected List<Bshoot> fillBshoot(List<Bshoot> bshoots){
         if(CollectionUtils.isEmpty(bshoots)) return bshoots;
         Set<String> userIds = new HashSet<String>();
-        List<String> bshootIds = new ArrayList<>();
+        List<String> bshootIds = new ArrayList<String>();
         for(Bshoot bshoot:bshoots) {
             userIds.add(bshoot.getUserId());
             bshootIds.add(bshoot.getId());

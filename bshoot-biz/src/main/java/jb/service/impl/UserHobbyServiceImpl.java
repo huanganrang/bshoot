@@ -123,7 +123,7 @@ public class UserHobbyServiceImpl extends BaseServiceImpl<UserHobby> implements 
 
 	@Override
 	public void saveOrUpdateUserHobby(UserHobby userHobby){
-		Map<String,Object> param = new HashMap<>();
+		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("userId",userHobby.getUserId());
 		//保存或更新用户兴趣
 		TuserHobby u = userHobbyDao.get("from TuserHobby t where t.userId=:userId", param);

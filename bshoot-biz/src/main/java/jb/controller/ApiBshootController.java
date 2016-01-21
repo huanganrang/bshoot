@@ -1,5 +1,6 @@
 package jb.controller;
 
+import component.oss.service.OSSService;
 import jb.absx.F;
 import jb.model.TbshootComment;
 import jb.pageModel.*;
@@ -193,12 +194,16 @@ public class ApiBshootController extends BaseController {
 					if(!"".equals(bsStream)) {
 						bsStream += ";";
 					}
-					bsStream += s.getName()+"/"+fileName;
-					 try {
+					//bsStream += s.getName()+"/"+fileName;
+					/*try {
 						FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
 					} catch (IOException e) {
 						throw new RuntimeException(e);
-					}
+					}*/
+					String fileType = suffix.substring(1);
+					String path = getOssFilePath(fileType,fileName);
+					OSSService.getInstance().uploadFile(path,f.getInputStream());
+					bsStream +=path;
 				}
 				bshoot.setBsStream(bsStream);
 			}
@@ -212,12 +217,16 @@ public class ApiBshootController extends BaseController {
 					if(!"".equals(bsIcon)) {
 						bsIcon += ";";
 					}
-					bsIcon += s.getName()+"/"+fileName;
-					 try {
+					//bsIcon += s.getName()+"/"+fileName;
+					/*try {
 						FileUtils.copyInputStreamToFile(f.getInputStream(), new File(realPath, fileName));
 					} catch (IOException e) {
 						throw new RuntimeException(e);
-					}
+					}*/
+					String fileType = suffix.substring(1);
+					String path = getOssFilePath(fileType,fileName);
+					OSSService.getInstance().uploadFile(path,f.getInputStream());
+					bsIcon +=path;
 				}
 				bshoot.setBsIcon(bsIcon);
 			}
@@ -231,11 +240,19 @@ public class ApiBshootController extends BaseController {
 			j.setSuccess(true);
 			j.setMsg("添加成功！");
 		} catch (Exception e) {
+			e.printStackTrace();
 			j.setMsg(e.getMessage());
 		}
 		return j;
 	}
-	
+
+
+	private String getOssFilePath(String fileType,String fileName){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		String path = fileType+"/"+calendar.get(Calendar.YEAR)+"/"+calendar.get(Calendar.MONTH)+1+"/"+calendar.get(Calendar.DAY_OF_MONTH)+"/"+fileName;
+		return path;
+	}
 	
 	/**
 	 * 转发美拍
