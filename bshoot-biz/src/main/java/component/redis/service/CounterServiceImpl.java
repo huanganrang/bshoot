@@ -104,7 +104,7 @@ public class CounterServiceImpl implements CounterServiceI{
     public List<BshootCounter> getCounterByBshoots(List<String> bshootIds) throws CounterException {
         try{
             Map<String,Map<byte[],byte[]>> results = redisService.hGetAll(bshootIds);
-            List<BshootCounter> bshoots = new ArrayList<>();
+            List<BshootCounter> bshoots = new ArrayList<BshootCounter>();
             Field[] fields = BshootCounter.class.getDeclaredFields();
             for(String bshootId:bshootIds){
                 BshootCounter bshootCounter = new BshootCounter();

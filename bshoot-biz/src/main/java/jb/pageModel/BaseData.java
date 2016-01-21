@@ -23,7 +23,7 @@ public class BaseData implements java.io.Serializable{
 	private String codeName;
 	@ApiModelProperty("描述")
 	private String description;
-	private List<BaseData> children = new ArrayList<>();
+	private List<BaseData> children = new ArrayList<BaseData>();
 	public String getId() {
 		return id;
 	}

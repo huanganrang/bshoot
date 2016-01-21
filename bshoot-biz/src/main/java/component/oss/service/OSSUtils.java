@@ -8,10 +8,7 @@ import com.aliyun.oss.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -34,7 +31,7 @@ public class OSSUtils {
     private final static String IPA_CONTENT_TYPE = "application/vnd.iphone";
     private final static long cacheTime = 360 * 24 * 60 * 60 * 1000L;
 
-    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("oss");
+    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("osscfg");
 
     public static String getOssProperty(String key){return resourceBundle.getString(key);};
 
@@ -151,6 +148,17 @@ public class OSSUtils {
         }
         return null;
     }
+
+
+    public PutObjectResult uploadStream(String bucketName, String key, InputStream input){
+        PutObjectResult putObjectResult = ossClient.putObject(bucketName,key,input,new ObjectMetadata());
+        return putObjectResult;
+    }
+    public PutObjectResult uploadStream(String key, InputStream input){
+        PutObjectResult putObjectResult = ossClient.putObject(bucketName,key,input,new ObjectMetadata());
+        return putObjectResult;
+    }
+
 
     /**
      * 批量文件上传
