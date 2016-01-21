@@ -96,6 +96,7 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		params.put("id", id);
 		TbshootPraise t = bshootPraiseDao.get("from TbshootPraise t  where t.id = :id", params);
 		BshootPraise o = new BshootPraise();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

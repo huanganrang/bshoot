@@ -81,6 +81,7 @@ public class BshootToSquareServiceImpl extends BaseServiceImpl<BshootToSquare> i
 		params.put("id", id);
 		TbshootToSquare t = bshootToSquareDao.get("from TbshootToSquare t  where t.id = :id", params);
 		BshootToSquare o = new BshootToSquare();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

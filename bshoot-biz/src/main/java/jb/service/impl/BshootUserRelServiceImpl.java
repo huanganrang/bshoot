@@ -73,6 +73,7 @@ public class BshootUserRelServiceImpl extends BaseServiceImpl<BshootUserRel> imp
 		params.put("id", id);
 		TbshootUserRel t = bshootUserRelDao.get("from TbshootUserRel t  where t.id = :id", params);
 		BshootUserRel o = new BshootUserRel();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

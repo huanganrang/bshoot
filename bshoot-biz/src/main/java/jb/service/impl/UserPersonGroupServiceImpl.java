@@ -63,6 +63,7 @@ public class UserPersonGroupServiceImpl extends BaseServiceImpl<UserPersonGroup>
         params.put("id", id);
         TuserPersonGroup t = userPersonGroupDao.get("from TuserPersonGroup t  where t.id = :id", params);
         UserPersonGroup o = new UserPersonGroup();
+        if(null!=t)
         BeanUtils.copyProperties(t, o);
         return o;
     }

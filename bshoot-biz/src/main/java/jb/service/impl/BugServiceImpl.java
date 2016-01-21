@@ -112,6 +112,7 @@ public class BugServiceImpl implements BugServiceI {
 		params.put("id", id);
 		Tbug t = bugDao.get("from Tbug t join fetch t.tbugtype bugType where t.id = :id", params);
 		Bug b = new Bug();
+		if(null!=t)
 		BeanUtils.copyProperties(t, b, new String[] { "note" });
 		b.setNote(ClobUtil.getString(t.getNote()));
 		b.setTypeId(t.getTbugtype().getId());

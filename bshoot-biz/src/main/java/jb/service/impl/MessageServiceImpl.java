@@ -92,6 +92,7 @@ public class MessageServiceImpl extends BaseServiceImpl<Message> implements Mess
 		params.put("id", id);
 		Tmessage t = messageDao.get("from Tmessage t  where t.id = :id", params);
 		Message o = new Message();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

@@ -99,6 +99,7 @@ public class ApiTestServiceImpl extends BaseServiceImpl<ApiTest> implements ApiT
 	public ApiTest get(String id) {
 		TapiTest t = apiTestDao.get(TapiTest.class, id);
 		ApiTest o = new ApiTest();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}
@@ -148,6 +149,7 @@ public class ApiTestServiceImpl extends BaseServiceImpl<ApiTest> implements ApiT
 		params.put("name", name);
 		TapiTest t = apiTestDao.get("from TapiTest t where t.name = :name", params);
 		ApiTest o = new ApiTest();
+		if(null!=o)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

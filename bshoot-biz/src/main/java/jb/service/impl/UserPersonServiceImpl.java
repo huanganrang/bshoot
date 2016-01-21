@@ -77,6 +77,7 @@ public class UserPersonServiceImpl extends BaseServiceImpl<UserPerson> implement
 		params.put("id", id);
 		TuserPerson t = userPersonDao.get("from TuserPerson t  where t.id = :id", params);
 		UserPerson o = new UserPerson();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

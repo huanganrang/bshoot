@@ -82,6 +82,7 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 		params.put("id", id);
 		TuserFriendTime t = userFriendTimeDao.get("from TuserFriendTime t  where t.id = :id", params);
 		UserFriendTime o = new UserFriendTime();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

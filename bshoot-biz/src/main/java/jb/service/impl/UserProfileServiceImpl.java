@@ -73,6 +73,7 @@ public class UserProfileServiceImpl extends BaseServiceImpl<UserProfile> impleme
 		params.put("id", id);
 		TuserProfile t = userProfileDao.get("from TuserProfile t  where t.id = :id", params);
 		UserProfile o = new UserProfile();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

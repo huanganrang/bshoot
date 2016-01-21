@@ -72,6 +72,7 @@ public class UserPersonTimeServiceImpl extends BaseServiceImpl<UserPersonTime> i
 		params.put("id", id);
 		TuserPersonTime t = userPersonTimeDao.get("from TuserPersonTime t  where t.id = :id", params);
 		UserPersonTime o = new UserPersonTime();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

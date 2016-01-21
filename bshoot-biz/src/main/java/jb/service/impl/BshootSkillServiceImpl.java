@@ -71,6 +71,7 @@ public class BshootSkillServiceImpl extends BaseServiceImpl<BshootSkill> impleme
 		params.put("id", id);
 		TbshootSkill t = bshootSkillDao.get("from TbshootSkill t  where t.id = :id", params);
 		BshootSkill o = new BshootSkill();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

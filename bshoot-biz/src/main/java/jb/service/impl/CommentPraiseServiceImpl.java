@@ -97,6 +97,7 @@ public class CommentPraiseServiceImpl extends BaseServiceImpl<CommentPraise> imp
 		params.put("id", id);
 		TcommentPraise t = commentPraiseDao.get("from TcommentPraise t  where t.id = :id", params);
 		CommentPraise o = new CommentPraise();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

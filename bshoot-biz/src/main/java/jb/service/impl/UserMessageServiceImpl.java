@@ -85,6 +85,7 @@ public class UserMessageServiceImpl extends BaseServiceImpl<UserMessage> impleme
 		params.put("id", id);
 		TuserMessage t = userMessageDao.get("from TuserMessage t  where t.id = :id", params);
 		UserMessage o = new UserMessage();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

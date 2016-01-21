@@ -82,6 +82,7 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 		params.put("id", id);
 		TuserMobilePerson t = userMobilePersonDao.get("from TuserMobilePerson t  where t.id = :id", params);
 		UserMobilePerson o = new UserMobilePerson();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

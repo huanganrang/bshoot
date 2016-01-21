@@ -84,6 +84,7 @@ public class BshootRegionServiceImpl extends BaseServiceImpl<BshootRegion> imple
 		params.put("id", id);
 		TbshootRegion t = bshootRegionDao.get("from TbshootRegion t  where t.id = :id", params);
 		BshootRegion o = new BshootRegion();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

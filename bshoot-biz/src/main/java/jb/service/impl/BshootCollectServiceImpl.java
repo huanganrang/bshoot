@@ -101,6 +101,7 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 		params.put("id", id);
 		TbshootCollect t = bshootCollectDao.get("from TbshootCollect t  where t.id = :id", params);
 		BshootCollect o = new BshootCollect();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}
@@ -149,6 +150,7 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 		TbshootCollect t = bshootCollectDao.get("from TbshootCollect t  where t.bshootId = :bshootId and t.userId = :userId", params);
 		if(t==null)return null;
 		BshootCollect o = new BshootCollect();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

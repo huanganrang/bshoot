@@ -86,6 +86,7 @@ public class UserPraiseRecordServiceImpl extends BaseServiceImpl<UserPraiseRecor
 		params.put("id", id);
 		TuserPraiseRecord t = userPraiseRecordDao.get("from TuserPraiseRecord t  where t.id = :id", params);
 		UserPraiseRecord o = new UserPraiseRecord();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

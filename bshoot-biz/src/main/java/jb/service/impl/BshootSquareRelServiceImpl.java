@@ -73,6 +73,7 @@ public class BshootSquareRelServiceImpl extends BaseServiceImpl<BshootSquareRel>
 		params.put("id", id);
 		TbshootSquareRel t = bshootSquareRelDao.get("from TbshootSquareRel t  where t.id = :id", params);
 		BshootSquareRel o = new BshootSquareRel();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

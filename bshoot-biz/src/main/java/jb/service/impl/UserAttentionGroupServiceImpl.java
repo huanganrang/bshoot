@@ -62,6 +62,7 @@ public class UserAttentionGroupServiceImpl extends BaseServiceImpl<UserAttention
         params.put("id", id);
         TuserAttentionGroup t = userAttentionGroupDao.get("from TuserAttentionGroup t  where t.id = :id", params);
         UserAttentionGroup o = new UserAttentionGroup();
+        if(null!=t)
         BeanUtils.copyProperties(t, o);
         return o;
     }

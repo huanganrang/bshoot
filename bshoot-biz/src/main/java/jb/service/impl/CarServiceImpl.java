@@ -73,6 +73,7 @@ public class CarServiceImpl extends BaseServiceImpl<Car> implements CarServiceI 
 		params.put("id", id);
 		Tcar t = carDao.get("from Tcar t  where t.id = :id", params);
 		Car o = new Car();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

@@ -69,6 +69,7 @@ public class MessageCountServiceImpl extends BaseServiceImpl<MessageCount> imple
 		params.put("id", id);
 		TmessageCount t = messageCountDao.get("from TmessageCount t  where t.id = :id", params);
 		MessageCount o = new MessageCount();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

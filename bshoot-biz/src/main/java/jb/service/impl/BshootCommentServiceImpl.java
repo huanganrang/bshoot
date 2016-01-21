@@ -174,6 +174,7 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 		params.put("id", id);
 		TbshootComment t = bshootCommentDao.get("from TbshootComment t  where t.id = :id", params);
 		BshootComment o = new BshootComment();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

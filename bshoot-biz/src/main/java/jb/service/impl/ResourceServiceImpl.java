@@ -213,6 +213,7 @@ public class ResourceServiceImpl implements ResourceServiceI {
 		params.put("id", id);
 		Tresource t = resourceDao.get("from Tresource t left join fetch t.tresource resource left join fetch t.tresourcetype resourceType where t.id = :id", params);
 		Resource r = new Resource();
+		if(null!=t)
 		BeanUtils.copyProperties(t, r);
 		if (t.getTresource() != null) {
 			r.setPid(t.getTresource().getId());

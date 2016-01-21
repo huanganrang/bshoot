@@ -75,6 +75,7 @@ public class BasedataServiceImpl implements BasedataServiceI {
 	public BaseData get(String id) {
 		BaseData bd  = new BaseData();
 		Tbasedata basedata = basedataDao.get(Tbasedata.class, id);
+		if(null!=basedata)
 		BeanUtils.copyProperties(basedata, bd, new String[] { "basetypeCode" });
 		bd.setBasetypeCode(basedata.getBaseType().getCode());
 		bd.setCodeName(basedata.getBaseType().getName());

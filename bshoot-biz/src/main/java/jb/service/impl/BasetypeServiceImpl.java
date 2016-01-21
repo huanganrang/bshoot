@@ -28,6 +28,7 @@ public class BasetypeServiceImpl implements BasetypeServiceI {
 	public BaseType get(String id) {
 		BaseType bt  = new BaseType();
 		Tbasetype tbt = basetypeDao.get(Tbasetype.class, id);
+		if(null!=tbt)
 		BeanUtils.copyProperties(tbt, bt);
 		return bt;
 	}

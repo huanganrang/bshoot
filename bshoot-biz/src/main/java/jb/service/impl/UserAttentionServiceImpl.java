@@ -78,6 +78,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		params.put("id", id);
 		TuserAttention t = userAttentionDao.get("from TuserAttention t  where t.id = :id", params);
 		UserAttention o = new UserAttention();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}

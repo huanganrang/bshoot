@@ -51,6 +51,7 @@ public class UserHobbyServiceImpl extends BaseServiceImpl<UserHobby> implements 
 		params.put("userId", userId);
 		TuserHobby t = userHobbyDao.get("from TuserHobby t  where t.userId = :userId", params);
 		UserHobby o = new UserHobby();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}
@@ -101,6 +102,7 @@ public class UserHobbyServiceImpl extends BaseServiceImpl<UserHobby> implements 
 		params.put("id", id);
 		TuserHobby t = userHobbyDao.get("from TuserHobby t  where t.id = :id", params);
 		UserHobby o = new UserHobby();
+		if(null!=t)
 		BeanUtils.copyProperties(t, o);
 		return o;
 	}
