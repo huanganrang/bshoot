@@ -1,5 +1,6 @@
 package jb.interceptors;
 
+import component.redis.Namespace;
 import component.redis.service.RedisUserServiceImpl;
 import jb.absx.F;
 import jb.absx.UUID;
@@ -80,7 +81,7 @@ public class TokenManage {
 				token = new TokenWrap(tokenId,DEFAULT_TOKEN,"测试超级管理员",this);
 
 			}else {
-				token = redisUserService.getToken(tokenId);
+				token = redisUserService.getToken(Namespace.USER_LOGIN_TOKEN+":"+tokenId);
 			}
 		}else{
 			token = tokenMap.get(tokenId);
@@ -105,7 +106,7 @@ public class TokenManage {
 			redisUserService.setToken(wrap);
 		}else {
 			wrap.retime();
-			tokenMap.putIfAbsent(tokenId, wrap);
+			tokenMap.putIfAbsent(Namespace.USER_LOGIN_TOKEN+":"+tokenId, wrap);
 		}
 		return tokenId;
 	}

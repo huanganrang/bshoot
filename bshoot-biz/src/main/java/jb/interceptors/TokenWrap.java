@@ -9,6 +9,10 @@ public class TokenWrap  implements java.io.Serializable{
     private String uid;
     private long ctime;//上一次使用时间
     private TokenManage tokenManage;
+
+    public TokenWrap() {
+    }
+
     public TokenWrap(String tokenId,String uid,String name,TokenManage tokenManage){
         this.tokenId = tokenId;
         this.uid = uid;
