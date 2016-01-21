@@ -40,7 +40,7 @@ public class RecommendController extends  BaseController{
     public List<Bshoot> recommentHost(@ApiParam(value = "页数",required = true, defaultValue = "0")  @RequestParam Integer start,
                                       @ApiParam(value = "只看（-1全部/1图文/2视频/3音乐）",required = false)  @RequestParam Integer fileType,
                                       @ApiParam(value = "看同兴趣（0全部/1是）",required = false)  @RequestParam Integer interested,
-                                      @ApiIgnore HttpServletRequest request) {
+                                      @ApiParam(value="tokenId",required = true) @RequestParam String tokenId,@ApiIgnore HttpServletRequest request) {
         SessionInfo sessionInfo = getSessionInfo(request);
         return  recommendService.recommendHot(sessionInfo.getId(),start,fileType,interested);
     }
@@ -50,8 +50,8 @@ public class RecommendController extends  BaseController{
     @ApiOperation(value = "新人推荐", notes = "新人推荐", position = 2,httpMethod = "POST", response = RecommendUser.class,produces = "application/json; charset=utf-8")
     @RequestMapping("/recommendUser")
     @ResponseBody
-    public List<RecommendUser> recommendUser(@ApiIgnore HttpSession session) {
-        SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+    public List<RecommendUser> recommendUser(@ApiParam(value="tokenId",required = true) @RequestParam String tokenId,@ApiIgnore HttpServletRequest request ){
+        SessionInfo sessionInfo = getSessionInfo(request);
         return  recommendService.recommendUser(sessionInfo.getId());
     }
 
@@ -59,7 +59,7 @@ public class RecommendController extends  BaseController{
     @ApiOperation(value = "首页推荐", notes = "首页推荐", position = 3,httpMethod = "POST", response = Bshoot.class,produces = "application/json; charset=utf-8")
     @RequestMapping("/recommend")
     @ResponseBody
-    public List<Bshoot> recommend(@ApiParam(value = "页数",required = true, defaultValue = "0")   @RequestParam Integer start,@ApiIgnore HttpServletRequest request) {
+    public List<Bshoot> recommend(@ApiParam(value = "页数",required = true, defaultValue = "0")   @RequestParam Integer start,@ApiParam(value="tokenId",required = true) @RequestParam String tokenId,@ApiIgnore HttpServletRequest request) {
         SessionInfo sessionInfo = getSessionInfo(request);
         return  recommendService.recommend(sessionInfo.getId(),start,6);
     }

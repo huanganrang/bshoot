@@ -164,9 +164,9 @@ public class UserHobbyController extends BaseController {
 	@ApiOperation(value = "保存用户兴趣", notes = "保存用户兴趣", position = 2,httpMethod = "POST",response = Json.class,produces = "application/json; charset=utf-8")
 	@RequestMapping("/saveUserHobby")
 	@ResponseBody
-	public Json saveUserHobby(@ApiParam(value = "兴趣列表(逗号分割，如:HO101,HO201,HO301)",required = true) @RequestParam String hobbies,@ApiIgnore HttpSession session){
+	public Json saveUserHobby(@ApiParam(value = "兴趣列表(逗号分割，如:HO101,HO201,HO301)",required = true) @RequestParam String hobbies,@ApiParam(value="tokenId",required = true) @RequestParam String tokenId,@ApiIgnore HttpServletRequest request){
 		Json j = new Json();
-		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		SessionInfo sessionInfo = getSessionInfo(request);
 		UserHobby userHobby = new UserHobby();
 		userHobby.setUserId(sessionInfo.getId());
 		userHobby.setHobbyType(hobbies);

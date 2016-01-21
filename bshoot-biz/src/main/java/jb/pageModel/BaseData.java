@@ -1,16 +1,27 @@
 package jb.pageModel;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
+@ApiModel("BaseData")
 public class BaseData implements java.io.Serializable{
+	@ApiModelProperty("id")
 	private String id;
+	@ApiModelProperty("父级id")
 	private String pid;
+	@ApiModelProperty("名称")
 	private String name;
+	@ApiModelProperty("序号")
 	private Integer seq;
+	@ApiModelProperty("类型编码")
 	private String basetypeCode;
+	@ApiModelProperty("编码名称")
 	private String codeName;
+	@ApiModelProperty("描述")
 	private String description;
 	private List<BaseData> children = new ArrayList<>();
 	public String getId() {

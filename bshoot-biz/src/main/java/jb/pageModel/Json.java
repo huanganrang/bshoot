@@ -1,5 +1,7 @@
 package jb.pageModel;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import jb.listener.Application;
 
 /**
@@ -12,13 +14,18 @@ import jb.listener.Application;
  * 
  */
 @SuppressWarnings("serial")
+@ApiModel("Json")
 public class Json implements java.io.Serializable {
 
+	@ApiModelProperty("是否成功 true/false")
 	private boolean success = false;
-
+    @ApiModelProperty("消息")
 	private String msg = "";
+	@ApiModelProperty("错误代码")
 	private String errorCode;
+	@ApiModelProperty("错误消息")
 	private String errorMsg;
+	@ApiModelProperty("返回对象")
 	private Object obj = null;
 	
 	public void success(){
