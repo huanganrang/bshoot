@@ -71,12 +71,13 @@ public class TokenInterceptor implements HandlerInterceptor {
 		if (url.indexOf("/baseController/") > -1 || excludeUrls.contains(url)) {// 如果要访问的资源是不需要验证的
 			return true;
 		}
-		String tokenId = request.getParameter(TokenManage.TOKEN_FIELD);		
-		if(F.empty(tokenId) || !tokenManage.validToken(tokenId)) {
+		String tokenId = request.getParameter(TokenManage.TOKEN_FIELD);
+		boolean result = false;
+		if (F.empty(tokenId) || !(result = tokenManage.validToken(tokenId))) {
 			request.getRequestDispatcher("/api/apiCommon/error").forward(request, response);
 			return false;
 		}		
-		return tokenManage.validToken(tokenId);
+		return result;
 	}
 
 	public void setTokenManage(TokenManage tokenManage) {

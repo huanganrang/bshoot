@@ -5,7 +5,8 @@ import jb.listener.Application;
 
 public abstract class PathUtil {
 	public static String getBathPath(){
-		return Application.getString("SV200");
+		return "http://bshoot.oss-cn-shanghai.aliyuncs.com/";
+		//return Application.getString("SV200");
 	}
 	public static String getBshootPath(String dbPath){
 		if(F.empty(dbPath))return null;
@@ -14,7 +15,7 @@ public abstract class PathUtil {
 		for(String str : dbPaths) {
 			if(F.empty(str)) continue;
 			sb.append(";");
-			sb.append(getBathPath()+"/"+Constants.UPLOADFILE+"/"+str);
+			sb.append(getBathPath()+str);
 			
 		}
 		
@@ -23,12 +24,12 @@ public abstract class PathUtil {
 	
 	public static String getHeadImagePath(String dbPath){
 		if(F.empty(dbPath))return null;
-		return getBathPath()+"/"+dbPath;
+		return getBathPath()+dbPath;
 	}
 	
 	public static String getBshootSquarePath(String dbPath){
 		if(F.empty(dbPath))return null;
-		return getBathPath()+"/"+Constants.UPLOADFILE_SQUARE+"/"+dbPath;
+		return getBathPath()+dbPath;
 	}
 	
 }

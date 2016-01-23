@@ -54,7 +54,9 @@ public class TokenManage {
 	}
 	
 	public boolean validToken(String tid){
-		return tokenMap.get(tid)==null?false:true;
+		boolean flag = redisUserService.getToken(tid)==null?false:true;
+		if(flag)redisUserService.refresh(tid);
+		return flag;
 	}
 	
 	public String getName(String tid){

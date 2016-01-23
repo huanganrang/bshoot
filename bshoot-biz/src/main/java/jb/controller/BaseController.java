@@ -32,6 +32,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -223,7 +224,12 @@ public class BaseController {
 		SessionInfo s = tokenManage.getSessionInfo(request);
 		return s;
 	}
-
+	protected String getOssFilePath(String fileType,String fileName){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		String path = fileType+"/"+calendar.get(Calendar.YEAR)+"/"+calendar.get(Calendar.MONTH)+1+"/"+calendar.get(Calendar.DAY_OF_MONTH)+"/"+fileName;
+		return path;
+	}
 	protected  String buildToken(String userId,String userName){
 		return tokenManage.buildToken(userId,userName);
 	}
