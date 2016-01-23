@@ -72,7 +72,8 @@ public class ApiUserController extends BaseController {
 			User u = userService.login(user);
 			if (u != null) {
 				String tid = buildToken(user.getId(),user.getName());
-				j.setObj(tid);
+				user.setTokenId(tid);
+				j.setObj(user);
 				j.setSuccess(true);
 				j.setMsg("登陆成功！");
 			} else {

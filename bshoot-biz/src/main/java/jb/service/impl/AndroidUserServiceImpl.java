@@ -1,8 +1,12 @@
 package jb.service.impl;
 
+import component.redis.Namespace;
 import component.redis.service.RedisServiceImpl;
+import component.redis.service.RedisUserServiceImpl;
 import jb.interceptors.TokenManage;
+import jb.interceptors.TokenWrap;
 import jb.service.UserServiceI;
+import jb.util.IpUtil;
 import org.androidpn.server.model.User;
 import org.androidpn.server.service.UserExistsException;
 import org.androidpn.server.service.UserNotFoundException;
@@ -12,6 +16,8 @@ import org.androidpn.server.xmpp.session.SessionManager;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.annotation.Resource;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,12 +25,12 @@ import java.util.List;
 public class AndroidUserServiceImpl implements UserService {
 	private UserServiceI userService;
 	protected SessionManager sessionManager;
-	private RedisServiceImpl redisService;
+	private RedisUserServiceImpl redisUserService;
 	public AndroidUserServiceImpl(){
 		sessionManager = SessionManager.getInstance();
 		WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
 		userService = wac.getBean(UserServiceI.class);
-		redisService = wac.getBean(RedisServiceImpl.class);
+		redisUserService = wac.getBean(RedisUserServiceImpl.class);
 	}
 
 	@Override
@@ -52,10 +58,12 @@ public class AndroidUserServiceImpl implements UserService {
 			user.setPassword(psd);
 			return user;
 		}
-		if(userService.login(user1)!=null){
+		TokenWrap tokenWrap = redisUserService.getToken(psd);
+		if (tokenWrap != null && tokenWrap.getUid().equals(u)) {
 			user.setPassword(psd);
-		}else{
-			user.setPassword("");
+			tokenWrap.setServerHost(IpUtil.getLocalHost());
+			redisUserService.setUserConnect(u,IpUtil.getLocalHost());
+			return user;
 		}
 		return user;
 		
@@ -83,5 +91,4 @@ public class AndroidUserServiceImpl implements UserService {
 		//System.out.println("11111111111111");
 		return null;
 	}
-
 }

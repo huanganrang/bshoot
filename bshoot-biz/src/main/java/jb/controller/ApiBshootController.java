@@ -239,6 +239,7 @@ public class ApiBshootController extends BaseController {
 			}
 			j.setSuccess(true);
 			j.setMsg("添加成功！");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			j.setMsg(e.getMessage());

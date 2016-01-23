@@ -5,6 +5,9 @@ import component.redis.service.RedisUserServiceImpl;
 import jb.absx.F;
 import jb.absx.UUID;
 import jb.pageModel.SessionInfo;
+import jb.service.UserServiceI;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -81,7 +84,7 @@ public class TokenManage {
 				token = new TokenWrap(tokenId,DEFAULT_TOKEN,"测试超级管理员",this);
 
 			}else {
-				token = redisUserService.getToken(Namespace.USER_LOGIN_TOKEN+":"+tokenId);
+				token = redisUserService.getToken(tokenId);
 			}
 		}else{
 			token = tokenMap.get(tokenId);
@@ -106,7 +109,7 @@ public class TokenManage {
 			redisUserService.setToken(wrap);
 		}else {
 			wrap.retime();
-			tokenMap.putIfAbsent(Namespace.USER_LOGIN_TOKEN+":"+tokenId, wrap);
+			tokenMap.putIfAbsent(tokenId, wrap);
 		}
 		return tokenId;
 	}
@@ -115,7 +118,10 @@ public class TokenManage {
 		redisUserService.refresh(token);
 	}
 
-
+	public static TokenManage getTokenManage(){
+		WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
+		return wac.getBean(TokenManage.class);
+	}
 
 	/**
 	 * 回收空闲数据源

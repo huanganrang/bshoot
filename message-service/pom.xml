@@ -18,6 +18,11 @@
             <artifactId>bshoot-biz</artifactId>
             <version>0.0.1-Release</version>
         </dependency>
+        <dependency>
+            <groupId>org.androidpn</groupId>
+            <artifactId>androidpn-server</artifactId>
+            <version>0.5.0</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>message-service</finalName>

@@ -245,4 +245,16 @@ public class MessageServiceImpl extends BaseServiceImpl<Message> implements Mess
 		return message.getId();
 	}
 
+	@Override
+	public boolean sendMessage(String userId,Object message) {
+		if(message == null)return false;
+		String messageString = null;
+		if(message instanceof String){
+			messageString = message.toString();
+		}else{
+			messageString = JSON.toJSONString(message);
+		}
+		return messageService.sendMessage(userId,messageString);
+	}
+
 }
