@@ -68,7 +68,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 		String url = requestUri.substring(contextPath.length());
 		
 
-		if (url.indexOf("/baseController/") > -1 || excludeUrls.contains(url)) {// 如果要访问的资源是不需要验证的
+		if (url.indexOf("/baseController/") > -1 || excludeUrls.contains(url)||url.indexOf("/apiTestController") > -1) {// 如果要访问的资源是不需要验证的
 			return true;
 		}
 		String tokenId = request.getParameter(TokenManage.TOKEN_FIELD);
