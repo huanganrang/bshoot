@@ -239,6 +239,7 @@ public class ApiBshootController extends BaseController {
 			}
 			j.setSuccess(true);
 			j.setMsg("添加成功！");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			j.setMsg(e.getMessage());
@@ -247,12 +248,7 @@ public class ApiBshootController extends BaseController {
 	}
 
 
-	private String getOssFilePath(String fileType,String fileName){
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
-		String path = fileType+"/"+calendar.get(Calendar.YEAR)+"/"+calendar.get(Calendar.MONTH)+1+"/"+calendar.get(Calendar.DAY_OF_MONTH)+"/"+fileName;
-		return path;
-	}
+
 	
 	/**
 	 * 转发美拍

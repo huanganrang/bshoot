@@ -1,6 +1,7 @@
 package jb.controller;
 
 import component.message.service.IMessageService;
+import component.oss.service.OSSService;
 import component.redis.service.RedisUserServiceImpl;
 import jb.absx.F;
 import jb.interceptors.TokenManage;
@@ -72,7 +73,8 @@ public class ApiUserController extends BaseController {
 			User u = userService.login(user);
 			if (u != null) {
 				String tid = buildToken(user.getId(),user.getName());
-				j.setObj(tid);
+				user.setTokenId(tid);
+				j.setObj(user);
 				j.setSuccess(true);
 				j.setMsg("登陆成功！");
 			} else {
@@ -158,17 +160,14 @@ public class ApiUserController extends BaseController {
 	 * @param headImageFile
 	 */
 	private void uploadFile(HttpServletRequest request,User user,MultipartFile headImageFile){
-		if(headImageFile==null||headImageFile.isEmpty())
+		if (headImageFile == null || headImageFile.isEmpty())
 			return;
-		String realPath = request.getSession().getServletContext().getRealPath("/"+Constants.UPLOADFILE_HEADIMAGE+"/"+user.getName());  
-		File file = new File(realPath);
-		if(!file.exists())
-			file.mkdir();
 		String suffix = headImageFile.getOriginalFilename().substring(headImageFile.getOriginalFilename().lastIndexOf("."));
-		String fileName = user.getName()+suffix;		
-		 try {
-			FileUtils.copyInputStreamToFile(headImageFile.getInputStream(), new File(realPath, fileName));
-			user.setHeadImage(Constants.UPLOADFILE_HEADIMAGE+"/"+user.getName()+"/"+fileName);
+		String fileName = user.getName() + suffix;
+		try {
+			String path = Constants.UPLOADFILE_HEADIMAGE + "/" + user.getName() + "/" + fileName;
+			OSSService.getInstance().uploadFile(path, headImageFile.getInputStream());
+			user.setHeadImage(path);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -368,7 +367,6 @@ public class ApiUserController extends BaseController {
 	/**
 	 * 我的美拍
 	 * 
-	 * @param user
 	 * @return
 	 */
 	@RequestMapping("/user_mybshoots")
@@ -452,7 +450,6 @@ public class ApiUserController extends BaseController {
 	
 	/**
 	 * 我关注的好友
-	 * @param bshoot
 	 * @param ph
 	 * @param request
 	 * @return
@@ -476,7 +473,6 @@ public class ApiUserController extends BaseController {
 	
 	/**
 	 * 我的粉丝
-	 * @param bshoot
 	 * @param ph
 	 * @param request
 	 * @return
@@ -536,7 +532,6 @@ public class ApiUserController extends BaseController {
 	/**
 	 * 美拍小技巧
 	 * 
-	 * @param user
 	 * @return
 	 */
 	@RequestMapping("/bshootSkill")

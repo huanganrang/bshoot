@@ -42,6 +42,7 @@ public class User implements java.io.Serializable {
 	private String mobile;
 
 	private String headImageAbsolute;
+	private String tokenId;
 
 	public Date getCreatedatetimeStart() {
 		return createdatetimeStart;
@@ -261,5 +262,17 @@ public class User implements java.io.Serializable {
 
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
+	}
+
+	public void setHeadImageAbsolute(String headImageAbsolute) {
+		this.headImageAbsolute = headImageAbsolute;
+	}
+
+	public String getTokenId() {
+		return tokenId;
+	}
+
+	public void setTokenId(String tokenId) {
+		this.tokenId = tokenId;
 	}
 }

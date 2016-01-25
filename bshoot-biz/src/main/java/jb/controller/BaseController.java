@@ -1,6 +1,5 @@
 package jb.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.mangofactory.swagger.annotations.ApiIgnore;
 import jb.absx.F;
 import jb.interceptors.TokenManage;
@@ -10,7 +9,6 @@ import jb.pageModel.*;
 import jb.service.MessageServiceI;
 import jb.service.UserServiceI;
 import jb.util.Constants;
-import jb.util.NotificationMesageUtil;
 import jb.util.StringEscapeEditor;
 import jb.util.Util;
 import org.apache.commons.io.FileUtils;
@@ -34,6 +32,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -175,7 +174,7 @@ public class BaseController {
 			message.setRelationId(relationId);
 			message.setUserId(attUserId);
 			TmessageCount tcount = messageService.addAndCount(message);
-			notification(attUserId, JSON.toJSONString(tcount));
+			messageService.sendMessage(attUserId, message);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -190,29 +189,13 @@ public class BaseController {
 			message.setUserId(attUserId);
 			message.setContent(content);
 			TmessageCount tcount = messageService.addAndCount(message);
-			notification(attUserId, JSON.toJSONString(tcount));
+			messageService.sendMessage(attUserId,message);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
-	
-	public void notification(String userId, String rs) {
-		if (!F.empty(rs)) {
-			NotificationMesageUtil.notifMessage(userService.get(userId).getName(), rs);
-//			NotificationManager notif = (NotificationManager) XmppServer
-//					.getInstance().getBean("notificationManager");
-//			Collection<ClientSession> sessions = SessionManager.getInstance()
-//					.getSessions();
-//			Set<ClientSession> usernames = new HashSet<ClientSession>();
-//			for (ClientSession cs : sessions) {
-//					usernames.add(cs);
-//
-//			}
-//			notif.sendNotifcationToSession("1234567890", "Admin", "timtle", rs,
-//					"uri",
-//					usernames.toArray(new ClientSession[usernames.size()]));
-		}
-	}
+
+
 	
 	public String uploadFile(HttpServletRequest request, String dirName, MultipartFile file,  String fileName){
 		if(file==null||file.isEmpty())
@@ -241,7 +224,12 @@ public class BaseController {
 		SessionInfo s = tokenManage.getSessionInfo(request);
 		return s;
 	}
-
+	protected String getOssFilePath(String fileType,String fileName){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		String path = fileType+"/"+calendar.get(Calendar.YEAR)+"/"+calendar.get(Calendar.MONTH)+1+"/"+calendar.get(Calendar.DAY_OF_MONTH)+"/"+fileName;
+		return path;
+	}
 	protected  String buildToken(String userId,String userName){
 		return tokenManage.buildToken(userId,userName);
 	}

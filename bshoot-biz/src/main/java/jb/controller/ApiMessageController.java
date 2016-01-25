@@ -5,7 +5,6 @@ import jb.service.BshootPraiseServiceI;
 import jb.service.MessageCountServiceI;
 import jb.service.MessageServiceI;
 import jb.service.UserServiceI;
-import jb.util.NotificationMesageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -168,7 +167,7 @@ public class ApiMessageController extends BaseController {
 		
 		Json j = new Json();
 		try {
-			NotificationMesageUtil.notifMessage(name, "{\"mnumber\":2, \"mtype\":\""+type+"\"}");
+			messageService.sendMessage(name, "{\"mnumber\":2, \"mtype\":\""+type+"\"}");
 			j.success();
 		} catch (Exception e) {
 			j.setMsg(e.getMessage());

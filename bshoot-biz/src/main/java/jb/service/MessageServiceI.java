@@ -97,4 +97,12 @@ public interface MessageServiceI {
 	 */
 	String addAndSendMessage(String mType,String userId,String relationId,String content);
 
+	/**
+	 * 发送消息
+	 * @param userId
+	 * @param message
+	 * @return
+	 */
+	boolean sendMessage(String userId,Object message);
+
 }

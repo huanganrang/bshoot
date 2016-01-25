@@ -7,6 +7,7 @@ public class TokenWrap  implements java.io.Serializable{
     private String tokenId;
     private String name;
     private String uid;
+    private String serverHost;
     private long ctime;//上一次使用时间
     private TokenManage tokenManage;
 
@@ -20,9 +21,12 @@ public class TokenWrap  implements java.io.Serializable{
         this.tokenManage =tokenManage;
     }
     public void retime(){
-        if(tokenManage.enableRedis){
+        if(tokenManage == null){
+            tokenManage = TokenManage.getTokenManage();
+        }
+        if (tokenManage != null && tokenManage.enableRedis) {
             tokenManage.refreshRedisToken(tokenId);
-        }else {
+        } else {
             ctime = System.currentTimeMillis();
         }
     }
@@ -37,5 +41,37 @@ public class TokenWrap  implements java.io.Serializable{
     }
     public String getUid() {
         return uid;
+    }
+
+    public String getServerHost() {
+        return serverHost;
+    }
+
+    public void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public void setCtime(long ctime) {
+        this.ctime = ctime;
+    }
+
+    public TokenManage getTokenManage() {
+        return tokenManage;
+    }
+
+    public void setTokenManage(TokenManage tokenManage) {
+        this.tokenManage = tokenManage;
+    }
+
+    public void setServerHost(String serverHost) {
+        this.serverHost = serverHost;
     }
 }

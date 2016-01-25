@@ -22,13 +22,11 @@ import java.util.Map;
 @Service
 public class IMessageServiceImpl extends Objectx implements IMessageService {
     @Resource
-    private RedisServiceImpl redisService;
-    @Resource
     private RedisUserServiceImpl redisUserService;
     public boolean sendMessage(String userId, String jsonText) {
-        String messageServerIp = (String)redisService.getString(Key.build(Namespace.USER_LOGIN_SERVER_HOST, userId));
+        String messageServerIp = redisUserService.getUserConnect(userId);
         if(F.empty(messageServerIp))return false;
-        String url = messageServerIp +":8080/messageCenterController/sendMessage";
+        String url = "http://"+messageServerIp +":8088/api/messageCenterController/sendMessage";
         Map<String,String> map = new HashMap<String,String>();
         map.put("userId",userId);
         map.put("content",jsonText);
