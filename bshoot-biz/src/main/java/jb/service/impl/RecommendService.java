@@ -184,6 +184,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
             for(int i=0;i<userEntities.size();i++){
                 userEntity = userEntities.get(i);
                 userEntityMap.put(userEntity.getId(),userEntity);
+                if(CollectionUtils.isNotEmpty(userEntity.getHobby()))
                 hobbies.addAll(userEntity.getHobby());
             }
             Map<String,BaseData> baseDatas = basedataService.getBaseDatas(hobbies,Map.class);
