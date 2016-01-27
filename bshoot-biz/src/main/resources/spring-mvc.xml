@@ -135,5 +135,7 @@
     </bean>
     <bean id="methodHandler" class="jb.exception.AnnotationMethodHandler">        
     </bean>
+	<!--消费者-->
+	<bean class="component.ons.service.BshootConsumer" init-method="init"/>
 
 </beans>

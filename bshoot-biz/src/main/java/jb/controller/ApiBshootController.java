@@ -1,5 +1,6 @@
 package jb.controller;
 
+import component.ons.service.BshootProducer;
 import component.oss.service.OSSService;
 import jb.absx.F;
 import jb.model.TbshootComment;
@@ -231,12 +232,16 @@ public class ApiBshootController extends BaseController {
 				bshoot.setBsIcon(bsIcon);
 			}
 			
-			List<String> attUserIds = bshootService.addBshoot(bshoot);	
+			List<String> attUserIds = bshootService.addBshoot(bshoot);
+
+			//TODO 异步做
+			BshootProducer.getInstance().send(bshoot);
+			/*
 			if(attUserIds != null && attUserIds.size() > 0) {
 				for(String attUserId : attUserIds) {
 					addMessage("MT02", attUserId, bshoot.getId(), "BSHOOT");
 				}
-			}
+			}*/
 			j.setSuccess(true);
 			j.setMsg("添加成功！");
 

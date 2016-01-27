@@ -217,7 +217,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		List<String> attUserIdList = new ArrayList<String>();
 		
 		this.add(bshoot);
-		
+		//TODO 都可以异步去做了
 		// 建立视频-广场主题对应关系
 		if(bshoot.getSquareIds() != null) {
 			String[] squareIds = bshoot.getSquareIds().split(",");

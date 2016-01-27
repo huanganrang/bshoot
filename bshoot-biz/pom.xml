@@ -398,6 +398,11 @@
             <artifactId>quartz</artifactId>
             <version>1.7.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.aliyun.openservices</groupId>
+            <artifactId>ons-client</artifactId>
+            <version>1.1.11</version>
+        </dependency>
         <!--swagger-->
         <dependency>
             <groupId>com.mangofactory</groupId>
