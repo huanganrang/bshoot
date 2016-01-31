@@ -130,9 +130,9 @@ public class ApiTestServiceImpl extends BaseServiceImpl<ApiTest> implements ApiT
 		List<ApiTest> ol = new ArrayList<ApiTest>();
 		String hql = "";
 		if(F.empty(name)){
-			hql = " from TapiTest t";
+			hql = " from TapiTest t order by t.name";
 		}else{
-			hql = " from TapiTest t where t.name like %"+name+"%";
+			hql = " from TapiTest t where t.name like %"+name+"% order by t.name";
 		}
 		List<TapiTest> ts = apiTestDao.find(hql);
 		for (TapiTest t : ts){

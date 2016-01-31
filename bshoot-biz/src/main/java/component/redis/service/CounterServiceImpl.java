@@ -29,6 +29,11 @@ public class CounterServiceImpl implements CounterServiceI{
     }
 
     @Override
+    public void increment(String bshootId, CounterType countType, Integer num) throws CounterException {
+        this.changeCount(bshootId,countType,num);
+    }
+
+    @Override
     public void changeCount(String bshootId, CounterType countType, Integer num) throws CounterException {
         try {
             redisService.hincreby(bshootId, countType.getType(), num);

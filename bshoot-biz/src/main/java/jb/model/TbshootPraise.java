@@ -93,12 +93,12 @@ public class TbshootPraise implements java.io.Serializable{
 	public void setPraiseDatetime(java.util.Date praiseDatetime) {
 		this.praiseDatetime = praiseDatetime;
 	}
-	@Column(name = "is_delete", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
-	public int getPraiseNum() {
+	@Column(name = "bs_praise", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getPraiseNum() {
 		return praiseNum;
 	}
 
-	public void setPraiseNum(int praiseNum) {
+	public void setPraiseNum(Integer praiseNum) {
 		this.praiseNum = praiseNum;
 	}
 

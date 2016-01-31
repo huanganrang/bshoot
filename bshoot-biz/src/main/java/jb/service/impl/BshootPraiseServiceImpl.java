@@ -11,6 +11,8 @@ import jb.model.TbshootPraise;
 import jb.pageModel.*;
 import jb.service.BshootPraiseServiceI;
 import jb.service.MessageServiceI;
+import jb.service.UserPraiseRecordServiceI;
+import jb.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,8 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 	private MessageServiceI messageServiceImpl;
 	@Autowired
 	private BshootDaoI bshootDao;
+	@Autowired
+	private UserPraiseRecordServiceI userPraiseRecordService;
 
 	@Override
 	public DataGrid dataGrid(BshootPraise bshootPraise, PageHelper ph) {
@@ -69,24 +73,30 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		if(get(bshootPraise.getBshootId(), bshootPraise.getUserId())!=null)
 			return -1;
 		TbshootPraise t = new TbshootPraise();
-		BeanUtils.copyProperties(bshootPraise, t);
+		MyBeanUtils.copyProperties(bshootPraise, t, new String[] {},true);
 		t.setId(UUID.randomUUID().toString());
 		bshootPraise.setId(t.getId());
-		//t.setCreatedatetime(new Date());
 		t.setPraiseDatetime(new Date());
 		bshootPraiseDao.save(t);
 		updateCount(bshootPraise.getBshootId());
-		//动态的打赏计数+1
-		counterService.automicChangeCount(bshootPraise.getBshootId(), CounterType.PRAISE, 1, new FetchValue() {
+		//动态的打赏计数+n
+		counterService.automicChangeCount(bshootPraise.getBshootId(), CounterType.PRAISE, bshootPraise.getPraiseNum(), new FetchValue() {
 			@Override
 			public Integer fetchValue() {
 				return getCount(bshootPraise.getBshootId()).intValue();
 			}
 		});
+		UserPraiseRecord userPraiseRecord = new UserPraiseRecord();
+		userPraiseRecord.setPraiseNum(bshootPraise.getPraiseNum());
+		userPraiseRecord.setUserId(bshootPraise.getUserId());
+		userPraiseRecord.setPraiseType(UserPraiseRecord.PRAISE_TYPE_01); //打赏获取
+		userPraiseRecord.setRelationOutid(t.getId());
+		userPraiseRecordService.add(userPraiseRecord);
 		Tbshoot bshoot = bshootDao.get(Tbshoot.class,bshootPraise.getBshootId());
 		messageServiceImpl.addAndSendMessage(MessageServiceI.MT_04,bshoot.getUserId(),bshootPraise.getId(),"用户["+currentUser+"]打赏了您的动态");
 		return 1;
 	}
+
 
 
 
@@ -147,7 +157,9 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 	private Long getCount(String bshootId){
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bshootId", bshootId);
-		return bshootPraiseDao.count("select count(1) from TbshootPraise t where t.bshootId =:bshootId)", params);
+		Long l =  bshootPraiseDao.count("select sum(t.praiseNum) from TbshootPraise t where t.bshootId =:bshootId)", params);
+		if(l == null) l = 0L;
+		return l;
 	}
 
 	private void updateCountReduce(String bshootId){

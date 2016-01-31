@@ -3,7 +3,6 @@ package component.redis.service;
 import component.redis.exception.CounterException;
 import component.redis.model.BshootCounter;
 import component.redis.model.CounterType;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -19,6 +18,15 @@ public interface CounterServiceI {
      * @param countType
      */
     void increment(String bshootId,CounterType countType) throws CounterException;
+
+    /**
+     * 计数+n
+     * @param bshootId
+     * @param countType
+     * @param num
+     * @throws CounterException
+     */
+    void increment(String bshootId,CounterType countType,Integer num) throws CounterException;
 
     /**
      * 对动态指定计数的增加/减少

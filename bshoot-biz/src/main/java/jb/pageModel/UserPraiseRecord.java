@@ -5,6 +5,8 @@ import java.util.Date;
 @SuppressWarnings("serial")
 public class UserPraiseRecord implements java.io.Serializable {
 
+	public static String PRAISE_TYPE_01 = "PT01";//打赏
+
 	private static final long serialVersionUID = 5454155825314635342L;
 
 	private java.lang.String id;	
@@ -12,7 +14,7 @@ public class UserPraiseRecord implements java.io.Serializable {
 	private java.lang.String relationOutid;	
 	private java.lang.String relationChannel;	
 	private java.lang.Integer amount;	
-	private java.lang.String praiseType;	
+	private java.lang.String praiseType;
 	private java.lang.Integer praiseNum;	
 	private Date createDatetime;			
 	private Date updateDatetime;			
