@@ -78,7 +78,6 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		bshootPraise.setId(t.getId());
 		t.setPraiseDatetime(new Date());
 		bshootPraiseDao.save(t);
-		updateCount(bshootPraise.getBshootId());
 		//动态的打赏计数+n
 		counterService.automicChangeCount(bshootPraise.getBshootId(), CounterType.PRAISE, bshootPraise.getPraiseNum(), new FetchValue() {
 			@Override
@@ -124,7 +123,6 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 	public void delete(String id) {
 		final TbshootPraise t = bshootPraiseDao.get(TbshootPraise.class, id);
 		bshootPraiseDao.delete(t);
-		updateCountReduce(t.getBshootId());
 		//打赏计数-1,如果这里出了错，后面可以通过job去纠正
 		counterService.automicChangeCount(t.getBshootId(), CounterType.PRAISE, -1, new FetchValue() {
 			@Override
@@ -151,7 +149,7 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bshootId", bshootId);
 		params.put("id", bshootId);
-		bshootDao.executeSql("update bshoot t set t.bs_praise = (select count(*)+1 from bshoot_praise b where b.bshoot_id =:bshootId) where t.id=:id", params);
+		bshootDao.executeSql("update bshoot t set t.bs_praise = (select sum(b.bs_praise) from bshoot_praise b where b.bshoot_id =:bshootId) where t.id=:id", params);
 	}
 
 	private Long getCount(String bshootId){
@@ -159,6 +157,7 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		params.put("bshootId", bshootId);
 		Long l =  bshootPraiseDao.count("select sum(t.praiseNum) from TbshootPraise t where t.bshootId =:bshootId)", params);
 		if(l == null) l = 0L;
+		updateCount(bshootId);
 		return l;
 	}
 
