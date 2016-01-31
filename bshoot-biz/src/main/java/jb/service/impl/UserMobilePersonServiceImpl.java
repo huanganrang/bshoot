@@ -266,4 +266,66 @@ public class UserMobilePersonServiceImpl extends BaseServiceImpl<UserMobilePerso
 		return dg;
 	}
 
+	@Override
+	public DataGrid dataGridFriendMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		DataGrid dg = new DataGrid();
+		params.put("friendId",userMobilePerson.getFriendId());
+		String hql = "select u from Tuser u ,TuserMobilePerson t where u.id = t.userId and t.friendId = :friendId and t.isDelete=0";
+		List<Tuser> l = userDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
+		dg.setTotal(userDao.count("select count(*) " + hql.substring(8) , params));
+		List<User> ol = new ArrayList<User>();
+		if (l != null && l.size() > 0) {
+			for (Tuser t : l) {
+				UserAttention ua = new UserAttention();
+				ua.setUserId(t.getId());
+				ua.setAttUserId(userMobilePerson.getFriendId());
+				if(userAttentionService.isAttention(ua) == -1){
+					User o = new User();
+					BeanUtils.copyProperties(t, o);
+					ol.add(o);
+				}
+			}
+		}
+		dg.setRows(ol);
+		return dg;
+	}
+
+	@Override
+	public DataGrid dataGridFromMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph){
+		List<User> ol = new ArrayList<User>();
+		DataGrid dg = new DataGrid();
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("friendId",userMobilePerson.getFriendId());
+		String hql = "select u from Tuser u ,TuserMobilePerson t where u.id = t.userId and t.friendId = :friendId and t.isDelete=0";
+		List<Tuser> l = userDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
+		if (l != null && l.size() > 0) {
+			for (Tuser t : l) {
+				UserAttention ua = new UserAttention();
+				ua.setUserId(t.getId());
+				ua.setAttUserId(userMobilePerson.getFriendId());
+				if(userAttentionService.isAttention(ua) == -1){
+					Map<String, Object> params_1 = new HashMap<String, Object>();
+					params_1.put("friendId",t.getId());
+					String hql_1 = "select u from Tuser u ,TuserMobilePerson t where u.id = t.userId and t.friendId = :friendId and t.isDelete=0";
+					List<Tuser> l_1 = userDao.find(hql_1 + orderHql(ph), params_1, ph.getPage(), ph.getRows());
+					if (l_1 != null && l_1.size() > 0) {
+						for (Tuser ts : l_1) {
+							UserAttention us = new UserAttention();
+							us.setUserId(t.getId());
+							us.setAttUserId(userMobilePerson.getFriendId());
+							if (userAttentionService.isAttention(us) == -1) {
+								User o = new User();
+								BeanUtils.copyProperties(ts, o);
+								ol.add(o);
+							}
+						}
+					}
+				}
+			}
+		}
+		dg.setRows(ol);
+		return dg;
+	}
+
 }

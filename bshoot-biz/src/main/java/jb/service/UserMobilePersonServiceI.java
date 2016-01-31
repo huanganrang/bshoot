@@ -89,4 +89,18 @@ public interface UserMobilePersonServiceI {
 	 * @param userMobilePerson
 	 */
 	public DataGrid dataGridNoRegMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph);
+
+	/**
+	 * 查询把我添加进手机联系人并且没有关注我的用户
+	 *
+	 * @param userMobilePerson
+	 */
+	public DataGrid dataGridFriendMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph);
+
+	/**
+	 * 查询用户：用户手机通讯录上的人加了我进手机通讯录并且都没有关注我的用户
+	 *
+	 * @param userMobilePerson
+	 */
+	public DataGrid dataGridFromMobilePerson(UserMobilePerson userMobilePerson, PageHelper ph);
 }

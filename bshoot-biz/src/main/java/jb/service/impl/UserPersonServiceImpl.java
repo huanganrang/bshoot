@@ -154,6 +154,9 @@ public class UserPersonServiceImpl extends BaseServiceImpl<UserPerson> implement
 		if(!F.empty(userPerson.getUserId())){
 			hql +="where u.id = t.attUserId and t.userId = :userId and t.isDelete=0";
 			params.put("userId",userPerson.getUserId());
+		}else if(!F.empty(userPerson.getAttUserId())){//查询加了我人脉圈好友的人
+			hql +="where u.id = t.userId and t.attUserId = :userId";
+			params.put("userId",userPerson.getAttUserId());
 		}
 		List<Tuser> l = userDao.find(hql + orderHql(ph), params, ph.getPage(), ph.getRows());
 		dg.setTotal(userDao.count("select count(*) " + hql.substring(8) , params));
