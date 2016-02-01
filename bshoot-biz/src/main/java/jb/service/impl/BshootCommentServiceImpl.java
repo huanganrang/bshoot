@@ -1,5 +1,7 @@
 package jb.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import component.ons.service.ComCounterProducer;
 import component.redis.model.CounterType;
 import component.redis.service.CounterServiceI;
 import component.redis.service.FetchValue;
@@ -16,6 +18,7 @@ import jb.pageModel.BshootComment;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.service.BshootCommentServiceI;
+import jb.service.CounterHandler;
 import jb.service.MessageServiceI;
 import jb.util.Constants;
 import org.springframework.beans.BeanUtils;
@@ -25,7 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> implements BshootCommentServiceI {
+public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> implements BshootCommentServiceI,CounterHandler {
 
 	@Autowired
 	private BshootCommentDaoI bshootCommentDao;
@@ -157,8 +160,8 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 				return getCount(bshootComment.getBshootId()).intValue();
 			}
 		});
-		Tbshoot bshoot = bshootDao.get(Tbshoot.class,bshootComment.getBshootId());
-		messageServiceImpl.addAndSendMessage(MessageServiceI.MT_03,bshoot.getUserId(),bshootComment.getId(),"用户["+currentUser+"]评论了您的动态");
+		ComCounterProducer.getInstance().send(CounterType.COMMENT,t,t.getId());
+
 		return t;
 	}
 
@@ -248,5 +251,18 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("commentId", commentId);
 		commentPraiseDao.executeSql("delete from comment_praise where comment_id=:commentId", params);
+	}
+
+	@Override
+	public CounterType getCounterType() {
+		return CounterType.COMMENT;
+	}
+
+	@Override
+	public void handle(String message) {
+		BshootComment bshootComment = JSONObject.parseObject(message,BshootComment.class);
+		Tbshoot bshoot = bshootDao.get(Tbshoot.class,bshootComment.getBshootId());
+		Tuser tuser = userDao.get(Tuser.class,bshootComment.getUserId());
+		messageServiceImpl.addAndSendMessage(MessageServiceI.MT_03,bshoot.getUserId(),bshootComment.getId(),"用户["+tuser.getName()+"]评论了您的动态");
 	}
 }

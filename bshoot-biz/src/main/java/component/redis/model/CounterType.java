@@ -21,4 +21,13 @@ public enum CounterType {
     public String getDescription(){
         return this.description;
     }
+
+    public static CounterType getCounterType(String name){
+        for (CounterType counterType : CounterType.values()) {
+            if(counterType.toString().equals(name)){
+                return counterType;
+            }
+        }
+        return null;
+    }
 }
