@@ -85,13 +85,17 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 				return getCount(bshootPraise.getBshootId()).intValue();
 			}
 		});
+		Tbshoot bshoot = bshootDao.get(Tbshoot.class,bshootPraise.getBshootId());
 		UserPraiseRecord userPraiseRecord = new UserPraiseRecord();
 		userPraiseRecord.setPraiseNum(bshootPraise.getPraiseNum());
-		userPraiseRecord.setUserId(bshootPraise.getUserId());
+		userPraiseRecord.setUserId(bshoot.getUserId());
 		userPraiseRecord.setPraiseType(UserPraiseRecord.PRAISE_TYPE_01); //打赏获取
 		userPraiseRecord.setRelationOutid(t.getId());
 		userPraiseRecordService.add(userPraiseRecord);
-		Tbshoot bshoot = bshootDao.get(Tbshoot.class,bshootPraise.getBshootId());
+		userPraiseRecord.setId(null);
+		userPraiseRecord.setPraiseNum(-bshootPraise.getPraiseNum());
+		userPraiseRecord.setUserId(bshootPraise.getUserId());
+		userPraiseRecordService.add(userPraiseRecord);
 		messageServiceImpl.addAndSendMessage(MessageServiceI.MT_04,bshoot.getUserId(),bshootPraise.getId(),"用户["+currentUser+"]打赏了您的动态");
 		return 1;
 	}
