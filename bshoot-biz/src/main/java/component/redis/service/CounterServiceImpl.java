@@ -44,11 +44,22 @@ public class CounterServiceImpl implements CounterServiceI{
     }
 
     @Override
-    public boolean automicChangeCount(String bshootId,CounterType counterType,Integer num,FetchValue fetchValue) throws CounterException {
+    public void setCount(String bshootId, CounterType countType, Integer num, long expireTime) throws CounterException{
+        try{
+            redisService.putHash(bshootId, countType.getType(), num.toString());
+            redisService.expire(bshootId,expireTime,TimeUnit.SECONDS);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new CounterException("setCount has occured an exception，"+e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean automicChangeCount(String bshootId, CounterType counterType, Integer num, FetchValue fetchValue) throws CounterException {
         if(null==fetchValue) throw new CounterException("you must implemnts the FetchValue,tell me how to fetch the value!");
         try {
             //获得redis锁，并设置拥有时间600ms,等待锁时间1s
-            if(redisLock.lock("lock_"+bshootId,"1",600L,30000L)){
+            if(redisLock.lock("lock_"+bshootId,"1",600L,800L)){
                 Object countValue = redisService.getHashValue(bshootId,counterType.getType());
                 //1.先查看指定的count字段是否存在
                 if(null!=countValue){
@@ -156,6 +167,18 @@ public class CounterServiceImpl implements CounterServiceI{
 
     @Override
     public void deleteCounterByBshoot(String bshootId, CounterType counterType) throws CounterException {
+    }
 
+    @Override
+    public long getCountTime(String countKey) {
+        Object time = redisService.get(countKey);
+        if(null!=time)
+            return Long.valueOf((String) time);
+        return 0;
+    }
+
+    @Override
+    public void setCountTime(String countKey, Long time) {
+        redisService.set(countKey,time.toString());
     }
 }

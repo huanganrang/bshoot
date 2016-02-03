@@ -5,7 +5,9 @@ import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.pageModel.PraiseCommentRequest;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -59,7 +61,10 @@ public interface BshootPraiseServiceI {
 	 * @param id
 	 */
 	public void delete(String id);
-	
+
+	//分组统计
+	Map<String,Integer> countGroup(Date begin, Date end);
+
 	public BshootPraise get(String bshootId, String userId) ;
 
 	List<String> mePraiseCommentUser(PraiseCommentRequest praiseCommentRequest);

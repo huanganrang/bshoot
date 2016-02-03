@@ -4,6 +4,9 @@ import jb.pageModel.BshootCollect;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 
+import java.util.Date;
+import java.util.Map;
+
 /**
  * 
  * @author John
@@ -35,6 +38,9 @@ public interface BshootCollectServiceI {
 	 * @return
 	 */
 	public int deleteCollect(BshootCollect bshootCollect);
+
+	//分组统计
+	Map<String,Integer> countGroup(Date begin, Date end);
 
 	/**
 	 * 获得BshootCollect对象

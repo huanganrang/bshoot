@@ -1,5 +1,7 @@
 package jb.service.impl;
 
+import component.redis.model.BshootCounter;
+import component.redis.model.Counter;
 import component.redis.model.CounterType;
 import component.redis.service.CounterServiceI;
 import component.redis.service.FetchValue;
@@ -744,5 +746,70 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 				return bshoot.getBsPlay();
 			}
 		});
+	}
+
+	@Override
+	public void updateCountByType(String bshootId,int count,CounterType counterType){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id",bshootId);
+		String sql = "update bshoot  set :countField=:count where id=:id";
+		String countField=null;
+		if(counterType==CounterType.PRAISE){
+			countField = "bs_praise";
+		}else if(counterType==CounterType.COLLECT){
+			countField= "bs_collect";
+		}else if(counterType==CounterType.COMMENT){
+			countField= "bs_comment";
+		}else if(counterType==CounterType.SHARE){
+			countField= "bs_share";
+		}else if(counterType==CounterType.READ){
+			countField= "bs_read";
+		}else if(counterType==CounterType.FORWARD){
+			countField= "bs_forward";
+		}else if(counterType==CounterType.PLAY){
+			countField= "bs_play";
+		}
+		sql = sql.replace(":countField",countField);
+		params.put("count",count);
+		bshootDao.executeSql(sql,params);
+	}
+
+	@Override
+	public void updateCount(BshootCounter counter){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", counter.getBshootId());
+		StringBuffer sb = new StringBuffer();
+		if(counter.getPraiseCount()!=0) {
+			sb.append("bs_praise=:bsPraise");
+			params.put("bsPraise",counter.getPlayCount());
+		}
+		if(counter.getCollectCount()!=0) {
+			sb.append(",bs_comment=:bsComment");
+			params.put("bsComment",counter.getCollectCount());
+		}
+		if(counter.getCollectCount()!=0) {
+			sb.append(",bs_collect=:bsCollect");
+			params.put("bsCollect",counter.getCollectCount());
+		}
+		if(counter.getForwardCount()!=0) {
+			sb.append(",bs_forward=:bsForward");
+			params.put("bsForward",counter.getForwardCount());
+		}
+		if(counter.getShareCount()!=0) {
+			sb.append(",bs_share=:bsShare");
+			params.put("bsShare",counter.getShareCount());
+		}
+		if(counter.getReadCount()!=0) {
+			sb.append(",bs_read=:bsRead");
+			params.put("bsRead",counter.getReadCount());
+		}
+		if(counter.getPlayCount()!=0) {
+			sb.append(",bs_play=:bsPlay");
+			params.put("bsPlay",counter.getPlayCount());
+		}
+		if(sb.length()==0) return;
+		if(sb.indexOf(",")==0)
+			sb.deleteCharAt(0);
+        bshootDao.executeSql("update bshoot  set "+sb.toString()+" where t.id=:id",params);
 	}
 }

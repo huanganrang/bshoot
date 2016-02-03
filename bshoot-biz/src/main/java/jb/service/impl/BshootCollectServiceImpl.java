@@ -13,10 +13,12 @@ import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.service.BshootCollectServiceI;
 import jb.service.MessageServiceI;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.*;
 
 @Service
@@ -77,7 +79,6 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 		//t.setCreatedatetime(new Date());
 		t.setCollectDatetime(new Date());
 		bshootCollectDao.save(t);
-		updateCount(bshootCollect.getBshootId());
 		counterService.automicChangeCount(bshootCollect.getBshootId(), CounterType.COLLECT, 1, new FetchValue() {
 			@Override
 			public Integer fetchValue() {
@@ -92,7 +93,38 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 	private Long getCount(String bshootId){
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bshootId", bshootId);
-		return bshootDao.count("select count(1) from TbshootCollect t where t.bshootId =:bshootId)", params);
+		Long l =  bshootDao.count("select count(1) from TbshootCollect t where t.bshootId =:bshootId)", params);
+		if(l == null) l = 0L;
+		updateCount(bshootId);
+		return l;
+	}
+
+	//分组统计
+	@Override
+	public Map<String,Integer> countGroup(Date begin, Date end){
+		Map<String,Object> params = new HashMap<>();
+		params.put("startDate",begin);
+		params.put("endDate",end);
+		List<Map> result = bshootCollectDao.findBySql2Map("select t1.bshoot_id as bshootId,count(t1.bshoot_id) as count from bshoot_collect t1 where " +
+				"EXISTS(SELECT bshoot_id FROM bshoot_collect t2 " +
+				"where t1.bshoot_id=t2.bshoot_id " +
+				"and t2.collect_datetime>=:startDate and t2.collect_datetime<=:endDate) " +
+				"GROUP BY t1.bshoot_id", params);
+		if(CollectionUtils.isEmpty(result)) return  null;
+		Map<String,Integer> countGroup = new HashMap<>();
+		for(Map ele:result){
+			Set keySet = ele.keySet();
+			String bshootId = null;
+			Integer count = null;
+			for(Iterator it=keySet.iterator();it.hasNext();){
+				String key = (String) it.next();
+				if(key.equals("bshootId")) bshootId = (String) ele.get(key);
+				if(key.equals("count")) count = ((BigInteger) ele.get(key)).intValue();
+			}
+			if(null!=bshootId&&null!=count)
+				countGroup.put(bshootId,count);
+		}
+		return countGroup;
 	}
 
 	@Override
@@ -132,7 +164,7 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bshootId", bshootId);
 		params.put("id", bshootId);
-		bshootDao.executeSql("update bshoot t set t.bs_collect = (select count(*)+1 from bshoot_collect b where b.bshoot_id =:bshootId) where t.id=:id", params);
+		bshootDao.executeSql("update bshoot t set t.bs_collect = (select count(*) from bshoot_collect b where b.bshoot_id =:bshootId) where t.id=:id", params);
 	}
 
 	private void updateCountReduce(String bshootId){

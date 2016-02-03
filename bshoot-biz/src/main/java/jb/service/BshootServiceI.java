@@ -1,5 +1,7 @@
 package jb.service;
 
+import component.redis.model.BshootCounter;
+import component.redis.model.CounterType;
 import jb.pageModel.Bshoot;
 import jb.pageModel.DataGrid;
 import jb.pageModel.HotShootRequest;
@@ -138,5 +140,7 @@ public interface BshootServiceI {
 	public void updatePlayNum(String id);
 
 
+	void updateCountByType(String bshootId, int count, CounterType counterType);
 
+	void updateCount(BshootCounter counter);
 }

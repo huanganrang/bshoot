@@ -5,6 +5,9 @@ import jb.pageModel.BshootComment;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 
+import java.util.Date;
+import java.util.Map;
+
 /**
  * 
  * @author John
@@ -32,6 +35,9 @@ public interface BshootCommentServiceI {
 	 */
 	
 	public TbshootComment add(BshootComment bshootComment,String currentUser);
+
+	//分组统计
+	Map<String,Integer> countGroup(Date begin, Date end);
 
 	/**
 	 * 获得BshootComment对象

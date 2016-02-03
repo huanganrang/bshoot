@@ -37,6 +37,8 @@ public interface CounterServiceI {
      */
     void changeCount(String bshootId,CounterType countType,Integer num)  throws CounterException;
 
+    void setCount(String bshootId, CounterType countType, Integer num, long expireTime) throws CounterException;
+
     /**
      * 原子更新计数器
      * @param bshootId
@@ -75,4 +77,7 @@ public interface CounterServiceI {
     void deleteCounterByBshoots(List<String> bshootIds) throws CounterException;
 
     void deleteCounterByBshoot(String bshootId,CounterType counterType) throws  CounterException;
+
+    long getCountTime(String countKey);
+    void setCountTime(String countKey,Long time);
 }

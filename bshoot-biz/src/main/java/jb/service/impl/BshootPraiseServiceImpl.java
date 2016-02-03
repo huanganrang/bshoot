@@ -13,10 +13,14 @@ import jb.service.BshootPraiseServiceI;
 import jb.service.MessageServiceI;
 import jb.service.UserPraiseRecordServiceI;
 import jb.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.lucene.util.CollectionUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 
 @Service
@@ -170,6 +174,34 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		params.put("bshootId", bshootId);
 		params.put("id", bshootId);
 		bshootDao.executeSql("update bshoot t set t.bs_praise = (select count(*)-1 from bshoot_praise b where b.bshoot_id =:bshootId) where t.id=:id", params);
+	}
+
+	//分组统计
+	@Override
+	public Map<String,Integer> countGroup(Date begin, Date end){
+		Map<String,Object> params = new HashMap<>();
+		params.put("startDate",begin);
+		params.put("endDate",end);
+		List<Map> result = bshootPraiseDao.findBySql2Map("select t1.bshoot_id as bshootId,sum(t1.bs_praise) as count from bshoot_praise t1 where " +
+				"EXISTS(SELECT bshoot_id FROM bshoot_praise t2 " +
+				"where t1.bshoot_id=t2.bshoot_id and t1.bs_praise=t2.bs_praise  " +
+				"and t2.praise_datetime>=:startDate and t2.praise_datetime<=:endDate) " +
+				"GROUP BY t1.bshoot_id", params);
+		if(CollectionUtils.isEmpty(result)) return  null;
+		Map<String,Integer> countGroup = new HashMap<>();
+		for(Map ele:result){
+			Set keySet = ele.keySet();
+			String bshootId = null;
+			Integer count = null;
+			for(Iterator it=keySet.iterator();it.hasNext();){
+				String key = (String) it.next();
+				if(key.equals("bshootId")) bshootId = (String) ele.get(key);
+				if(key.equals("count")) count = ((BigDecimal) ele.get(key)).intValue();
+			}
+			if(null!=bshootId&&null!=count)
+			  countGroup.put(bshootId,count);
+		}
+		return countGroup;
 	}
 
 	public BshootPraise get(String bshootId, String userId) {
