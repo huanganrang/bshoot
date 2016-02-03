@@ -6,9 +6,6 @@ import jb.service.BshootCollectServiceI;
 import jb.service.BshootCommentServiceI;
 import jb.service.BshootPraiseServiceI;
 import jb.service.BshootServiceI;
-import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -18,9 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by Zhou Yibing on 2016/2/2.
  */
-public class CounterTask{
-    private Logger logger = LoggerFactory.getLogger(getClass());
-
+public class CounterTask extends AbstractTask{
     @Autowired
     private BshootPraiseServiceI bshootPraiseService;
     @Autowired
@@ -31,27 +26,9 @@ public class CounterTask{
     private BshootServiceI bshootService;
     @Autowired
     private CounterServiceI counterService;
-    private Date begin;
-    private long step;
     private AtomicBoolean isWorking=new AtomicBoolean(false);
 
-    public Date getBegin() {
-        return begin;
-    }
-
-    public void setBegin(Date begin) {
-        this.begin = begin;
-    }
-
-    public long getStep() {
-        return step;
-    }
-
-    public void setStep(long step) {
-        this.step = step;
-    }
-
-    public void execute() throws JobExecutionException {
+    public void execute(){
         Date now = new Date();
         logger.info("task fire at "+now);
         if(isWorking.get()){
