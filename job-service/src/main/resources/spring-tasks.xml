@@ -11,10 +11,30 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	<bean id="dateEditor" class="org.springframework.beans.propertyeditors.CustomDateEditor">
+		<constructor-arg>
+			<bean class="java.text.SimpleDateFormat">
+				<constructor-arg value="yyyy-MM-dd HH:mm:ss" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="true" />
+	</bean>
+	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="customEditors">
+			<map>
+				<entry key="java.util.Date">
+					<ref local="dateEditor" />
+				</entry>
+			</map>
+		</property>
+	</bean>
 
-	<!-- 每天晚上23点59分59秒修复一下数据库，修复白天大家测试后造成的数据错乱 -->
-	<task:scheduled-tasks>
-		<task:scheduled ref="initServiceImpl" method="init" cron="59 59 23 * * ?" />
+	<bean id="counterTask" class="job.task.CounterTask">
+		<property name="step" value="300"></property>
+		<property name="begin" value="2015-08-25 23:21:31"></property>
+	</bean>
+	<task:scheduled-tasks scheduler="myScheduler">
+		<task:scheduled ref="counterTask" method="execute" cron="* 0/2 * * * ?" />
 	</task:scheduled-tasks>
-
+	<task:scheduler id="myScheduler" pool-size="10"/>
 </beans>
