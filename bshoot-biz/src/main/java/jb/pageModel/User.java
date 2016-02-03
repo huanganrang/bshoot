@@ -40,7 +40,9 @@ public class User implements java.io.Serializable {
 	private Boolean isTarento;
 	private String validateCode;
 	private String mobile;
-
+	private String lgX;//登录经度
+	private String lgY;//登录维度
+	private String loginArea;//登录城市
 	private String headImageAbsolute;
 	private String tokenId;
 
@@ -274,5 +276,29 @@ public class User implements java.io.Serializable {
 
 	public void setTokenId(String tokenId) {
 		this.tokenId = tokenId;
+	}
+
+	public String getLgX() {
+		return lgX;
+	}
+
+	public void setLgX(String lgX) {
+		this.lgX = lgX;
+	}
+
+	public String getLgY() {
+		return lgY;
+	}
+
+	public void setLgY(String lgY) {
+		this.lgY = lgY;
+	}
+
+	public String getLoginArea() {
+		return loginArea;
+	}
+
+	public void setLoginArea(String loginArea) {
+		this.loginArea = loginArea;
 	}
 }
