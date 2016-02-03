@@ -62,10 +62,14 @@ public class CounterTask{
         try {
 
             long nowTime = now.getTime();
-            if(begin==null)
-                begin=now;
+            long countTime  = counterService.getCountTime("CounterTask_countTime");
+            if(0!=countTime){
+                if(null==begin||begin.getTime()!=countTime) begin = new Date(countTime);
+            }else{
+                if(null==begin) begin = now;
+            }
             long endTime = begin.getTime()+step*1000;
-            Date endDate = null;
+            Date endDate;
             while(endTime<nowTime) {
                 endDate = new Date(endTime);
                 Map<String, Integer> praiseCount = bshootPraiseService.countGroup(begin, endDate);
@@ -74,6 +78,7 @@ public class CounterTask{
                 changeCount(praiseCount, CounterType.PRAISE);
                 changeCount(collectCount, CounterType.COLLECT);
                 changeCount(commentCount, CounterType.COMMENT);
+                counterService.setCountTime("CounterTask_countTime",endTime);//在redis中记录计数开始时间，便于在计数器重启后拿去开始时间戳，恢复执行，也可人工修改，动态设定计数开始时间
                 begin=endDate;
                 endTime = endTime+step*1000;
                 Thread.sleep(200);
