@@ -35,6 +35,12 @@
 		<property name="begin" value="2015-08-25 23:21:31"></property>
 	</bean>
 
+	<bean id="userCountTask" class="job.task.UserCounterTask" init-method="init">
+		<property name="step" value="300"></property>
+		<property name="countTime" value="UserCounterTask_countTime"></property>
+		<property name="begin" value="2015-08-25 23:21:31"></property>
+	</bean>
+
 	<bean id="monthPraiseTask" class="job.task.MonthPraiseTask">
 		<property name="step" value="2592000"></property>
 		<property name="limit" value="100"></property>
@@ -42,6 +48,7 @@
 
 	<task:scheduled-tasks scheduler="myScheduler">
 		<task:scheduled ref="counterTask" method="work" cron="* 0/2 * * * ?" />
+		<task:scheduled ref="userCountTask" method="work" cron="* 0/2 * * * ?" />
 		<task:scheduled ref="monthPraiseTask" method="work" cron="0 59 23 * * ?" /><!--0 59 23 * * ?-->
 	</task:scheduled-tasks>
 	<task:scheduler id="myScheduler" pool-size="10"/>
