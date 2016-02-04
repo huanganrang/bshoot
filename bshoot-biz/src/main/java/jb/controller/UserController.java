@@ -2,9 +2,7 @@ package jb.controller;
 
 import com.alibaba.fastjson.JSON;
 import jb.pageModel.*;
-import jb.service.ResourceServiceI;
-import jb.service.RoleServiceI;
-import jb.service.UserServiceI;
+import jb.service.*;
 import jb.util.ConfigUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

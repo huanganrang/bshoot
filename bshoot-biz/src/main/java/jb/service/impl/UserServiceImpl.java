@@ -11,10 +11,8 @@ import jb.model.Tresource;
 import jb.model.Trole;
 import jb.model.Tuser;
 import jb.model.TuserAttention;
-import jb.pageModel.DataGrid;
-import jb.pageModel.PageHelper;
-import jb.pageModel.SessionInfo;
-import jb.pageModel.User;
+import jb.pageModel.*;
+import jb.service.UserProfileServiceI;
 import jb.service.UserServiceI;
 import jb.util.Constants;
 import jb.util.MD5Util;
@@ -46,6 +44,9 @@ public class UserServiceImpl implements UserServiceI {
 	@Resource
 	private RedisUserServiceImpl redisUserService;
 
+	@Autowired
+	private UserProfileServiceI userProfileService;
+
 	@Override
 	public User login(User user) {
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -59,6 +60,14 @@ public class UserServiceImpl implements UserServiceI {
 		Tuser t = userDao.get("from Tuser t where t.name = :name and t.pwd = :pwd" + where, params);
 		if (t != null) {
 			BeanUtils.copyProperties(t, user);
+			//更新userprofile中的登录位置
+			UserProfile userProfile = new UserProfile();
+			userProfile.setId(user.getId());
+			userProfile.setLoginArea(user.getLoginArea());
+			userProfile.setLgX(user.getLgX());
+			userProfile.setLgY(user.getLgY());
+			userProfile.setLastLoginTime(new Date());
+			userProfileService.edit(userProfile);
 			return user;
 		}
 		return null;

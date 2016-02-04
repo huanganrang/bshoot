@@ -56,7 +56,9 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	private BshootCommentServiceI bshootCommentService;
 	@Autowired
 	private CounterServiceI counterService;
-	
+	@Autowired
+	private UserProfileServiceI userProfileService;
+
 	@Override
 	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph) {
 		List<Bshoot> ol = new ArrayList<Bshoot>();
@@ -211,6 +213,10 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		t.setStatus("1");
 		t.setCreateDatetime(new Date());
 		bshootDao.save(t);
+		UserProfile userProfile = new UserProfile();
+		userProfile.setId(bshoot.getUserId());
+		userProfile.setLastPubTime(t.getCreateDatetime());
+		userProfileService.edit(userProfile);
 //		updateLocation(t);
 	}
 	

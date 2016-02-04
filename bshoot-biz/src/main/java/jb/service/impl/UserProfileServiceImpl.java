@@ -80,7 +80,7 @@ public class UserProfileServiceImpl extends BaseServiceImpl<UserProfile> impleme
 		TuserProfile t = userProfileDao.get(TuserProfile.class, userProfile.getId());
 		if (t != null) {
 			MyBeanUtils.copyProperties(userProfile, t, new String[] { "id" , "createdatetime" },true);
-			//t.setModifydatetime(new Date());
+			userProfileDao.update(t);
 		}
 	}
 
