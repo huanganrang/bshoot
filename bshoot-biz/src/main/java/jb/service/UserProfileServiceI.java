@@ -1,5 +1,6 @@
 package jb.service;
 
+import component.redis.model.CounterType;
 import jb.pageModel.UserProfile;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
@@ -59,4 +60,6 @@ public interface UserProfileServiceI {
 	Map<String,Integer> countMonthPraise(Date begin, Date end, int start, int limit);
 
 	void updateMonthPraise(String userId, Integer monthPraise);
+
+	void updateUserProfileCount(String userId, Integer count, CounterType counterType);
 }

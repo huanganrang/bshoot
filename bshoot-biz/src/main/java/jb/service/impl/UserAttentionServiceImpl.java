@@ -14,10 +14,12 @@ import jb.pageModel.*;
 import jb.service.UserAttentionServiceI;
 import jb.service.UserProfileServiceI;
 import jb.util.Constants;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.*;
 
 @Service
@@ -118,6 +120,61 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		userProfileDao.executeSql("update user_profile t set t.fans_num = :sum where t.id=:userId", params);
 	}
 
+	//关注数分组统计
+	@Override
+	public Map<String,Integer> attCountGroup(Date begin, Date end){
+		Map<String,Object> params = new HashMap<>();
+		params.put("startDate",begin);
+		params.put("endDate",end);
+		List<Map> result = userAttentionDao.findBySql2Map("select t1.user_id as userId,count(t1.att_user_id) as count from user_attention t1 where " +
+				"EXISTS(SELECT id FROM user_attention t2 " +
+				"where t1.user_id=t2.user_id " +
+				"and t2.update_datetime>=:startDate and t2.update_datetime<=:endDate) " +
+				"GROUP BY t1.user_id", params);
+		if(CollectionUtils.isEmpty(result)) return  null;
+		Map<String,Integer> countGroup = new HashMap<>();
+		for(Map ele:result){
+			Set keySet = ele.keySet();
+			String userId = null;
+			Integer count = null;
+			for(Iterator it=keySet.iterator();it.hasNext();){
+				String key = (String) it.next();
+				if(key.equals("userId")) userId = (String) ele.get(key);
+				if(key.equals("count")) count = ((BigInteger) ele.get(key)).intValue();
+			}
+			if(null!=userId&&null!=count)
+				countGroup.put(userId,count);
+		}
+		return countGroup;
+	}
+
+	//粉丝数分组统计
+	@Override
+	public Map<String,Integer> fansCountGroup(Date begin, Date end){
+		Map<String,Object> params = new HashMap<>();
+		params.put("startDate",begin);
+		params.put("endDate",end);
+		List<Map> result = userAttentionDao.findBySql2Map("select t1.att_user_id as userId,count(t1.user_id) as count from user_attention t1 where " +
+				"EXISTS(SELECT id FROM user_attention t2 " +
+				"where t1.att_user_id=t2.att_user_id " +
+				"and t2.update_datetime>=:startDate and t2.update_datetime<=:endDate) " +
+				"GROUP BY t1.att_user_id", params);
+		if(CollectionUtils.isEmpty(result)) return  null;
+		Map<String,Integer> countGroup = new HashMap<>();
+		for(Map ele:result){
+			Set keySet = ele.keySet();
+			String userId = null;
+			Integer count = null;
+			for(Iterator it=keySet.iterator();it.hasNext();){
+				String key = (String) it.next();
+				if(key.equals("userId")) userId = (String) ele.get(key);
+				if(key.equals("count")) count = ((BigInteger) ele.get(key)).intValue();
+			}
+			if(null!=userId&&null!=count)
+				countGroup.put(userId,count);
+		}
+		return countGroup;
+	}
 
 	@Override
 	public UserAttention get(String id) {

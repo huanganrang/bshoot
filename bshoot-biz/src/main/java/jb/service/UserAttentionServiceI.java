@@ -3,7 +3,9 @@ package jb.service;
 import jb.model.TuserAttention;
 import jb.pageModel.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -66,6 +68,12 @@ public interface UserAttentionServiceI {
 	 * @param userAttention
 	 */
 	public int isAttention(UserAttention userAttention);
+
+	//关注数分组统计
+	Map<String,Integer> attCountGroup(Date begin, Date end);
+
+	//粉丝数分组统计
+	Map<String,Integer> fansCountGroup(Date begin, Date end);
 
 	/**
 	 * 获得UserAttention对象

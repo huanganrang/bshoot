@@ -9,6 +9,7 @@ import jb.pageModel.PageHelper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -143,4 +144,7 @@ public interface BshootServiceI {
 	void updateCountByType(String bshootId, int count, CounterType counterType);
 
 	void updateCount(BshootCounter counter);
+
+	//用户打赏总数分组统计
+	Map<String,Integer> praiseCountGroup(Date begin, Date end);
 }

@@ -20,6 +20,7 @@ import jb.util.Constants;
 import jb.util.MyBeanUtils;
 import jb.util.PathUtil;
 import jb.util.RoundTool;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -817,5 +818,33 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		if(sb.indexOf(",")==0)
 			sb.deleteCharAt(0);
         bshootDao.executeSql("update bshoot  set "+sb.toString()+" where t.id=:id",params);
+	}
+
+	//用户打赏总数分组统计
+	@Override
+	public Map<String,Integer> praiseCountGroup(Date begin, Date end){
+		Map<String,Object> params = new HashMap<>();
+		params.put("startDate",begin);
+		params.put("endDate",end);
+		List<Map> result = bshootDao.findBySql2Map("select t1.user_id as userId,sum(t1.bs_praise) as count from bshoot t1 where " +
+				"EXISTS(SELECT id FROM bshoot t2 " +
+				"where t1.user_id=t2.user_id " +
+				"and t2.update_datetime>=:startDate and t2.update_datetime<=:endDate) " +
+				"GROUP BY t1.user_id", params);
+		if(CollectionUtils.isEmpty(result)) return  null;
+		Map<String,Integer> countGroup = new HashMap<>();
+		for(Map ele:result){
+			Set keySet = ele.keySet();
+			String userId = null;
+			Integer count = null;
+			for(Iterator it=keySet.iterator();it.hasNext();){
+				String key = (String) it.next();
+				if(key.equals("userId")) userId = (String) ele.get(key);
+				if(key.equals("count")) count = ((BigInteger) ele.get(key)).intValue();
+			}
+			if(null!=userId&&null!=count)
+				countGroup.put(userId,count);
+		}
+		return countGroup;
 	}
 }

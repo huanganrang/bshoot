@@ -3,6 +3,7 @@ package jb.service.impl;
 import java.math.BigDecimal;
 import java.util.*;
 
+import component.redis.model.CounterType;
 import component.redis.model.UserProfileCounter;
 import component.redis.service.CounterServiceI;
 import jb.absx.F;
@@ -139,5 +140,23 @@ public class UserProfileServiceImpl extends BaseServiceImpl<UserProfile> impleme
 		params.put("userId",userId);
 		params.put("monthPraise",monthPraise);
 		userProfileDao.executeSql("update user_profile set month_praise=:monthPraise where id=:userId",params);
+	}
+
+	@Override
+	public void updateUserProfileCount(String userId,Integer count,CounterType counterType){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id",userId);
+		String sql = "update user_profile  set :countField=:count where id=:id";
+		String countField=null;
+		if(counterType==CounterType.PRAISE){
+			countField = "praise_num";
+		}else if(counterType==CounterType.ATT){
+			countField= "att_num";
+		}else if(counterType==CounterType.BEATT){
+			countField= "fans_num";
+		}
+		sql = sql.replace(":countField",countField);
+		params.put("count",count);
+		userProfileDao.executeSql(sql,params);
 	}
 }
