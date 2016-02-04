@@ -1,11 +1,7 @@
 package jb.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.util.*;
 
 import jb.absx.F;
 import jb.dao.UserProfileDaoI;
@@ -15,6 +11,7 @@ import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.service.UserProfileServiceI;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,4 +89,41 @@ public class UserProfileServiceImpl extends BaseServiceImpl<UserProfile> impleme
 		userProfileDao.delete(userProfileDao.get(TuserProfile.class, id));
 	}
 
+	@Override
+	public Long getUserProfileCount(){
+		return userProfileDao.count("select count(id) from TuserProfile");
+	}
+
+	@Override
+	public Map<String,Integer> countMonthPraise(Date begin, Date end, int start, int limit){
+		Map<String,Object> param = new HashMap<>();
+		param.put("startDate",begin);
+		param.put("endDate",end);
+		param.put("start",start);
+		param.put("limit",limit);
+		List<Map> result = userProfileDao.findBySql2Map("select user_id as userId,sum(bs_praise) as bsPraise from bshoot t1 where EXISTS (select id from user_profile t2 where t1.user_id=t2.id limit :start,:limit) and t1.update_datetime>=:startDate and t1.update_datetime<=:endDate group by t1.user_id",param);
+		if(CollectionUtils.isEmpty(result)) return  null;
+		Map<String,Integer> countGroup = new HashMap<>();
+		for(Map ele:result){
+			Set keySet = ele.keySet();
+			String userId = null;
+			Integer bsPraise = null;
+			for(Iterator it=keySet.iterator();it.hasNext();){
+				String key = (String) it.next();
+				if(key.equals("userId")) userId = (String) ele.get(key);
+				if(key.equals("bsPraise")) bsPraise = ((BigDecimal) ele.get(key)).intValue();
+			}
+			if(null!=userId&&null!=bsPraise)
+				countGroup.put(userId, bsPraise);
+		}
+		return countGroup;
+	}
+
+	@Override
+	public void updateMonthPraise(String userId,Integer monthPraise){
+		Map<String,Object> params = new HashMap<>();
+		params.put("userId",userId);
+		params.put("monthPraise",monthPraise);
+		userProfileDao.executeSql("update user_profile set month_praise=:monthPraise where id=:userId",params);
+	}
 }

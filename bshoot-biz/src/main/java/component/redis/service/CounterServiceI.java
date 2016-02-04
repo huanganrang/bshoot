@@ -78,6 +78,6 @@ public interface CounterServiceI {
 
     void deleteCounterByBshoot(String bshootId,CounterType counterType) throws  CounterException;
 
-    long getCountTime(String countKey);
-    void setCountTime(String countKey,Long time);
+    Object get(String countKey);
+    void set(String countKey,String time);
 }

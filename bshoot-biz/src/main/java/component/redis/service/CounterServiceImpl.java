@@ -170,15 +170,12 @@ public class CounterServiceImpl implements CounterServiceI{
     }
 
     @Override
-    public long getCountTime(String countKey) {
-        Object time = redisService.get(countKey);
-        if(null!=time)
-            return Long.valueOf((String) time);
-        return 0;
+    public Object get(String countKey) {
+        return redisService.get(countKey);
     }
 
     @Override
-    public void setCountTime(String countKey, Long time) {
-        redisService.set(countKey,time.toString());
+    public void set(String countKey, String time) {
+        redisService.set(countKey,time);
     }
 }

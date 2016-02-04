@@ -4,6 +4,9 @@ import jb.pageModel.UserProfile;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 
+import java.util.Date;
+import java.util.Map;
+
 /**
  * 
  * @author John
@@ -51,4 +54,9 @@ public interface UserProfileServiceI {
 	 */
 	public void delete(String id);
 
+	Long getUserProfileCount();
+
+	Map<String,Integer> countMonthPraise(Date begin, Date end, int start, int limit);
+
+	void updateMonthPraise(String userId, Integer monthPraise);
 }
