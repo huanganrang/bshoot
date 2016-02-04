@@ -168,9 +168,9 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 	private Long getCount(String bshootId){
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bshootId", bshootId);
-		Long l= bshootDao.count("select count(1) from TbshootComment t where t.bshootId =:bshootId)", params);
+		Long l= bshootDao.count("select count(1) from TbshootComment t where t.bshootId =:bshootId", params);
 		if(l == null) l = 0L;
-		updateCount(bshootId);
+		updateCount(bshootId,l);
 		return l;
 	}
 
@@ -266,11 +266,11 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 		return dataGrid;
 	}
 	
-	private void updateCount(String bshootId){
+	private void updateCount(String bshootId,long sum){
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("bshootId", bshootId);
 		params.put("id", bshootId);
-		bshootDao.executeSql("update bshoot t set t.bs_comment = (select count(*) from bshoot_comment b where b.bshoot_id =:bshootId) where t.id=:id", params);
+		params.put("sum", sum);
+		bshootDao.executeSql("update bshoot t set t.bs_comment = :sum where t.id=:id", params);
 	}
 
 	private void updateCountReduce(String bshootId){

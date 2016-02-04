@@ -783,7 +783,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	@Override
 	public void updateCount(BshootCounter counter){
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("id", counter.getBshootId());
+		params.put("id", counter.getId());
 		StringBuffer sb = new StringBuffer();
 		if(counter.getPraiseCount()!=0) {
 			sb.append("bs_praise=:bsPraise");

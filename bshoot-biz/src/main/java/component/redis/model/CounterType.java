@@ -5,7 +5,7 @@ package component.redis.model;
  * 计数器类型
  */
 public enum CounterType {
-    PRAISE("0","打赏"),COMMENT("1","评论"),COLLECT("2","收藏"),FORWARD("3","转发"),READ("4","阅读"),PLAY("5","播放"),SHARE("6","分享");
+    PRAISE("0","打赏"),COMMENT("1","评论"),COLLECT("2","收藏"),FORWARD("3","转发"),READ("4","阅读"),PLAY("5","播放"),SHARE("6","分享"),ATT("7","关注"),BEATT("8","被关注");
     private String type;
     private String description;
 

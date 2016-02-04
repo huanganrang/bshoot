@@ -6,7 +6,7 @@ package component.redis.model;
  */
 public class BshootCounter {
 
-    private String bshootId;
+    private String id;
     @Counter(CounterType.PRAISE)
     private int praiseCount;
     @Counter(CounterType.COMMENT)
@@ -22,12 +22,12 @@ public class BshootCounter {
     @Counter(CounterType.SHARE)
     private int shareCount;
 
-    public String getBshootId() {
-        return bshootId;
+    public String getId() {
+        return id;
     }
 
-    public void setBshootId(String bshootId) {
-        this.bshootId = bshootId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public int getPraiseCount() {
@@ -89,7 +89,7 @@ public class BshootCounter {
     @Override
     public String toString() {
         return "BshootCounter{" +
-                "bshootId='" + bshootId + '\'' +
+                "id='" + id + '\'' +
                 ", praiseCount=" + praiseCount +
                 ", commentCount=" + commentCount +
                 ", collectCount=" + collectCount +

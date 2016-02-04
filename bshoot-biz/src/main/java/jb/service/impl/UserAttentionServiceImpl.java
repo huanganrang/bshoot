@@ -1,13 +1,18 @@
 package jb.service.impl;
 
+import component.redis.model.CounterType;
+import component.redis.service.CounterServiceI;
+import component.redis.service.FetchValue;
 import jb.absx.F;
 import jb.dao.BaseDaoI;
 import jb.dao.UserAttentionDaoI;
 import jb.dao.UserDaoI;
+import jb.dao.UserProfileDaoI;
 import jb.model.Tuser;
 import jb.model.TuserAttention;
 import jb.pageModel.*;
 import jb.service.UserAttentionServiceI;
+import jb.service.UserProfileServiceI;
 import jb.util.Constants;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +28,12 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 
 	@Autowired
 	private UserDaoI userDao;
+
+	@Autowired
+	private CounterServiceI counterService;
+
+	@Autowired
+	private UserProfileDaoI userProfileDao;
 
 	@Override
 	public DataGrid dataGrid(UserAttention userAttention, PageHelper ph) {
@@ -60,7 +71,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	}
 
 	@Override
-	public int add(UserAttention userAttention) {
+	public int add(final UserAttention userAttention) {
 		if(get(userAttention.getUserId(), userAttention.getAttUserId())!=null){		
 			return -1;
 		}
@@ -69,8 +80,44 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		t.setId(UUID.randomUUID().toString());
 		t.setAttentionDatetime(new Date());
 		userAttentionDao.save(t);
+		userAttCount(userAttention.getUserId(),userAttention.getAttUserId(),1);
 		return 1;
 	}
+
+	//获得用户关注的人数量
+	private Long getAttCount(String userId){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		Long l =  userAttentionDao.count("select count(t.attUserId) from TUserAttention t where t.userId =:userId", params);
+		if(l == null) l = 0L;
+		updateAttCount(userId,l);
+		return l;
+	}
+
+	private void updateAttCount(String userId,long sum){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		params.put("sum", sum);
+		userProfileDao.executeSql("update user_profile t set t.att_num = :sum where t.id=:userId", params);
+	}
+
+	//获得用户粉丝数量
+	private Long getBeAttCount(String userId){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		Long l =  userAttentionDao.count("select count(t.userId) from TUserAttention t where t.attUserId =:userId", params);
+		if(l == null) l = 0L;
+		updateAttCount(userId,l);
+		return l;
+	}
+
+	private void updateBeAttCount(String userId,long sum){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		params.put("sum", sum);
+		userProfileDao.executeSql("update user_profile t set t.fans_num = :sum where t.id=:userId", params);
+	}
+
 
 	@Override
 	public UserAttention get(String id) {
@@ -180,8 +227,8 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	}
 
 	@Override
-	public int deleteAttention(UserAttention userAttention) {
-		TuserAttention t = get(userAttention.getUserId(), userAttention.getAttUserId());
+	public int deleteAttention(final UserAttention userAttention) {
+		final TuserAttention t = get(userAttention.getUserId(), userAttention.getAttUserId());
 		if(t==null){
 			return -1;
 		}else{
@@ -198,6 +245,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 				t.setIsFriend(null);
 			}
 			userAttentionDao.save(t);
+			userAttCount(userAttention.getUserId(),userAttention.getAttUserId(),-1);
 			return 1;
 		}
 	}
@@ -297,6 +345,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 						tu.setIsFriend(1);
 						userAttentionDao.save(t);
 						userAttentionDao.save(tu);
+						userAttCount(userAttention.getUserId(),userAttention.getAttUserId(),1);
 						return 1;
 					}else{
 						t.setIsFriend(null);
@@ -306,6 +355,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 				}else{
 					t.setIsFriend(null);
 					userAttentionDao.save(t);
+					userAttCount(userAttention.getUserId(),userAttention.getAttUserId(),1);
 					return 0;
 				}
 			}
@@ -321,18 +371,38 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 					tu.setIsFriend(1);
 					userAttentionDao.save(t);
 					userAttentionDao.save(tu);
+					userAttCount(userAttention.getUserId(),userAttention.getAttUserId(),1);
 					return 1;
 				}else{
 					t.setIsFriend(null);
 					userAttentionDao.save(t);
+					userAttCount(userAttention.getUserId(),userAttention.getAttUserId(),1);
 					return 0;
 				}
 			}else{
 				t.setIsFriend(null);
 				userAttentionDao.save(t);
+				userAttCount(userAttention.getUserId(),userAttention.getAttUserId(),1);
 				return 0;
 			}
 		}
+	}
+
+	private void userAttCount(final String userId, final String attUserId,Integer num){
+		//给用户关注的人计数+1
+		counterService.automicChangeCount(userId, CounterType.ATT,num, new FetchValue() {
+			@Override
+			public Integer fetchValue() {
+				return getAttCount(userId).intValue();
+			}
+		});
+		//给被用户关注过人的被关注计数+1
+		counterService.automicChangeCount(attUserId, CounterType.BEATT,num, new FetchValue() {
+			@Override
+			public Integer fetchValue() {
+				return getBeAttCount(attUserId).intValue();
+			}
+		});
 	}
 
 	@Override

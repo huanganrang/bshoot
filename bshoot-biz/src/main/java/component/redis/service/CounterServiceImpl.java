@@ -4,6 +4,8 @@ import component.redis.exception.CounterException;
 import component.redis.model.BshootCounter;
 import component.redis.model.Counter;
 import component.redis.model.CounterType;
+import component.redis.model.UserProfileCounter;
+import jb.pageModel.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -93,57 +95,77 @@ public class CounterServiceImpl implements CounterServiceI{
 
     @Override
     public BshootCounter getCounterByBshoot(String bshootId) throws CounterException {
-        try{
-             Map<Object,Object> fieldValues = redisService.getHash(bshootId);
-             if(null!=fieldValues&&fieldValues.size()>0){
-                 BshootCounter bshootCounter = new BshootCounter();
-                 Field[] fields = bshootCounter.getClass().getDeclaredFields();
-                 bshootCounter.setBshootId(bshootId);
-                 for(Field field:fields){
-                     field.setAccessible(true);
-                   if(field.isAnnotationPresent(Counter.class)){
-                       Counter counter = field.getAnnotation(Counter.class);
-                       if(null!=fieldValues.get(counter.value().getType()))
-                       field.set(bshootCounter,Integer.parseInt(String.valueOf(fieldValues.get(counter.value().getType()))));
-                   }
-                 }
-                 return bshootCounter;
-             }
-            return null;
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new CounterException("getCounterByBshoot has occured an exception，"+e.getMessage());
-        }
+        BshootCounter bshootCounter = new BshootCounter();
+        bshootCounter.setId(bshootId);
+        fillField(bshootId,bshootCounter);
+        return bshootCounter;
     }
 
     @Override
     public List<BshootCounter> getCounterByBshoots(List<String> bshootIds) throws CounterException {
+        return batchGetAndFill(bshootIds, BshootCounter.class);
+    }
+
+    @Override
+    public UserProfileCounter getCounterByUser(String userId) {
+        UserProfileCounter userProfileCounter = new UserProfileCounter();
+        userProfileCounter.setId(userId);
+        fillField(userId,userProfileCounter);
+        return userProfileCounter;
+    }
+
+    @Override
+    public List<UserProfileCounter> getCounterByUsers(List<String> userIds) throws CounterException {
+        return batchGetAndFill(userIds, UserProfileCounter.class);
+    }
+
+    private  List batchGetAndFill(List<String> keys,Class clazz){
         try{
-            Map<String,Map<byte[],byte[]>> results = redisService.hGetAll(bshootIds);
-            List<BshootCounter> bshoots = new ArrayList<BshootCounter>();
-            Field[] fields = BshootCounter.class.getDeclaredFields();
-            for(String bshootId:bshootIds){
-                BshootCounter bshootCounter = new BshootCounter();
-                bshootCounter.setBshootId( bshootId);
-                Map<byte[],byte[]> fieldValues = results.get(bshootId);
+            Map<String,Map<byte[],byte[]>> results = redisService.hGetAll(keys);
+            List counters = new ArrayList<>();
+            Field[] fields = clazz.getDeclaredFields();
+            for(String key:keys){
+                Object c = clazz.newInstance();
+                Map<byte[],byte[]> fieldValues = results.get(key);
                 if(null==fieldValues||fieldValues.size()==0) {
-                    bshoots.add(bshootCounter);
+                    counters.add(c);
                     continue;
                 }
+                for(Field field:fields){
+                    field.setAccessible(true);
+                    if(field.getName().equals("id")) field.set(c,key);
+                    if(field.isAnnotationPresent(Counter.class)){
+                        Counter counter = field.getAnnotation(Counter.class);
+                        if(null!=fieldValues.get(counter.value().getType()))
+                            field.set(c,Integer.parseInt(String.valueOf(fieldValues.get(counter.value().getType()))));
+                    }
+                }
+                counters.add(c);
+            }
+            return counters;
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new CounterException("batchGetAndFill has occured an exception，"+e.getMessage());
+        }
+    }
+
+    private <T> void  fillField(String key,T c){
+        try{
+            Map<Object,Object> fieldValues = redisService.getHash(key);
+            if(null!=fieldValues&&fieldValues.size()>0){
+                Field[] fields = c.getClass().getDeclaredFields();
                 for(Field field:fields){
                     field.setAccessible(true);
                     if(field.isAnnotationPresent(Counter.class)){
                         Counter counter = field.getAnnotation(Counter.class);
                         if(null!=fieldValues.get(counter.value().getType()))
-                        field.set(bshootCounter,Integer.parseInt(String.valueOf(fieldValues.get(counter.value().getType()))));
+                            field.set(c,Integer.parseInt(String.valueOf(fieldValues.get(counter.value().getType()))));
                     }
                 }
-                bshoots.add(bshootCounter);
             }
-            return bshoots;
         }catch (Exception e){
             e.printStackTrace();
-            throw new CounterException("getCounterByBshoots has occured an exception，"+e.getMessage());
+            throw new CounterException("fillField has occured an exception，"+e.getMessage());
         }
     }
 

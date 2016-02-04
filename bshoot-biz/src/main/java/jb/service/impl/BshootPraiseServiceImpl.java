@@ -12,6 +12,7 @@ import jb.pageModel.*;
 import jb.service.BshootPraiseServiceI;
 import jb.service.MessageServiceI;
 import jb.service.UserPraiseRecordServiceI;
+import jb.service.UserProfileServiceI;
 import jb.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.lucene.util.CollectionUtil;
@@ -36,6 +37,8 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 	private BshootDaoI bshootDao;
 	@Autowired
 	private UserPraiseRecordServiceI userPraiseRecordService;
+	@Autowired
+	private UserProfileServiceI userProfileService;
 
 	@Override
 	public DataGrid dataGrid(BshootPraise bshootPraise, PageHelper ph) {
@@ -89,6 +92,22 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 				return getCount(bshootPraise.getBshootId()).intValue();
 			}
 		});
+		//被打赏用户打赏数量计数
+		counterService.automicChangeCount(bshootPraise.getUserId(), CounterType.PRAISE, bshootPraise.getPraiseNum(), new FetchValue() {
+			@Override
+			public Integer fetchValue() {
+				Map<String,Object> params = new HashMap<String,Object>();
+				params.put("bsUserId",bshootPraise.getUserId());
+				Long count = bshootPraiseDao.count("select sum(t.praiseNum) from TbshootPraise t where t.bs_userId =:bsUserId)");
+				if(null==count) count= 0L;
+				UserProfile userProfile = new UserProfile();
+				userProfile.setId(bshootPraise.getUserId());
+				userProfile.setPraiseNum(count.intValue());
+				userProfileService.edit(userProfile);
+				return count.intValue();
+			}
+		});
+
 		Tbshoot bshoot = bshootDao.get(Tbshoot.class,bshootPraise.getBshootId());
 		UserPraiseRecord userPraiseRecord = new UserPraiseRecord();
 		userPraiseRecord.setPraiseNum(bshootPraise.getPraiseNum());
@@ -103,9 +122,6 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		messageServiceImpl.addAndSendMessage(MessageServiceI.MT_04,bshoot.getUserId(),bshootPraise.getId(),"用户["+currentUser+"]打赏了您的动态");
 		return 1;
 	}
-
-
-
 
 	@Override
 	public BshootPraise get(String id) {
@@ -153,19 +169,19 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 
 	}
 
-	private void updateCount(String bshootId){
+	private void updateCount(String bshootId,Long sum){
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("bshootId", bshootId);
 		params.put("id", bshootId);
-		bshootDao.executeSql("update bshoot t set t.bs_praise = (select sum(b.bs_praise) from bshoot_praise b where b.bshoot_id =:bshootId) where t.id=:id", params);
+		params.put("sum", sum);
+		bshootDao.executeSql("update bshoot t set t.bs_praise = :sum where t.id=:id", params);
 	}
 
 	private Long getCount(String bshootId){
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bshootId", bshootId);
-		Long l =  bshootPraiseDao.count("select sum(t.praiseNum) from TbshootPraise t where t.bshootId =:bshootId)", params);
+		Long l =  bshootPraiseDao.count("select sum(t.praiseNum) from TbshootPraise t where t.bshootId =:bshootId", params);
 		if(l == null) l = 0L;
-		updateCount(bshootId);
+		updateCount(bshootId,l);
 		return l;
 	}
 

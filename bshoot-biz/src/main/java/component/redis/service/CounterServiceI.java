@@ -3,6 +3,7 @@ package component.redis.service;
 import component.redis.exception.CounterException;
 import component.redis.model.BshootCounter;
 import component.redis.model.CounterType;
+import component.redis.model.UserProfileCounter;
 
 import java.util.List;
 
@@ -71,6 +72,10 @@ public interface CounterServiceI {
      * @param bshootIds
      */
     List<BshootCounter> getCounterByBshoots(List<String> bshootIds) throws CounterException;
+
+    UserProfileCounter getCounterByUser(String userId) throws CounterException;
+
+    List<UserProfileCounter> getCounterByUsers(List<String> userIds) throws CounterException;
 
     void deleteCounterByBshoot(String bshootId) throws CounterException;
 

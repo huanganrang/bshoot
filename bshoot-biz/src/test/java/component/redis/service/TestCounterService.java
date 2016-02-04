@@ -3,6 +3,7 @@ package component.redis.service;
 import com.google.common.collect.Lists;
 import component.redis.model.BshootCounter;
 import component.redis.model.CounterType;
+import component.redis.model.UserProfileCounter;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import solr.TestConfig;
@@ -23,6 +24,21 @@ public class TestCounterService extends TestConfig{
         List<BshootCounter> bshootCounters = counterService.getCounterByBshoots(list);
         for(BshootCounter bshootCounter:bshootCounters){
             System.out.println(bshootCounter);
+        }
+    }
+
+    @Test
+    public void testGetCounterByUserId(){
+        UserProfileCounter up = counterService.getCounterByUser("123");
+        System.out.println(up);
+    }
+
+    @Test
+    public void testGetCounterByUsers(){
+        List<String> list = Lists.newArrayList(new String[]{"123","111"});
+        List<UserProfileCounter> userProfileCounters = counterService.getCounterByUsers(list);
+        for(UserProfileCounter userProfileCounter:userProfileCounters){
+            System.out.println(userProfileCounter);
         }
     }
 

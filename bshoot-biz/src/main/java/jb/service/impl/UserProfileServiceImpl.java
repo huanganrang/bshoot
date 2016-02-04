@@ -3,6 +3,8 @@ package jb.service.impl;
 import java.math.BigDecimal;
 import java.util.*;
 
+import component.redis.model.UserProfileCounter;
+import component.redis.service.CounterServiceI;
 import jb.absx.F;
 import jb.dao.UserProfileDaoI;
 import jb.model.TuserProfile;
@@ -22,6 +24,8 @@ public class UserProfileServiceImpl extends BaseServiceImpl<UserProfile> impleme
 
 	@Autowired
 	private UserProfileDaoI userProfileDao;
+	@Autowired
+	private CounterServiceI counterService;
 
 	@Override
 	public DataGrid dataGrid(UserProfile userProfile, PageHelper ph) {
@@ -72,6 +76,16 @@ public class UserProfileServiceImpl extends BaseServiceImpl<UserProfile> impleme
 		UserProfile o = new UserProfile();
 		if(null!=t)
 		BeanUtils.copyProperties(t, o);
+		//获得用户关注数，粉丝数，打赏量计数
+		UserProfileCounter userProfileCounter = counterService.getCounterByUser(id);
+		if(null!=userProfileCounter){
+			if(0!=userProfileCounter.getAttCount())
+			o.setAttNum(userProfileCounter.getAttCount());
+			if(0!=userProfileCounter.getPraiseCount())
+			o.setPraiseNum(userProfileCounter.getPraiseCount());
+			if(0!=userProfileCounter.getFansCount())
+			o.setFansNum(userProfileCounter.getFansCount());
+		}
 		return o;
 	}
 

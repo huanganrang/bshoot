@@ -206,11 +206,17 @@ public class RecommendService extends UserRecommendService implements RecommendS
                 bshoot.setHobby(h);
                 bshootCounter = bshootCounters.get(i);
                 if(null!=bshootCounter){
+                    if(0!=bshootCounter.getCollectCount())
                     bshoot.setBsCollect(bshootCounter.getCollectCount());
+                    if(0!=bshootCounter.getCommentCount())
                     bshoot.setBsComment(bshootCounter.getCommentCount());
+                    if(0!=bshootCounter.getForwardCount())
                     bshoot.setBsForward(bshootCounter.getForwardCount());
+                    if(0!=bshootCounter.getPlayCount())
                     bshoot.setBsPlay(bshootCounter.getPlayCount());
+                    if(0!=bshootCounter.getShareCount())
                     bshoot.setBsShare(bshootCounter.getShareCount());
+                    if(0!=bshootCounter.getPraiseCount())
                     bshoot.setBsPraise(bshootCounter.getPraiseCount());
                 }
             }
