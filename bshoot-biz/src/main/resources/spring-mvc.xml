@@ -104,7 +104,7 @@
 						<value>/api/apiCommon/html</value>							
 						<value>/api/apiMessageController/message_test</value>
 						<value>/api/apiUserController/getValidateCode</value><!-- 发送验证码 -->
-
+						<value>/api/imPlusController/implusauth</value><!-- 容联云通讯回调地址 -->
 
 						<value>/api/apiUserAttentionController/user_attention</value><!-- 古鑫测试 -->
 						<value>/api/apiUserAttentionController/user_disattention</value><!-- 古鑫测试 -->

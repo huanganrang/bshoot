@@ -21,7 +21,7 @@ import java.util.Date;
  */
 
 @Controller
-@RequestMapping("/imPlusController")
+@RequestMapping("/api/imPlusController")
 public class ImPlusController extends BaseController {
 
     private static final Logger log = Logger.getLogger(Controller.class.getName());

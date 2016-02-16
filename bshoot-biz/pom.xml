@@ -409,5 +409,11 @@
             <artifactId>swagger-springmvc</artifactId>
             <version>0.9.5</version>
         </dependency>
+        <!--容联云通讯-->
+        <dependency>
+            <groupId>com.implus.ccp</groupId>
+            <artifactId>ccp-rest-sdk-java</artifactId>
+            <version>v2.7r</version>
+        </dependency>
     </dependencies>
 </project>
