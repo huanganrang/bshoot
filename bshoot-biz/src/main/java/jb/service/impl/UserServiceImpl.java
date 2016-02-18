@@ -85,6 +85,7 @@ public class UserServiceImpl implements UserServiceI {
 			throw new Exception("登录名已存在！");
 		}
 		if(!F.empty(user.getMobile())) {
+			params = new HashMap<String, Object>();
 			params.put("mobile", user.getMobile());
 			if (userDao.count("select count(*) from Tuser t where t.mobile = :mobile", params) > 0) {
 				throw new Exception("手机号已存在！");
