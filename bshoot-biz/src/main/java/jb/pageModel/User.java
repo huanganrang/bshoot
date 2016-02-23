@@ -45,6 +45,10 @@ public class User implements java.io.Serializable {
 	private String loginArea;//登录城市
 	private String headImageAbsolute;
 	private String tokenId;
+	private String subAccountSid;//容联子账号
+	private String subToken;//子账号密码
+	private String voipAccount;//VoIP账号
+	private String voipPwd;//VoIP账号密码
 
 	public Date getCreatedatetimeStart() {
 		return createdatetimeStart;
@@ -300,5 +304,37 @@ public class User implements java.io.Serializable {
 
 	public void setLoginArea(String loginArea) {
 		this.loginArea = loginArea;
+	}
+
+	public String getSubAccountSid() {
+		return subAccountSid;
+	}
+
+	public void setSubAccountSid(String subAccountSid) {
+		this.subAccountSid = subAccountSid;
+	}
+
+	public String getSubToken() {
+		return subToken;
+	}
+
+	public void setSubToken(String subToken) {
+		this.subToken = subToken;
+	}
+
+	public String getVoipAccount() {
+		return voipAccount;
+	}
+
+	public void setVoipAccount(String voipAccount) {
+		this.voipAccount = voipAccount;
+	}
+
+	public String getVoipPwd() {
+		return voipPwd;
+	}
+
+	public void setVoipPwd(String voipPwd) {
+		this.voipPwd = voipPwd;
 	}
 }

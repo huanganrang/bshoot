@@ -159,7 +159,7 @@ public class ImPlusUtil {
         CCPRestSDK restAPI = init();
         restAPI.setAccount(ACCOUNT_SID, AUTH_TOKEN);//初始化主帐号和主帐号TOKEN
         restAPI.setAppId(APPID);//初始化应用ID
-        result = restAPI.querySubAccount(friendlyName);//此处用用户ID替代
+        result = restAPI.querySubAccount(friendlyName);//此处用用户名替代
 
         return result;
     }
