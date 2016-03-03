@@ -72,16 +72,18 @@ public class UserServiceImpl implements UserServiceI {
 			ImPlusUtil imPlusUtil = new ImPlusUtil();
 			HashMap<String, Object> map = imPlusUtil.querySubAccount(user.getName());
 			HashMap data = (HashMap)map.get("data");
-			List subAccount = (List)data.get("SubAccount");
-			HashMap result = (HashMap)subAccount.get(0);
-			String subAccountSid = (String)result.get("subAccountSid");
-			String subToken = (String)result.get("subToken");
-			String voipAccount = (String)result.get("voipAccount");
-			String voipPwd = (String)result.get("voipPwd");
-			user.setSubAccountSid(subAccountSid);
-			user.setSubToken(subToken);
-			user.setVoipAccount(voipAccount);
-			user.setVoipPwd(voipPwd);
+			if(data != null){
+				List subAccount = (List)data.get("SubAccount");
+				HashMap result = (HashMap)subAccount.get(0);
+				String subAccountSid = (String)result.get("subAccountSid");
+				String subToken = (String)result.get("subToken");
+				String voipAccount = (String)result.get("voipAccount");
+				String voipPwd = (String)result.get("voipPwd");
+				user.setSubAccountSid(subAccountSid);
+				user.setSubToken(subToken);
+				user.setVoipAccount(voipAccount);
+				user.setVoipPwd(voipPwd);
+			}
 			return user;
 		}
 		return null;
