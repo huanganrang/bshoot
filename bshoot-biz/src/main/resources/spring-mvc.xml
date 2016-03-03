@@ -105,11 +105,7 @@
 						<value>/api/apiMessageController/message_test</value>
 						<value>/api/apiUserController/getValidateCode</value><!-- 发送验证码 -->
 						<value>/api/imPlusController/implusauth</value><!-- 容联云通讯回调地址 -->
-
-						<value>/api/apiUserAttentionController/user_attention</value><!-- 古鑫测试 -->
-						<value>/api/apiUserAttentionController/user_disattention</value><!-- 古鑫测试 -->
-						<value>/api/apiUserAttentionController/user_myattruser</value><!-- 古鑫测试 -->
-						<value>/api/apiUserAttentionController/user_editattention</value><!-- 古鑫测试 -->
+						<value>/api/apiUserController/findPwd</value><!-- 找回密码 -->
 					</list>
 				</property>
 				<property name="tokenManage" ref="tokenManage"/>
