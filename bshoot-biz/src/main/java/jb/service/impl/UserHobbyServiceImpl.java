@@ -72,18 +72,18 @@ public class UserHobbyServiceImpl extends BaseServiceImpl<UserHobby> implements 
 	}
 
 	protected String whereHql(UserHobby userHobby, Map<String, Object> params) {
-		String whereHql = "";	
+		String whereHql = "";
 		if (userHobby != null) {
 			whereHql += " where 1=1 ";
 			if (!F.empty(userHobby.getUserId())) {
 				whereHql += " and t.userId = :userId";
 				params.put("userId", userHobby.getUserId());
-			}		
+			}
 			if (!F.empty(userHobby.getHobbyType())) {
 				whereHql += " and t.hobbyType = :hobbyType";
 				params.put("hobbyType", userHobby.getHobbyType());
-			}		
-		}	
+			}
+		}
 		return whereHql;
 	}
 
@@ -138,5 +138,18 @@ public class UserHobbyServiceImpl extends BaseServiceImpl<UserHobby> implements 
 			userHobbyDao.save(u);
 		}
 	}
+
+	@Override
+	public void updateUserHobby(String[] hobbyTyps, String userId) {
+        Map<String,Object> param = new HashMap<String,Object>();
+        param.put("userId",userId);
+		userHobbyDao.executeHql("delete TuserHobby t where t.userId=:userId", param);
+        for (String hobbyTyp : hobbyTyps) {
+            UserHobby userHobby = new UserHobby();
+            userHobby.setHobbyType(hobbyTyp);
+            userHobby.setUserId(userId);
+            add(userHobby);
+        }
+    }
 
 }

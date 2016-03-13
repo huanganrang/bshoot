@@ -415,5 +415,11 @@
             <artifactId>ccp-rest-sdk-java</artifactId>
             <version>v2.7r</version>
         </dependency>
+        <!--apns-->
+        <dependency>
+            <groupId>com.dbay.apns4j</groupId>
+            <artifactId>dbay-apns4j</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>

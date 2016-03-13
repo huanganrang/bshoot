@@ -74,6 +74,11 @@
 						<td><input name="bardian" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
+						<td align="right" style="width: 180px;"><label>hobbyTypes(兴趣类型》HO0001,HO0002)：</label></td>
+						<td><input name="hobbyTypes" type="text" class="span2" value="HO0001"/></td>
+					</tr>
+
+					<tr>
 						<td colspan="2" align="center">
 						<input type="button"
 							value="提交" onclick="javascript:$('#user_edit_Form').submit();" /></td>

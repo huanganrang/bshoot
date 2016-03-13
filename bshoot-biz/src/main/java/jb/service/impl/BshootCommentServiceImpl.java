@@ -168,7 +168,7 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 	private Long getCount(String bshootId){
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bshootId", bshootId);
-		Long l= bshootDao.count("select count(1) from TbshootComment t where t.bshootId =:bshootId", params);
+		Long l= bshootDao.count("select count(t.id) from TbshootComment t where t.bshootId =:bshootId", params);
 		if(l == null) l = 0L;
 		updateCount(bshootId,l);
 		return l;

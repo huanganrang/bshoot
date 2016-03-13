@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -35,6 +36,10 @@ import java.util.Map;
 public class ApiUserController extends BaseController {
 	@Autowired
 	private UserServiceI userService;
+	@Autowired
+	private UserProfileServiceI userProfileService;
+	@Autowired
+	private UserHobbyServiceI userHobbyService;
 
 	@Autowired
 	private BshootServiceI bshootService;
@@ -80,6 +85,21 @@ public class ApiUserController extends BaseController {
 			} else {
 				j.setMsg("用户名或密码错误！");
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+
+	@ResponseBody
+	@RequestMapping("/registerAppleToken")
+	public Json registerAppleToken(User user, String appleToken) {
+		Json j = new Json();
+		try {
+			redisUserService.setAppleToken(user.getId(),appleToken);
+			j.setSuccess(true);
+			j.setMsg("注册成功！");
 		} catch (Exception e) {
 			e.printStackTrace();
 			j.setMsg(e.getMessage());
@@ -302,6 +322,8 @@ public class ApiUserController extends BaseController {
 			if(F.empty(userId))
 				userId = s.getId();
 			User user = userService.get(userId, true);
+			user.setUserProfile(userProfileService.get(userId));
+			user.setUserHobbyList(userHobbyService.getUserHobbies(Arrays.asList(userId)));
 			if(user == null){
 				j.setSuccess(false);
 				j.setMsg("不存在该用户");
@@ -324,7 +346,7 @@ public class ApiUserController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping("/edit")
-	public Json edit(User user, @RequestParam(required=false) MultipartFile headImageFile, HttpServletRequest request) {
+	public Json edit(User user, @RequestParam(required=false) MultipartFile headImageFile, HttpServletRequest request,String hobbyTypes) {
 		Json j = new Json();
 		try {
 			SessionInfo s = getSessionInfo(request);
@@ -354,7 +376,11 @@ public class ApiUserController extends BaseController {
 			}
 			
 			uploadFile(request, user, headImageFile);
-			userService.edit(user);			
+			userService.edit(user);
+			if(!F.empty(hobbyTypes)){
+				String[] _hobbyTypes = hobbyTypes.split("[,;]");
+				userHobbyService.updateUserHobby(_hobbyTypes,user.getId());
+			}
 			j.setSuccess(true);
 			j.setMsg("个人信息修改成功");
 			

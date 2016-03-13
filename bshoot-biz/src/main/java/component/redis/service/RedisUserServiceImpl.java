@@ -36,6 +36,26 @@ public class RedisUserServiceImpl {
     }
 
     /**
+     * 设置手机apple token
+     * @param userId
+     * @param appleToken
+     * @return
+     */
+    public boolean setAppleToken(String userId,String appleToken){
+        redisService.set(Key.build(Namespace.USER_APPLE_TOKEN,userId),appleToken);
+        return true;
+    }
+
+    /**
+     * 获取apple token
+     * @param userId
+     * @return
+     */
+    public String getAppleToken(String userId){
+        return (String)redisService.getString(Key.build(Namespace.USER_APPLE_TOKEN,userId));
+    }
+
+    /**
      * 获取用户所在服务器
      * @param userId
      * @return

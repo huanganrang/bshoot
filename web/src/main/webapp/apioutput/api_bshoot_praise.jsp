@@ -50,6 +50,11 @@
 						<td><input name="bshootId" type="text" class="span2" value=""/></td>
 					</tr>
 					<tr>
+						<td align="right" style="width: 180px;"><label>praiseNum(打赏数)：</label></td>
+						<td><input name="praiseNum" type="text" class="span2" value=""/></td>
+					</tr>
+
+					<tr>
 						<td colspan="2" align="center">
 						<input type="button"
 							value="提交" onclick="javascript:$('#bshoot_praise_Form').submit();" /></td>
