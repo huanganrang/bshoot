@@ -12,7 +12,6 @@ import jb.model.Tuser;
 import jb.model.TuserAttention;
 import jb.pageModel.*;
 import jb.service.UserAttentionServiceI;
-import jb.service.UserProfileServiceI;
 import jb.util.Constants;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -234,6 +233,24 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 			}
 		}
 		dg.setRows(ol);
+		return dg;
+	}
+
+	@Override
+	public DataGrid getUserInfos(String key) {
+		DataGrid dg = new DataGrid();
+		String hql = "select t from Tuser t where t.mobile='"+key+"' or t.nickname like '%"+key+"'";
+		List<Tuser> ul = userDao.find(hql);
+		List<User> userList = new ArrayList<User>();
+		for(Tuser tUser:ul){
+			User u = new User();
+			BeanUtils.copyProperties(tUser, u);
+			userList.add(u);
+		}
+		if(userList != null && userList.size() > 0){
+			dg.setTotal(new Long(userList.size()));
+		}
+		dg.setRows(userList);
 		return dg;
 	}
 

@@ -1,6 +1,7 @@
 package jb.service.impl;
 
 import jb.absx.F;
+import jb.dao.UserAttentionDaoI;
 import jb.dao.UserAttentionGroupDaoI;
 import jb.model.TuserAttentionGroup;
 import jb.pageModel.DataGrid;
@@ -21,6 +22,9 @@ public class UserAttentionGroupServiceImpl extends BaseServiceImpl<UserAttention
 
     @Autowired
     private UserAttentionGroupDaoI userAttentionGroupDao;
+
+    @Autowired
+    private UserAttentionDaoI userAttentionDao;
 
     @Override
     public DataGrid dataGrid(UserAttentionGroup userAttentionGroup, PageHelper ph) {
@@ -43,7 +47,7 @@ public class UserAttentionGroupServiceImpl extends BaseServiceImpl<UserAttention
     protected String whereHql(UserAttentionGroup userAttentionGroup, Map<String, Object> params) {
         String whereHql = "";
         if (userAttentionGroup != null) {
-            whereHql += " where 1=1 ";
+            whereHql += " where 1=1 and t.isDelete=0 ";
             if (!F.empty(userAttentionGroup.getUserId())) {
                 whereHql += " and t.userId = :userId";
                 params.put("userId", userAttentionGroup.getUserId());
@@ -92,6 +96,7 @@ public class UserAttentionGroupServiceImpl extends BaseServiceImpl<UserAttention
             TuserAttentionGroup t = new TuserAttentionGroup();
             BeanUtils.copyProperties(userAttentionGroup, t);
             t.setId(UUID.randomUUID().toString());
+            t.setIsDelete(0);
             t.setCreateDatetime(new Date());
             t.setUpdateDatetime(new Date());
             userAttentionGroupDao.save(t);
@@ -124,6 +129,8 @@ public class UserAttentionGroupServiceImpl extends BaseServiceImpl<UserAttention
             }
             t.setIsDelete(1);
             userAttentionGroupDao.save(t);
+            String sql = "update user_attention set attention_group=null where attention_group="+userAttentionGroup.getId();
+            userAttentionDao.executeSql(sql);
             return 1;
         }
         return -1;

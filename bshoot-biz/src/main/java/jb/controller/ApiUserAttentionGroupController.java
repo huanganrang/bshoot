@@ -2,10 +2,10 @@ package jb.controller;
 
 import jb.absx.F;
 import jb.pageModel.Json;
+import jb.pageModel.PageHelper;
 import jb.pageModel.SessionInfo;
 import jb.pageModel.UserAttentionGroup;
 import jb.service.UserAttentionGroupServiceI;
-import jb.service.UserAttentionServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,8 +23,29 @@ public class ApiUserAttentionGroupController extends BaseController {
     @Autowired
     private UserAttentionGroupServiceI userAttentionGroupService;
 
-    @Autowired
-    private UserAttentionServiceI userAttentionService;
+    /**
+     * 查询用户好友分组信息(添加分组或把is_delete改为0)，参数:userId,groupName
+     * @param userAttentionGroup
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/attentiongroup")
+    public Json dataGridAttentionGroup(UserAttentionGroup userAttentionGroup, HttpServletRequest request, PageHelper ph) {
+        Json j = new Json();
+        try {
+            if(F.empty(userAttentionGroup.getUserId())){
+                SessionInfo s = getSessionInfo(request);
+                userAttentionGroup.setUserId(s.getId());
+            }
+            j.setObj(userAttentionGroupService.dataGrid(userAttentionGroup, ph));
+            j.setSuccess(true);
+        } catch (Exception e) {
+            j.setMsg(e.getMessage());
+        }
+
+        return j;
+    }
 
     /**
      * 添加用户好友分组(添加分组或把is_delete改为0)，参数:userId,groupName
@@ -77,14 +98,8 @@ public class ApiUserAttentionGroupController extends BaseController {
                     j.setSuccess(false);
                     j.setMsg("删除分组失败");
                 }else{
-                    int rt = userAttentionService.delUserAtteGroup(userAttentionGroup);
-                    if(rt==-1){
-                        j.setSuccess(false);
-                        j.setMsg("删除分组成功，但清除关注好友表中的分组信息时失败，请检查传入的分组id");
-                    }else{
                         j.setSuccess(true);
                         j.setMsg("删除分组及关注表上的分组信息成功");
-                    }
                 }
             }else{
                 j.setSuccess(false);

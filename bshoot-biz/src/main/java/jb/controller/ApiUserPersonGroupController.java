@@ -5,7 +5,6 @@ import jb.pageModel.Json;
 import jb.pageModel.SessionInfo;
 import jb.pageModel.UserPersonGroup;
 import jb.service.UserPersonGroupServiceI;
-import jb.service.UserPersonServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +21,6 @@ public class ApiUserPersonGroupController extends BaseController {
 
     @Autowired
     private UserPersonGroupServiceI userPersonGroupService;
-
-    @Autowired
-    private UserPersonServiceI userPersonService;
 
     /**
      * 添加人脉圈好友分组(添加分组或把is_delete改为0)，参数:userId,groupName
@@ -73,7 +69,6 @@ public class ApiUserPersonGroupController extends BaseController {
             }
             if(!F.empty(userPersonGroup.getId())){//必需传进分组id，否则清除关注表上的分组时会有问题
                 userPersonGroupService.delete(userPersonGroup.getId());
-                userPersonService.delUserPersonGroup(userPersonGroup.getId());
                 j.setSuccess(true);
                 j.setMsg("删除分组成功");
             }else{

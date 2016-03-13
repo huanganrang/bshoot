@@ -1,6 +1,7 @@
 package jb.service.impl;
 
 import jb.absx.F;
+import jb.dao.UserPersonDaoI;
 import jb.dao.UserPersonGroupDaoI;
 import jb.model.TuserPersonGroup;
 import jb.pageModel.DataGrid;
@@ -22,6 +23,9 @@ public class UserPersonGroupServiceImpl extends BaseServiceImpl<UserPersonGroup>
 
     @Autowired
     private UserPersonGroupDaoI userPersonGroupDao;
+
+    @Autowired
+    private UserPersonDaoI userPersonDao;
 
     @Override
     public DataGrid dataGrid(UserPersonGroup userPersonGroup, PageHelper ph) {
@@ -88,7 +92,15 @@ public class UserPersonGroupServiceImpl extends BaseServiceImpl<UserPersonGroup>
 
     @Override
     public void delete(String id) {
-        userPersonGroupDao.delete(userPersonGroupDao.get(TuserPersonGroup.class, id));
+        if(!F.empty(id)){
+            TuserPersonGroup t = userPersonGroupDao.get(TuserPersonGroup.class, id);
+            if (t != null) {
+                t.setIsDelete(1);
+                userPersonGroupDao.save(t);
+                String sql = "update user_person set person_group=null where person_group="+id;
+                userPersonDao.executeSql(sql);
+            }
+        }
     }
 
 

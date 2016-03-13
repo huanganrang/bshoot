@@ -25,6 +25,25 @@ public class ApiUserAttentionController extends BaseController {
     private UserFriendTimeServiceI userFriendTimeService;
 
     /**
+     * 根据用户昵称或者手机号码查询用户信息，参数:key
+     * @param key
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/userInfos")
+    public Json getUserInfos(String key) {
+        Json j = new Json();
+        try {
+            j.setObj(userAttentionService.getUserInfos(key));
+            j.success();
+        } catch (Exception e) {
+            j.setMsg(e.getMessage());
+        }
+
+        return j;
+    }
+
+    /**
      * 关注用户(添加关注或把is_delete改为0)，参数:userId,attUserId
      * @param ua
      * @param request

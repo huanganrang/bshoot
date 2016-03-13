@@ -131,4 +131,11 @@ public interface UserAttentionServiceI {
 	 * @return
 	 */
 	public DataGrid dataGridMyFriend(UserAttention userAttention, PageHelper ph);
+
+	/**
+	 * 根据用户昵称或者手机号码查询用户信息，参数:key
+	 * @return
+	 */
+	DataGrid getUserInfos(String key);
+
 }
