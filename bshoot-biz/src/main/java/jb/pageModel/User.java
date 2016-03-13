@@ -3,6 +3,7 @@ package jb.pageModel;
 import jb.util.PathUtil;
 
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("unused")
 public class User implements java.io.Serializable {
@@ -49,6 +50,22 @@ public class User implements java.io.Serializable {
 	private String subToken;//子账号密码
 	private String voipAccount;//VoIP账号
 	private String voipPwd;//VoIP账号密码
+
+	private UserProfile userProfile; //用户画像数据
+
+	private List<UserHobby> userHobbyList;
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public UserProfile getUserProfile() {
+		return userProfile;
+	}
+
+	public void setUserProfile(UserProfile userProfile) {
+		this.userProfile = userProfile;
+	}
 
 	public Date getCreatedatetimeStart() {
 		return createdatetimeStart;
@@ -336,5 +353,13 @@ public class User implements java.io.Serializable {
 
 	public void setVoipPwd(String voipPwd) {
 		this.voipPwd = voipPwd;
+	}
+
+	public List<UserHobby> getUserHobbyList() {
+		return userHobbyList;
+	}
+
+	public void setUserHobbyList(List<UserHobby> userHobbyList) {
+		this.userHobbyList = userHobbyList;
 	}
 }

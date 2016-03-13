@@ -1,5 +1,7 @@
 package jb.pageModel;
 
+import jb.listener.Application;
+
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -38,6 +40,10 @@ public class UserHobby implements java.io.Serializable {
 	public java.lang.String getHobbyType() {
 		return this.hobbyType;
 	}
+	public java.lang.String getHobbyTypeName() {
+		return Application.getString(this.hobbyType);
+	}
+
 	public void setCreateDatetime(Date createDatetime) {
 		this.createDatetime = createDatetime;
 	}

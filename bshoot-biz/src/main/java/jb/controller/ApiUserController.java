@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -35,6 +36,10 @@ import java.util.Map;
 public class ApiUserController extends BaseController {
 	@Autowired
 	private UserServiceI userService;
+	@Autowired
+	private UserProfileServiceI userProfileService;
+	@Autowired
+	private UserHobbyServiceI userHobbyService;
 
 	@Autowired
 	private BshootServiceI bshootService;
@@ -317,6 +322,8 @@ public class ApiUserController extends BaseController {
 			if(F.empty(userId))
 				userId = s.getId();
 			User user = userService.get(userId, true);
+			user.setUserProfile(userProfileService.get(userId));
+			user.setUserHobbyList(userHobbyService.getUserHobbies(Arrays.asList(userId)));
 			if(user == null){
 				j.setSuccess(false);
 				j.setMsg("不存在该用户");

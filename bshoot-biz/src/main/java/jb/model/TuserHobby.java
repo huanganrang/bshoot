@@ -77,7 +77,7 @@ public class TuserHobby implements java.io.Serializable,IEntity{
 		this.userId = userId;
 	}
 	
-	@Column(name = "hobby_type", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
+	@Column(name = "hobby_type", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public java.lang.String getHobbyType() {
 		return this.hobbyType;
 	}
