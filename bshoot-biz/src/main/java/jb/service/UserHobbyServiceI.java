@@ -63,4 +63,6 @@ public interface UserHobbyServiceI {
 	public void delete(String id);
 
 	void saveOrUpdateUserHobby(UserHobby userHobby);
+
+	void updateUserHobby(String[] hobbyTyps,String userId);
 }

@@ -346,7 +346,7 @@ public class ApiUserController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping("/edit")
-	public Json edit(User user, @RequestParam(required=false) MultipartFile headImageFile, HttpServletRequest request) {
+	public Json edit(User user, @RequestParam(required=false) MultipartFile headImageFile, HttpServletRequest request,String hobbyTypes) {
 		Json j = new Json();
 		try {
 			SessionInfo s = getSessionInfo(request);
@@ -376,7 +376,11 @@ public class ApiUserController extends BaseController {
 			}
 			
 			uploadFile(request, user, headImageFile);
-			userService.edit(user);			
+			userService.edit(user);
+			if(!F.empty(hobbyTypes)){
+				String[] _hobbyTypes = hobbyTypes.split("[,;]");
+				userHobbyService.updateUserHobby(_hobbyTypes,user.getId());
+			}
 			j.setSuccess(true);
 			j.setMsg("个人信息修改成功");
 			
