@@ -86,6 +86,21 @@ public class ApiUserController extends BaseController {
 		}
 		return j;
 	}
+
+	@ResponseBody
+	@RequestMapping("/registerAppleToken")
+	public Json registerAppleToken(User user, String appleToken) {
+		Json j = new Json();
+		try {
+			redisUserService.setAppleToken(user.getId(),appleToken);
+			j.setSuccess(true);
+			j.setMsg("注册成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
 	
 	/**
 	 * 用户注册

@@ -1,10 +1,12 @@
 package component.message.service.impl;
 
+import com.dbay.apns4j.IApnsService;
+import com.dbay.apns4j.demo.Apns4jDemo;
+import com.dbay.apns4j.impl.ApnsServiceImpl;
+import com.dbay.apns4j.model.ApnsConfig;
+import com.dbay.apns4j.model.Payload;
 import component.message.service.IMessageService;
-import component.redis.Namespace;
-import component.redis.service.RedisServiceImpl;
 import component.redis.service.RedisUserServiceImpl;
-import component.redis.util.Key;
 import jb.absx.F;
 import jb.absx.Objectx;
 import jb.listener.Application;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +26,10 @@ import java.util.Map;
 public class IMessageServiceImpl extends Objectx implements IMessageService {
     @Resource
     private RedisUserServiceImpl redisUserService;
+    private static IApnsService apnsService;
     public boolean sendMessage(String userId, String jsonText) {
         String messageServerIp = redisUserService.getUserConnect(userId);
+        sendAppleMessage(userId,jsonText);
         if(F.empty(messageServerIp))return false;
         String url = "http://"+messageServerIp +":8088/api/messageCenterController/sendMessage";
         Map<String,String> map = new HashMap<String,String>();
@@ -36,6 +41,38 @@ public class IMessageServiceImpl extends Objectx implements IMessageService {
             e.printStackTrace();
         }
         return true;
+    }
+
+    private void sendAppleMessage(String userId,String message){
+        String token = redisUserService.getAppleToken(userId);
+        if(F.empty(token))return;
+        Payload payload = new Payload();
+        payload.setAlert(message);
+			/*payload.setAlertBody("alert body");
+			payload.setAlertLocKey("use emotion ok");
+			payload.setAlertLocArgs(new String[]{"3"});
+			payload.setAlertActionLocKey("lbg_loading_text_0");*/
+        payload.setBadge(1);
+        payload.setSound("msg.mp3");
+        getApnsService().sendNotification(token,payload);
+
+    }
+
+    private IApnsService getApnsService(){
+        if (apnsService == null) {
+            synchronized(IMessageServiceImpl.class){
+                if(apnsService == null){
+                    ApnsConfig config = new ApnsConfig();
+                    InputStream is = Apns4jDemo.class.getClassLoader().getResourceAsStream("/apns_pro.p12");
+                    config.setKeyStore(is);
+                    config.setDevEnv(false);
+                    config.setPassword("");
+                    config.setPoolSize(5);
+                    apnsService = ApnsServiceImpl.createInstance(config);
+                }
+            }
+        }
+        return apnsService;
     }
 
     @Override

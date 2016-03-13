@@ -98,7 +98,7 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 			public Integer fetchValue() {
 				Map<String,Object> params = new HashMap<String,Object>();
 				params.put("bsUserId",bshootPraise.getUserId());
-				Long count = bshootPraiseDao.count("select sum(t.praiseNum) from TbshootPraise t where t.bs_userId =:bsUserId)");
+				Long count = bshootPraiseDao.count("select sum(t.praiseNum) from TbshootPraise t where t.bsUserId =:bsUserId)",params);
 				if(null==count) count= 0L;
 				UserProfile userProfile = new UserProfile();
 				userProfile.setId(bshootPraise.getUserId());
