@@ -147,4 +147,7 @@ public interface BshootServiceI {
 
 	//用户打赏总数分组统计
 	Map<String,Integer> praiseCountGroup(Date begin, Date end);
+
+	List<Bshoot> getSomeoneBshoot(String userId, Integer fileType, Integer start, int rows);
+
 }

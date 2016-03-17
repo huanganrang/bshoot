@@ -1,6 +1,10 @@
 package jb.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.mangofactory.swagger.annotations.ApiIgnore;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import jb.pageModel.*;
 import jb.service.BshootServiceI;
 import jb.service.BshootSquareServiceI;
@@ -28,6 +32,7 @@ import java.util.UUID;
  * @author John
  * 
  */
+@Api(value = "bshootController-api",description = "动态相关接口", position =10)
 @Controller
 @RequestMapping("/bshootController")
 public class BshootController extends BaseController {
@@ -43,6 +48,7 @@ public class BshootController extends BaseController {
 	 * 
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/manager")
 	public String manager(HttpServletRequest request) {
 		return "/bshoot/bshoot";
@@ -51,9 +57,9 @@ public class BshootController extends BaseController {
 	/**
 	 * 获取Bshoot数据表格
 	 * 
-	 * @param user
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(Bshoot bshoot, PageHelper ph) {
@@ -62,7 +68,6 @@ public class BshootController extends BaseController {
 	/**
 	 * 获取Bshoot数据表格excel
 	 * 
-	 * @param user
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 
@@ -71,6 +76,7 @@ public class BshootController extends BaseController {
 	 * @throws IllegalArgumentException 
 	 * @throws IOException 
 	 */
+	@ApiIgnore
 	@RequestMapping("/download")
 	public void download(Bshoot bshoot, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
 		DataGrid dg = dataGrid(bshoot,ph);		
@@ -85,6 +91,7 @@ public class BshootController extends BaseController {
 	 * @param request
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/addPage")
 	public String addPage(HttpServletRequest request) {
 		Bshoot bshoot = new Bshoot();
@@ -97,6 +104,7 @@ public class BshootController extends BaseController {
 	 * 
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/add")
 	@ResponseBody
 	public Json add(Bshoot bshoot) {
@@ -113,6 +121,7 @@ public class BshootController extends BaseController {
 	 * @return
 	 */
 	//@RequestMapping("/add")
+	@ApiIgnore
 	@RequestMapping("/uploadBshoot")
 	@ResponseBody
 	public Json uploadBshoot(Bshoot bshoot,@RequestParam MultipartFile[] movies,HttpSession session) {
@@ -148,6 +157,7 @@ public class BshootController extends BaseController {
 	 * 
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/view")
 	public String view(HttpServletRequest request, String id) {
 		Bshoot bshoot = bshootService.get(id);
@@ -160,6 +170,7 @@ public class BshootController extends BaseController {
 	 * 
 	 * @return
 	 */
+	@ApiIgnore
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/editPage")
 	public String editPage(HttpServletRequest request, String id) {
@@ -179,6 +190,7 @@ public class BshootController extends BaseController {
 	 * @param bshoot
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(Bshoot bshoot) {
@@ -195,6 +207,7 @@ public class BshootController extends BaseController {
 	 * @param id
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/delete")
 	@ResponseBody
 	public Json delete(String id) {
@@ -205,4 +218,41 @@ public class BshootController extends BaseController {
 		return j;
 	}
 
+	/**
+	 * 我的作品
+	 * @param fileType
+	 * @param start
+	 * @param tokenId
+	 * @param request
+	 * @return
+	 */
+	@ApiOperation(value = "我的作品", notes = "我的作品", position = 2,httpMethod = "POST",response = Json.class,produces = "application/json; charset=utf-8")
+    @RequestMapping("/myBshoot")
+	@ResponseBody
+	public Json myBshoot(@ApiParam(value = "只看（-1全部/1图文/2视频/3音乐）",required = true) @RequestParam Integer fileType,@ApiParam(value = "页数(0开始)",required = true) @RequestParam Integer start,@ApiParam(value = "tokenId",required = true) @RequestParam String tokenId,HttpServletRequest request ){
+		SessionInfo sessionInfo = getSessionInfo(request);
+		List<Bshoot> bshoots = bshootService.getSomeoneBshoot( sessionInfo.getId(), fileType,start,15);
+		Json json = new Json();
+		json.setSuccess(true);
+		json.setObj(bshoots);
+		return json;
+	}
+
+	/**
+	 * 别人的作品
+	 * @param userId
+	 * @param fileType
+	 * @param start
+	 * @return
+	 */
+	@ApiOperation(value = "保存用户兴趣", notes = "保存用户兴趣", position = 2,httpMethod = "POST",response = Json.class,produces = "application/json; charset=utf-8")
+	@RequestMapping("/otherBshoot")
+	@ResponseBody
+	public Json otherBshoot(@ApiParam(value = "用户id",required = true) @RequestParam String userId,@ApiParam(value = "只看（-1全部/1图文/2视频/3音乐）",required = true) @RequestParam Integer fileType,@ApiParam(value = "页数(0开始)",required = true) @RequestParam Integer start){
+		List<Bshoot> bshoots = bshootService.getSomeoneBshoot( userId, fileType,start,15);
+		Json json = new Json();
+		json.setSuccess(true);
+		json.setObj(bshoots);
+		return json;
+	}
 }
