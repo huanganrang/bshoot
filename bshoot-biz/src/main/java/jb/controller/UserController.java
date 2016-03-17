@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.mangofactory.swagger.annotations.ApiIgnore;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import jb.pageModel.*;
 import jb.service.*;
 import jb.util.ConfigUtil;
@@ -11,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -483,7 +485,7 @@ public class UserController extends BaseController {
 	@ApiOperation(value = "别人的信息", notes = "别人的信息", position = 2,httpMethod = "POST",response = User.class,produces = "application/json; charset=utf-8")
 	@RequestMapping("/otherUserInfo")
 	@ResponseBody
-	public User otherUserInfo(String userId){
+	public User otherUserInfo(@ApiParam(value = "用户id",required = true) @RequestParam String userId){
 		return userService.getUserInfo(userId);
 	}
 }
