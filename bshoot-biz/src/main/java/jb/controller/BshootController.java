@@ -245,7 +245,7 @@ public class BshootController extends BaseController {
 	 * @param start
 	 * @return
 	 */
-	@ApiOperation(value = "保存用户兴趣", notes = "保存用户兴趣", position = 2,httpMethod = "POST",response = Json.class,produces = "application/json; charset=utf-8")
+	@ApiOperation(value = "别人的作品", notes = "别人的作品", position = 2,httpMethod = "POST",response = Json.class,produces = "application/json; charset=utf-8")
 	@RequestMapping("/otherBshoot")
 	@ResponseBody
 	public Json otherBshoot(@ApiParam(value = "用户id",required = true) @RequestParam String userId,@ApiParam(value = "只看（-1全部/1图文/2视频/3音乐）",required = true) @RequestParam Integer fileType,@ApiParam(value = "页数(0开始)",required = true) @RequestParam Integer start){
