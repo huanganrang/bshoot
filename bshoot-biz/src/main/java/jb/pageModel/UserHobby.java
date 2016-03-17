@@ -2,7 +2,9 @@ package jb.pageModel;
 
 import jb.listener.Application;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class UserHobby implements java.io.Serializable {
@@ -40,8 +42,16 @@ public class UserHobby implements java.io.Serializable {
 	public java.lang.String getHobbyType() {
 		return this.hobbyType;
 	}
-	public java.lang.String getHobbyTypeName() {
-		return Application.getString(this.hobbyType);
+	public List<String> getHobbyTypeName() {
+		String[] hobby = this.hobbyType.split(",");
+		List<String> hobbyName = new ArrayList<>();
+		String temp = null;
+		for(String str:hobby){
+			temp = Application.getString(str);
+			if(null!=temp)
+			hobbyName.add(temp);
+		}
+		return hobbyName;
 	}
 
 	public void setCreateDatetime(Date createDatetime) {

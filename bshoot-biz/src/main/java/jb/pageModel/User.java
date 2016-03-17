@@ -53,7 +53,7 @@ public class User implements java.io.Serializable {
 
 	private UserProfile userProfile; //用户画像数据
 
-	private List<UserHobby> userHobbyList;
+	private UserHobby userHobby;
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -355,11 +355,11 @@ public class User implements java.io.Serializable {
 		this.voipPwd = voipPwd;
 	}
 
-	public List<UserHobby> getUserHobbyList() {
-		return userHobbyList;
+	public UserHobby getUserHobby() {
+		return userHobby;
 	}
 
-	public void setUserHobbyList(List<UserHobby> userHobbyList) {
-		this.userHobbyList = userHobbyList;
+	public void setUserHobby(UserHobby userHobby) {
+		this.userHobby = userHobby;
 	}
 }

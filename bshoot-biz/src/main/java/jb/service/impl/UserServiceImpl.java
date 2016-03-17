@@ -3,16 +3,11 @@ package jb.service.impl;
 import component.implus.util.ImPlusUtil;
 import component.redis.service.RedisUserServiceImpl;
 import jb.absx.F;
-import jb.dao.ResourceDaoI;
-import jb.dao.RoleDaoI;
-import jb.dao.UserAttentionDaoI;
-import jb.dao.UserDaoI;
+import jb.dao.*;
 import jb.listener.Application;
-import jb.model.Tresource;
-import jb.model.Trole;
-import jb.model.Tuser;
-import jb.model.TuserAttention;
+import jb.model.*;
 import jb.pageModel.*;
+import jb.service.UserHobbyServiceI;
 import jb.service.UserProfileServiceI;
 import jb.service.UserServiceI;
 import jb.util.Constants;
@@ -47,6 +42,9 @@ public class UserServiceImpl implements UserServiceI {
 
 	@Autowired
 	private UserProfileServiceI userProfileService;
+
+	@Autowired
+	private UserHobbyServiceI userHobbyService;
 
 	@Override
 	public User login(User user) {
@@ -101,8 +99,7 @@ public class UserServiceImpl implements UserServiceI {
 			throw new Exception("登录名已存在！");
 		}
 		if(!F.empty(user.getMobile())) {
-			params = new HashMap<String, Object>();
-			params.put("mobile", user.getMobile());
+			params = new HashMap<String, Object>();params.put("mobile", user.getMobile());
 			if (userDao.count("select count(*) from Tuser t where t.mobile = :mobile", params) > 0) {
 				throw new Exception("手机号已存在！");
 			}
@@ -495,6 +492,21 @@ public class UserServiceImpl implements UserServiceI {
 		if(list!=null&&list.size()>0) 
 			return list.get(0);
 		return null;
+	}
+
+	@Override
+	public User getUserInfo(String userId) {
+		Map<String,Object> params = new HashMap<>();
+		params.put("userId",userId);
+		Tuser tuser = userDao.get("from Tuser t where t.userId=?", params);
+		if(tuser==null) return null;
+		User user = new User();
+		BeanUtils.copyProperties(tuser,user);
+		UserProfile userProfile = userProfileService.get(userId);
+		user.setUserProfile(userProfile);
+		UserHobby userHobby = userHobbyService.get(userId);
+		user.setUserHobby(userHobby);
+		return user;
 	}
 
 	@Override

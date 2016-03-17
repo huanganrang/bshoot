@@ -198,4 +198,5 @@ public interface UserServiceI {
 	public Map<String,Object> userIndex(String userId);
 
 
+	User getUserInfo(String userId);
 }
