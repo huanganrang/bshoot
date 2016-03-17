@@ -1,54 +1,84 @@
 package jb.pageModel;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import jb.util.PathUtil;
 
 import java.util.Date;
 import java.util.List;
-
+@ApiModel("User")
 @SuppressWarnings("unused")
 public class User implements java.io.Serializable {
 
 	private static final long serialVersionUID = -3278884807711490319L;
+	@ApiModelProperty("用户id")
 	private String id;
+	@ApiModelProperty("用户名")
 	private String name;
+	@ApiModelProperty("密码")
 	private String pwd;
+	@ApiModelProperty("创建时间")
 	private Date createdatetime;
+	@ApiModelProperty("修改时间")
 	private Date modifydatetime;
-
+	@ApiModelProperty("创建时间开始")
 	private Date createdatetimeStart;
+	@ApiModelProperty("创建时间结束")
 	private Date createdatetimeEnd;
+	@ApiModelProperty("修改时间开始")
 	private Date modifydatetimeStart;
+	@ApiModelProperty("修改时间结束")
 	private Date modifydatetimeEnd;
-
+	@ApiModelProperty("角色id")
 	private String roleIds;
+	@ApiModelProperty("角色名称")
 	private String roleNames;
-
+	@ApiModelProperty("用户类型")
 	private String utype;
+	@ApiModelProperty("第三方用户名")
 	private String thirdUser;
+	@ApiModelProperty("头像地址")
 	private String headImage;
+	@ApiModelProperty("用户昵称")
 	private String nickname;
+	@ApiModelProperty("区域")
 	private String area;
+	@ApiModelProperty("生日")
 	private String birthday;
+	@ApiModelProperty("性别")
 	private String sex;
+	@ApiModelProperty("个性签名")
 	private String bardian;
+	@ApiModelProperty("大/小v")
 	private String memberV;
+	@ApiModelProperty("邮箱")
 	private String email;
 	private String recommend;
 
 	private String attred; //是否被关注过
-
+	@ApiModelProperty("是否明星")
 	private Boolean isStar;
+	@ApiModelProperty("是否达人")
 	private Boolean isTarento;
 	private String validateCode;
+	@ApiModelProperty("手机号")
 	private String mobile;
+	@ApiModelProperty("登录经度")
 	private String lgX;//登录经度
+	@ApiModelProperty("登录纬度")
 	private String lgY;//登录维度
+	@ApiModelProperty("登录城市")
 	private String loginArea;//登录城市
+	@ApiModelProperty("头像地址绝对路径")
 	private String headImageAbsolute;
 	private String tokenId;
+	@ApiModelProperty("容联子账号")
 	private String subAccountSid;//容联子账号
+	@ApiModelProperty("子账号密码")
 	private String subToken;//子账号密码
+	@ApiModelProperty("voIp账号")
 	private String voipAccount;//VoIP账号
+	@ApiModelProperty("voIp密码")
 	private String voipPwd;//VoIP账号密码
 
 	private UserProfile userProfile; //用户画像数据

@@ -1,24 +1,40 @@
 package jb.pageModel;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 @SuppressWarnings("serial")
+@ApiModel("UserProfile")
 public class UserProfile implements java.io.Serializable {
 
 	private static final long serialVersionUID = 5454155825314635342L;
-
-	private java.lang.String id;	
-	private java.lang.String memberV;	
-	private java.lang.Integer attNum;	
-	private java.lang.Integer fansNum;	
+	@ApiModelProperty("id")
+	private java.lang.String id;
+	@ApiModelProperty("大/小v")
+	private java.lang.String memberV;
+	@ApiModelProperty("关注数")
+	private java.lang.Integer attNum;
+	@ApiModelProperty("粉丝数")
+	private java.lang.Integer fansNum;
+	@ApiModelProperty("打赏数")
 	private java.lang.Integer praiseNum;
+	@ApiModelProperty("月打赏数")
 	private java.lang.Integer monthPraise;
+	@ApiModelProperty("登录区域")
 	private java.lang.String loginArea;
+	@ApiModelProperty("最近登录时间")
 	private Date lastLoginTime;
+	@ApiModelProperty("最近发布时间")
 	private Date lastPubTime;
-	private Date createDatetime;			
+	@ApiModelProperty("创建时间")
+	private Date createDatetime;
+	@ApiModelProperty("更新时间")
 	private Date updateDatetime;
+	@ApiModelProperty("登录经度")
 	private java.lang.String lgX;
+	@ApiModelProperty("登录纬度")
 	private java.lang.String lgY;
 
 	

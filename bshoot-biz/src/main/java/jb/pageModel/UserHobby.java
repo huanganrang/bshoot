@@ -1,5 +1,7 @@
 package jb.pageModel;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import jb.listener.Application;
 
 import java.util.ArrayList;
@@ -7,14 +9,19 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("serial")
+@ApiModel("UserHobby")
 public class UserHobby implements java.io.Serializable {
 
 	private static final long serialVersionUID = 5454155825314635342L;
-
-	private java.lang.String id;	
-	private java.lang.String userId;	
-	private java.lang.String hobbyType;	
-	private Date createDatetime;			
+	@ApiModelProperty("id")
+	private java.lang.String id;
+	@ApiModelProperty("用户id")
+	private java.lang.String userId;
+	@ApiModelProperty("兴趣类型")
+	private java.lang.String hobbyType;
+	@ApiModelProperty("创建时间")
+	private Date createDatetime;
+	@ApiModelProperty("修改时间")
 	private Date updateDatetime;			
 
 	
