@@ -89,7 +89,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	private Long getAttCount(String userId){
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
-		Long l =  userAttentionDao.count("select count(t.attUserId) from TUserAttention t where t.userId =:userId", params);
+		Long l =  userAttentionDao.count("select count(t.attUserId) from TuserAttention t where t.userId =:userId", params);
 		if(l == null) l = 0L;
 		updateAttCount(userId,l);
 		return l;
@@ -106,7 +106,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	private Long getBeAttCount(String userId){
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
-		Long l =  userAttentionDao.count("select count(t.userId) from TUserAttention t where t.attUserId =:userId", params);
+		Long l =  userAttentionDao.count("select count(t.userId) from TuserAttention t where t.attUserId =:userId", params);
 		if(l == null) l = 0L;
 		updateAttCount(userId,l);
 		return l;
