@@ -26,9 +26,9 @@ import java.util.UUID;
  * @author John
  * 
  */
-@Api(value = "abcController-api",description = "用户相关接口", position =10)
+@Api(value = "userController-api",description = "用户相关接口", position =10)
 @Controller
-@RequestMapping("/abcController")
+@RequestMapping("/userController")
 public class UserController extends BaseController {
 
 	@Autowired
