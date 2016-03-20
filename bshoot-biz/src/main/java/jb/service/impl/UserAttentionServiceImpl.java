@@ -438,9 +438,9 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 			BeanUtils.copyProperties(userAttention, t);
 			t.setId(UUID.randomUUID().toString());
 			t.setAttentionDatetime(new Date());
-			if(get(userAttention.getAttUserId(), userAttention.getUserId())!=null){
-				TuserAttention tu = get(userAttention.getAttUserId(), userAttention.getUserId());
-				if(tu.getIsDelete() == 0){
+			TuserAttention tu = get(userAttention.getAttUserId(), userAttention.getUserId());
+			if(tu!=null){
+				if(tu.getIsDelete()==null||tu.getIsDelete() == 0){
 					t.setIsFriend(1);
 					tu.setIsFriend(1);
 					userAttentionDao.save(t);
