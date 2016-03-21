@@ -7,6 +7,7 @@ import jb.pageModel.Bshoot;
 import jb.pageModel.DataGrid;
 import jb.pageModel.PageHelper;
 import jb.pageModel.UserPersonTime;
+import jb.service.BshootServiceI;
 import jb.service.UserPersonTimeServiceI;
 import jb.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
@@ -20,6 +21,9 @@ public class UserPersonTimeServiceImpl extends BaseServiceImpl<UserPersonTime> i
 
 	@Autowired
 	private UserPersonTimeDaoI userPersonTimeDao;
+
+	@Autowired
+	private BshootServiceI bshootService;
 
 	@Override
 	public DataGrid dataGrid(UserPersonTime userPersonTime, PageHelper ph) {
@@ -112,8 +116,10 @@ public class UserPersonTimeServiceImpl extends BaseServiceImpl<UserPersonTime> i
 		List<UserPersonTime> ol = new ArrayList<UserPersonTime>();
 		if (l != null && l.size() > 0) {
 			for (TuserPersonTime t : l) {
+				Bshoot bs = bshootService.get(t.getBsId());
 				UserPersonTime o = new UserPersonTime();
 				BeanUtils.copyProperties(t, o);
+				o.setBshoot(bs);
 				ol.add(o);
 			}
 		}

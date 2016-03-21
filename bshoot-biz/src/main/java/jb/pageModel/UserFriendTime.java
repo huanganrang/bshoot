@@ -14,7 +14,8 @@ public class UserFriendTime implements java.io.Serializable {
 	private java.lang.Integer isRead;	
 	private java.lang.Integer isPraise;
 	private java.lang.Integer friendType;
-	private Date createDatetime;			
+	private Date createDatetime;
+	private Bshoot bshoot;
 
 	
 
@@ -76,5 +77,13 @@ public class UserFriendTime implements java.io.Serializable {
 
 	public void setFriendType(Integer friendType) {
 		this.friendType = friendType;
+	}
+
+	public Bshoot getBshoot() {
+		return bshoot;
+	}
+
+	public void setBshoot(Bshoot bshoot) {
+		this.bshoot = bshoot;
 	}
 }

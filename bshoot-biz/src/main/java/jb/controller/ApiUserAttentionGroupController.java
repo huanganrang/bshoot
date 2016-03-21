@@ -62,14 +62,7 @@ public class ApiUserAttentionGroupController extends BaseController {
                 SessionInfo s = getSessionInfo(request);
                 userAttentionGroup.setUserId(s.getId());
             }
-            int r = userAttentionGroupService.addAttention(userAttentionGroup);
-            if(r==-1){
-                j.setSuccess(false);
-                j.setMsg("已存在该分组");
-            }else{
-                j.setSuccess(true);
-                j.setMsg("添加分组成功");
-            }
+            j = userAttentionGroupService.addAttention(userAttentionGroup);
         } catch (Exception e) {
             j.setMsg(e.getMessage());
         }

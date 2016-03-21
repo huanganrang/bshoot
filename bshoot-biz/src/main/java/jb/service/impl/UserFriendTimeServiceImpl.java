@@ -143,6 +143,7 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 							if(userAttention.getAttentionGroup().equals(ua.getAttentionGroup())){
 								UserFriendTime o = new UserFriendTime();
 								BeanUtils.copyProperties(t, o);
+								o.setBshoot(bs);
 								ol.add(o);
 							}
 						}
@@ -151,8 +152,10 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 						return dg;
 					}else {
 						for (TuserFriendTime t : l) {
+							Bshoot bs = bshootService.get(t.getBsId());
 							UserFriendTime o = new UserFriendTime();
 							BeanUtils.copyProperties(t, o);
+							o.setBshoot(bs);
 							ol.add(o);
 						}
 						dg.setTotal((long) ol.size());
@@ -161,8 +164,10 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 					}
 				}else if(userFriendTime.getFriendType() == 1){//查询好友动态
 					for (TuserFriendTime t : l) {
+						Bshoot bs = bshootService.get(t.getBsId());
 						UserFriendTime o = new UserFriendTime();
 						BeanUtils.copyProperties(t, o);
+						o.setBshoot(bs);
 						ol.add(o);
 					}
 					dg.setTotal((long) ol.size());

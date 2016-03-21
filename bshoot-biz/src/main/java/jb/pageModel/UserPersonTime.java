@@ -14,8 +14,8 @@ public class UserPersonTime implements java.io.Serializable {
 	private java.lang.Integer isPraise;	
 	private java.lang.Integer isDelete;
 	private java.lang.Integer personType;
-	private Date createDatetime;			
-
+	private Date createDatetime;
+	private Bshoot bshoot;
 	
 
 	public void setId(java.lang.String value) {
@@ -76,5 +76,13 @@ public class UserPersonTime implements java.io.Serializable {
 
 	public void setPersonType(Integer personType) {
 		this.personType = personType;
+	}
+
+	public Bshoot getBshoot() {
+		return bshoot;
+	}
+
+	public void setBshoot(Bshoot bshoot) {
+		this.bshoot = bshoot;
 	}
 }

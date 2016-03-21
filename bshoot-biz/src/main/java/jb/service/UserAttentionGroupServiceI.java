@@ -2,6 +2,7 @@ package jb.service;
 
 import jb.model.TuserAttentionGroup;
 import jb.pageModel.DataGrid;
+import jb.pageModel.Json;
 import jb.pageModel.PageHelper;
 import jb.pageModel.UserAttentionGroup;
 
@@ -25,7 +26,7 @@ public interface UserAttentionGroupServiceI {
      *
      * @param userAttentionGroup
      */
-    public int addAttention(UserAttentionGroup userAttentionGroup);
+    public Json addAttention(UserAttentionGroup userAttentionGroup);
 
     /**
      * 获得UserAttentionGroup对象

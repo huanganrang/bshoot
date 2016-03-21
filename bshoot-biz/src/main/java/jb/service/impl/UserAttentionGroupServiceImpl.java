@@ -5,6 +5,7 @@ import jb.dao.UserAttentionDaoI;
 import jb.dao.UserAttentionGroupDaoI;
 import jb.model.TuserAttentionGroup;
 import jb.pageModel.DataGrid;
+import jb.pageModel.Json;
 import jb.pageModel.PageHelper;
 import jb.pageModel.UserAttentionGroup;
 import jb.service.UserAttentionGroupServiceI;
@@ -81,16 +82,23 @@ public class UserAttentionGroupServiceImpl extends BaseServiceImpl<UserAttention
     }
 
     @Override
-    public int addAttention(UserAttentionGroup userAttentionGroup) {
+    public Json addAttention(UserAttentionGroup userAttentionGroup) {
+        Json j = new Json();
         if(get(userAttentionGroup.getUserId(), userAttentionGroup.getGroupName())!=null){
             TuserAttentionGroup t = get(userAttentionGroup.getUserId(), userAttentionGroup.getGroupName());
             if(t.getIsDelete()==0){
-                return -1;//已存在分组
+                j.setSuccess(false);
+                j.setMsg("已存在该分组");
+                j.setObj(t);
+                return j;//已存在分组
             }else {
                 t.setIsDelete(0);
                 t.setUpdateDatetime(new Date());
                 userAttentionGroupDao.save(t);
-                return 1;
+                j.setSuccess(true);
+                j.setMsg("添加分组成功");
+                j.setObj(t);
+                return j;
             }
         }else {
             TuserAttentionGroup t = new TuserAttentionGroup();
@@ -100,7 +108,10 @@ public class UserAttentionGroupServiceImpl extends BaseServiceImpl<UserAttention
             t.setCreateDatetime(new Date());
             t.setUpdateDatetime(new Date());
             userAttentionGroupDao.save(t);
-            return 1;
+            j.setSuccess(true);
+            j.setMsg("添加分组成功");
+            j.setObj(t);
+            return j;
         }
     }
 
