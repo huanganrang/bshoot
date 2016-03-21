@@ -323,7 +323,7 @@ public class ApiUserController extends BaseController {
 				userId = s.getId();
 			User user = userService.get(userId, true);
 			user.setUserProfile(userProfileService.get(userId));
-			user.setUserHobbyList(userHobbyService.getUserHobbies(Arrays.asList(userId)));
+			user.setUserHobby(userHobbyService.getUserHobby(userId));
 			if(user == null){
 				j.setSuccess(false);
 				j.setMsg("不存在该用户");

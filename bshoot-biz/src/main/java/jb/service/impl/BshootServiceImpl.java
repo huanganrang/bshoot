@@ -847,4 +847,21 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		}
 		return countGroup;
 	}
+
+	@Override
+	public List<Bshoot> getSomeoneBshoot(String userId, Integer fileType, Integer start, int rows) {
+		Map<String,Object> params = new HashMap<>();
+		params.put("userId",userId);
+		params.put("bsFileType",fileType);
+		List<Tbshoot> l = bshootDao.find("from Tbshoot t where t.userId=? and t.bsFileType=?",params,start+1,rows);
+		List<Bshoot> ol = new ArrayList<>();
+		if (l != null && l.size() > 0) {
+			for (Tbshoot t : l) {
+				Bshoot o = new Bshoot();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
 }

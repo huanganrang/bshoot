@@ -1,6 +1,10 @@
 package jb.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.mangofactory.swagger.annotations.ApiIgnore;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import jb.pageModel.*;
 import jb.service.*;
 import jb.util.ConfigUtil;
@@ -8,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +26,7 @@ import java.util.UUID;
  * @author John
  * 
  */
+@Api(value = "userController-api",description = "用户相关接口", position =10)
 @Controller
 @RequestMapping("/userController")
 public class UserController extends BaseController {
@@ -43,6 +49,7 @@ public class UserController extends BaseController {
 	 * @param request
 	 * @return
 	 */
+	@ApiIgnore
 	@ResponseBody
 	@RequestMapping("/login")
 	public Json login(User user, HttpSession session, HttpServletRequest request) {
@@ -73,6 +80,7 @@ public class UserController extends BaseController {
 	 *            用户对象
 	 * @return
 	 */
+	@ApiIgnore
 	@ResponseBody
 	@RequestMapping("/reg")
 	public Json reg(User user) {
@@ -95,6 +103,7 @@ public class UserController extends BaseController {
 	 * @param session
 	 * @return
 	 */
+	@ApiIgnore
 	@ResponseBody
 	@RequestMapping("/logout")
 	public Json logout(HttpSession session) {
@@ -112,6 +121,7 @@ public class UserController extends BaseController {
 	 * 
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/manager")
 	public String manager() {
 		return "/admin/user";
@@ -123,6 +133,7 @@ public class UserController extends BaseController {
 	 * @param user
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(User user, PageHelper ph) {
@@ -135,6 +146,7 @@ public class UserController extends BaseController {
 	 * @param request
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/addPage")
 	public String addPage(HttpServletRequest request) {
 		User u = new User();
@@ -148,6 +160,7 @@ public class UserController extends BaseController {
 	 * 
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/add")
 	@ResponseBody
 	public Json add(User user) {
@@ -169,6 +182,7 @@ public class UserController extends BaseController {
 	 * 
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/editPage")
 	public String editPage(HttpServletRequest request, String id) {
 		User u = userService.get(id);
@@ -182,6 +196,7 @@ public class UserController extends BaseController {
 	 * @param user
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(User user) {
@@ -204,6 +219,7 @@ public class UserController extends BaseController {
 	 * @param id
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/delete")
 	@ResponseBody
 	public Json delete(String id, HttpSession session) {
@@ -224,6 +240,7 @@ public class UserController extends BaseController {
 	 *            ('0','1','2')
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/batchDelete")
 	@ResponseBody
 	public Json batchDelete(String ids, HttpSession session) {
@@ -248,6 +265,7 @@ public class UserController extends BaseController {
 	 * @return
 	 * @throws Exception 
 	 */
+	@ApiIgnore
 	@RequestMapping("/batchUpateToStar")
 	@ResponseBody
 	public Json batchUpateToStar(String ids, HttpSession session) throws Exception {
@@ -279,6 +297,7 @@ public class UserController extends BaseController {
 	 * @return
 	 * @throws Exception 
 	 */
+	@ApiIgnore
 	@RequestMapping("/batchUpateToTarento")
 	@ResponseBody
 	public Json batchUpateToTarento(String ids, HttpSession session) throws Exception {
@@ -308,6 +327,7 @@ public class UserController extends BaseController {
 	 * 
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/grantPage")
 	public String grantPage(String ids, HttpServletRequest request) {
 		request.setAttribute("ids", ids);
@@ -324,6 +344,7 @@ public class UserController extends BaseController {
 	 * @param ids
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/grant")
 	@ResponseBody
 	public Json grant(String ids, User user) {
@@ -341,6 +362,7 @@ public class UserController extends BaseController {
 	 * @param request
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/editPwdPage")
 	public String editPwdPage(String id, HttpServletRequest request) {
 		User u = userService.get(id);
@@ -354,6 +376,7 @@ public class UserController extends BaseController {
 	 * @param user
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/editPwd")
 	@ResponseBody
 	public Json editPwd(User user) {
@@ -369,6 +392,7 @@ public class UserController extends BaseController {
 	 * 
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/editCurrentUserPwdPage")
 	public String editCurrentUserPwdPage() {
 		return "/user/userEditPwd";
@@ -381,6 +405,7 @@ public class UserController extends BaseController {
 	 * @param pwd
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/editCurrentUserPwd")
 	@ResponseBody
 	public Json editCurrentUserPwd(HttpSession session, String oldPwd, String pwd) {
@@ -408,6 +433,7 @@ public class UserController extends BaseController {
 	 * 
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/currentUserRolePage")
 	public String currentUserRolePage(HttpServletRequest request, HttpSession session) {
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
@@ -420,6 +446,7 @@ public class UserController extends BaseController {
 	 * 
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/currentUserResourcePage")
 	public String currentUserResourcePage(HttpServletRequest request, HttpSession session) {
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
@@ -434,6 +461,7 @@ public class UserController extends BaseController {
 	 *            参数
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/loginCombobox")
 	@ResponseBody
 	public List<User> loginCombobox(String q) {
@@ -447,10 +475,17 @@ public class UserController extends BaseController {
 	 * @param ph
 	 * @return
 	 */
+	@ApiIgnore
 	@RequestMapping("/loginCombogrid")
 	@ResponseBody
 	public DataGrid loginCombogrid(String q, PageHelper ph) {
 		return userService.loginCombogrid(q, ph);
 	}
 
+	@ApiOperation(value = "别人的信息", notes = "别人的信息", position = 2,httpMethod = "POST",response = User.class,produces = "application/json; charset=utf-8")
+	@RequestMapping("/otherUserInfo")
+	@ResponseBody
+	public User otherUserInfo(@ApiParam(value = "用户id",required = true) @RequestParam String userId){
+		return userService.getUserInfo(userId);
+	}
 }

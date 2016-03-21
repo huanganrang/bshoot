@@ -89,7 +89,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	private Long getAttCount(String userId){
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
-		Long l =  userAttentionDao.count("select count(t.attUserId) from TUserAttention t where t.userId =:userId", params);
+		Long l =  userAttentionDao.count("select count(t.attUserId) from TuserAttention t where t.userId =:userId", params);
 		if(l == null) l = 0L;
 		updateAttCount(userId,l);
 		return l;
@@ -106,7 +106,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 	private Long getBeAttCount(String userId){
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
-		Long l =  userAttentionDao.count("select count(t.userId) from TUserAttention t where t.attUserId =:userId", params);
+		Long l =  userAttentionDao.count("select count(t.userId) from TuserAttention t where t.attUserId =:userId", params);
 		if(l == null) l = 0L;
 		updateAttCount(userId,l);
 		return l;
@@ -438,9 +438,9 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 			BeanUtils.copyProperties(userAttention, t);
 			t.setId(UUID.randomUUID().toString());
 			t.setAttentionDatetime(new Date());
-			if(get(userAttention.getAttUserId(), userAttention.getUserId())!=null){
-				TuserAttention tu = get(userAttention.getAttUserId(), userAttention.getUserId());
-				if(tu.getIsDelete() == 0){
+			TuserAttention tu = get(userAttention.getAttUserId(), userAttention.getUserId());
+			if(tu!=null){
+				if(tu.getIsDelete()==null||tu.getIsDelete() == 0){
 					t.setIsFriend(1);
 					tu.setIsFriend(1);
 					userAttentionDao.save(t);
