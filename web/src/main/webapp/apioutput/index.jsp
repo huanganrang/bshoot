@@ -19,7 +19,7 @@
 				style="padding: 1px"></div>
 			<!-- <div title="视频一览表" data-options="href:'api_bshootlist.jsp'"
 				style="padding: 1px"></div> -->
-			<div title="上传美拍" data-options="href:'api_upload.jsp'"
+			<div title="上传(*)" data-options="href:'api_upload.jsp'"
 				style="padding: 1px"></div>
 			<div title="行政区域查询" data-options="href:'api_region_query.jsp'"
 				style="padding: 1px"></div>

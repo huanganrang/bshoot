@@ -54,7 +54,11 @@ public class IMessageServiceImpl extends Objectx implements IMessageService {
 			payload.setAlertActionLocKey("lbg_loading_text_0");*/
         payload.setBadge(1);
         payload.setSound("msg.mp3");
-        getApnsService().sendNotification(token,payload);
+        try {
+            getApnsService().sendNotification(token, payload);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 

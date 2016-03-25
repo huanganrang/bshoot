@@ -49,9 +49,14 @@
 						<td align="right" style="width: 180px;"><label>bsDescription(描述)：</label></td>
 						<td><textarea rows="2" cols="" name="bsDescription" >#话题# @用户 我的地盘我做主</textarea>（话题用##，用户以@开头空格结尾,话题列表接口：首页-广场话题，@好友接口：用户-我的关注）</td>
 					</tr>
-					<tr>
+					<%--<tr>
 						<td align="right" style="width: 180px;"><label>squareIds(广场分类ID集合)：</label></td>
 						<td><input name="squareIds" type="text" class="span2" value=""/>（多个以逗号隔开，如：id1,id2,...id3）</td>
+					</tr>--%>
+
+					<tr>
+						<td align="right" style="width: 180px;"><label>bsFileType(类型)：</label></td>
+						<td><input name="bsFileType" type="text" class="span2" value="1"/>1图文/2视频/3音乐</td>
 					</tr>
 					<tr>
 						<td align="right" style="width: 180px;"><label>movies(视频文件)：</label></td>
