@@ -200,6 +200,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
                 bshoot.setMemberV(userEntity.getMember_v());
                 bshoot.setUserHeadImage(userEntity.getHeadImg());
                 h = new ArrayList<String>();
+                if(CollectionUtils.isNotEmpty(userEntity.getHobby()))
                 for(String hob:userEntity.getHobby()){
                     h.add(baseDatas.get(hob).getName());
                 }
