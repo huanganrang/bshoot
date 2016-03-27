@@ -16,7 +16,6 @@ public abstract class PathUtil {
 			if(F.empty(str)) continue;
 			sb.append(";");
 			sb.append(getBathPath()+str);
-			
 		}
 		
 		return sb.toString().substring(1);

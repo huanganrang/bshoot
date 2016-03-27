@@ -110,6 +110,8 @@
 						<value>/api/apiUserController/getValidateCode</value><!-- 发送验证码 -->
 						<value>/api/imPlusController/implusauth</value><!-- 容联云通讯回调地址 -->
 						<value>/api/apiUserController/findPwd</value><!-- 找回密码 -->
+						<value>/apiSwgUserHobbyController/getHobbyList</value><!-- 获取用户兴趣 -->
+						<value>/apiSwgBshootController/otherBshoot</value><!-- 别人的作品 -->
 					</list>
 				</property>
 				<property name="tokenManage" ref="tokenManage"/>
