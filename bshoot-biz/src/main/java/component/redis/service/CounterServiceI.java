@@ -50,6 +50,8 @@ public interface CounterServiceI {
      */
     boolean automicChangeCount(String bshootId,CounterType counterType,Integer num,FetchValue fetchValue) throws CounterException;
 
+    boolean automicChangeCount(String bshootId,CounterType counterType,Integer num) throws CounterException;
+
     //boolean isExists(String bshootId,CounterType counterType) throws CounterException;
 
     //boolean hsetnx(String bshootId,CounterType counterType,int num) throws  CounterException;
@@ -85,4 +87,11 @@ public interface CounterServiceI {
 
     Object get(String countKey);
     void set(String countKey,String time);
+
+    /**
+     * 注册FetchValue
+     * @param counterType
+     * @param fetchValue
+     */
+    void registerFetchValue(CounterType counterType,FetchValue fetchValue);
 }

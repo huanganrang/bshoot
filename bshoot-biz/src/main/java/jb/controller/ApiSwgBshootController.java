@@ -58,6 +58,7 @@ public class ApiSwgBshootController extends BaseController {
 	public Json myBshoot(@ApiParam(value = "只看（-1全部/1图文/2视频/3音乐）",required = true) @RequestParam Integer fileType,@ApiParam(value = "页数(0开始)",required = true) @RequestParam Integer start,@ApiParam(value = "tokenId",required = true) @RequestParam String tokenId,HttpServletRequest request ){
 		SessionInfo sessionInfo = getSessionInfo(request);
 		List<Bshoot> bshoots = bshootService.getSomeoneBshoot( sessionInfo.getId(), fileType,start,15);
+		bshootService.convertNumber(bshoots);
 		Json json = new Json();
 		json.setSuccess(true);
 		json.setObj(bshoots);
@@ -76,6 +77,7 @@ public class ApiSwgBshootController extends BaseController {
 	@ResponseBody
 	public Json otherBshoot(@ApiParam(value = "用户id",required = true) @RequestParam String userId,@ApiParam(value = "只看（-1全部/1图文/2视频/3音乐）",required = true) @RequestParam Integer fileType,@ApiParam(value = "页数(0开始)",required = true) @RequestParam Integer start){
 		List<Bshoot> bshoots = bshootService.getSomeoneBshoot( userId, fileType,start,15);
+		bshootService.convertNumber(bshoots);
 		Json json = new Json();
 		json.setSuccess(true);
 		json.setObj(bshoots);

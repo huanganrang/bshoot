@@ -17,6 +17,7 @@ import jb.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.lucene.util.CollectionUtil;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 @Service
-public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> implements BshootPraiseServiceI {
+public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> implements BshootPraiseServiceI ,InitializingBean {
 
 	@Autowired
 	private BshootPraiseDaoI bshootPraiseDao;
@@ -86,16 +87,11 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		t.setPraiseDatetime(new Date());
 		bshootPraiseDao.save(t);
 		//动态的打赏计数+n
-		counterService.automicChangeCount(bshootPraise.getBshootId(), CounterType.PRAISE, bshootPraise.getPraiseNum(), new FetchValue() {
-			@Override
-			public Integer fetchValue() {
-				return getCount(bshootPraise.getBshootId()).intValue();
-			}
-		});
+		counterService.automicChangeCount(bshootPraise.getBshootId(), CounterType.PRAISE, bshootPraise.getPraiseNum());
 		//被打赏用户打赏数量计数
 		counterService.automicChangeCount(bshootPraise.getUserId(), CounterType.PRAISE, bshootPraise.getPraiseNum(), new FetchValue() {
 			@Override
-			public Integer fetchValue() {
+			public Integer fetchValue(String key) {
 				Map<String,Object> params = new HashMap<String,Object>();
 				params.put("bsUserId",bshootPraise.getUserId());
 				Long count = bshootPraiseDao.count("select sum(t.praiseNum) from TbshootPraise t where t.bsUserId =:bsUserId)",params);
@@ -148,12 +144,7 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		final TbshootPraise t = bshootPraiseDao.get(TbshootPraise.class, id);
 		bshootPraiseDao.delete(t);
 		//打赏计数-1,如果这里出了错，后面可以通过job去纠正
-		counterService.automicChangeCount(t.getBshootId(), CounterType.PRAISE, -1, new FetchValue() {
-			@Override
-			public Integer fetchValue() {
-				return getCount(t.getBshootId()).intValue();
-			}
-		});
+		counterService.automicChangeCount(t.getBshootId(), CounterType.PRAISE, t.getPraiseNum());
 	}
 
 
@@ -246,4 +237,13 @@ public class BshootPraiseServiceImpl extends BaseServiceImpl<BshootPraise> imple
 		return bshootPraiseDao.singleFriendHasPraisedUser(praiseCommentRequest);
 	}
 
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		counterService.registerFetchValue(CounterType.PRAISE,new FetchValue() {
+			@Override
+			public Integer fetchValue(String key) {
+				return getCount(key).intValue();
+			}
+		});
+	}
 }

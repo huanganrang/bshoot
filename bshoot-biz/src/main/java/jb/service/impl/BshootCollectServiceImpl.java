@@ -15,6 +15,7 @@ import jb.service.BshootCollectServiceI;
 import jb.service.MessageServiceI;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 @Service
-public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> implements BshootCollectServiceI {
+public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> implements BshootCollectServiceI,InitializingBean {
 
 	@Autowired
 	private BshootCollectDaoI bshootCollectDao;
@@ -79,12 +80,7 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 		//t.setCreatedatetime(new Date());
 		t.setCollectDatetime(new Date());
 		bshootCollectDao.save(t);
-		counterService.automicChangeCount(bshootCollect.getBshootId(), CounterType.COLLECT, 1, new FetchValue() {
-			@Override
-			public Integer fetchValue() {
-				return getCount(bshootCollect.getBshootId()).intValue();
-			}
-		});
+		counterService.automicChangeCount(bshootCollect.getBshootId(), CounterType.COLLECT, 1);
 		Tbshoot bshoot = bshootDao.get(Tbshoot.class,bshootCollect.getBshootId());
 		messageServiceImpl.addAndSendMessage(MessageServiceI.MT_05,bshoot.getUserId(),bshootCollect.getId(),"用户["+currentUser+"]评论了您的动态");
 		return 1;
@@ -93,7 +89,7 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 	private Long getCount(String bshootId){
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("bshootId", bshootId);
-		Long l =  bshootDao.count("select count(1) from TbshootCollect t where t.bshootId =:bshootId", params);
+		Long l =  bshootDao.count("select count(id) from TbshootCollect t where t.bshootId =:bshootId", params);
 		if(l == null) l = 0L;
 		updateCount(bshootId,l);
 		return l;
@@ -152,12 +148,7 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 		final TbshootCollect t = bshootCollectDao.get(TbshootCollect.class, id);
 		bshootCollectDao.delete(t);
 		updateCountReduce(t.getBshootId());
-		counterService.automicChangeCount(t.getBshootId(), CounterType.COLLECT, -1, new FetchValue() {
-			@Override
-			public Integer fetchValue() {
-				return getCount(t.getBshootId()).intValue();
-			}
-		});
+		counterService.automicChangeCount(t.getBshootId(), CounterType.COLLECT, -1);
 	}
 
 	private void updateCount(String bshootId,long sum){
@@ -198,5 +189,14 @@ public class BshootCollectServiceImpl extends BaseServiceImpl<BshootCollect> imp
 		}
 		return 0;
 	}
-	
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		counterService.registerFetchValue(CounterType.COLLECT,new FetchValue() {
+			@Override
+			public Integer fetchValue(String key) {
+				return getCount(key).intValue();
+			}
+		});
+	}
 }

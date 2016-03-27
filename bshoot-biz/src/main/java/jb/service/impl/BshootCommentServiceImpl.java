@@ -23,6 +23,7 @@ import jb.service.MessageServiceI;
 import jb.util.Constants;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 @Service
-public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> implements BshootCommentServiceI,CounterHandler {
+public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> implements BshootCommentServiceI,CounterHandler,InitializingBean {
 
 	@Autowired
 	private BshootCommentDaoI bshootCommentDao;
@@ -154,12 +155,7 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 		t.setCommentDatetime(new Date());
 		bshootCommentDao.save(t);
 		//动态的打赏计数+1
-		counterService.automicChangeCount(bshootComment.getBshootId(), CounterType.COMMENT, 1, new FetchValue() {
-			@Override
-			public Integer fetchValue() {
-				return getCount(bshootComment.getBshootId()).intValue();
-			}
-		});
+		counterService.automicChangeCount(bshootComment.getBshootId(), CounterType.COMMENT, 1);
 		ComCounterProducer.getInstance().send(CounterType.COMMENT,t,t.getId());
 
 		return t;
@@ -229,12 +225,7 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 		deleteCommentPraise(id);
 		updateCountReduce(t.getBshootId());
 		//打赏计数-1
-		counterService.automicChangeCount(t.getBshootId(), CounterType.COMMENT, -1, new FetchValue() {
-			@Override
-			public Integer fetchValue() {
-				return getCount(t.getBshootId()).intValue();
-			}
-		});
+		counterService.automicChangeCount(t.getBshootId(), CounterType.COMMENT, -1);
 	}
 
 
@@ -296,5 +287,16 @@ public class BshootCommentServiceImpl extends BaseServiceImpl<BshootComment> imp
 		Tbshoot bshoot = bshootDao.get(Tbshoot.class,bshootComment.getBshootId());
 		Tuser tuser = userDao.get(Tuser.class,bshootComment.getUserId());
 		messageServiceImpl.addAndSendMessage(MessageServiceI.MT_03,bshoot.getUserId(),bshootComment.getId(),"用户["+tuser.getName()+"]评论了您的动态");
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		//打赏计数-1
+		counterService.registerFetchValue(CounterType.COMMENT,new FetchValue() {
+			@Override
+			public Integer fetchValue(String key) {
+				return getCount(key).intValue();
+			}
+		});
 	}
 }

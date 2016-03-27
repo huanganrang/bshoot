@@ -3,7 +3,6 @@ package jb.service.impl;
 import com.alibaba.druid.support.json.JSONUtils;
 import jb.bizmodel.GuideType;
 import jb.pageModel.*;
-import jb.service.CommonRecommendServiceI;
 import jb.service.HotGuideServiceI;
 import jb.util.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -17,7 +16,7 @@ import java.util.*;
  * Created by Zhou Yibing on 2015/10/22.
  */
 @Service
-public class HotGuideService extends  RecommendService implements HotGuideServiceI{
+public class HotGuideService extends RecommendServiceImpl implements HotGuideServiceI{
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override

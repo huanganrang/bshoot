@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +25,8 @@ public class CounterServiceImpl implements CounterServiceI{
     private RedisServiceImpl redisService;
     @Autowired
     private RedisLock redisLock;
+
+    private Map<CounterType,FetchValue> fetchValueContext = new HashMap<CounterType,FetchValue>();
 
     @Override
     public void increment(String bshootId, CounterType countType) throws CounterException {
@@ -66,7 +69,7 @@ public class CounterServiceImpl implements CounterServiceI{
                 //1.先查看指定的count字段是否存在
                 if(null!=countValue){
                     //count字段与num计算后是否小于0
-                    Integer exceptValue = Integer.parseInt(String.valueOf(countValue))+num;
+                    Integer exceptValue = parseInt(String.valueOf(countValue))+num;
                     if(exceptValue<0) {
                         throw new CounterException("the counter value can not less than 0 after change.[bshootId="+bshootId+",counterType="+counterType.getType()+",num="+num+"]");
                     }
@@ -74,7 +77,7 @@ public class CounterServiceImpl implements CounterServiceI{
 
                 }else{
                     //1.1不存在则从数据库中获取值，并设置进去
-                    num = fetchValue.fetchValue();
+                    num = fetchValue.fetchValue(bshootId);
                     redisService.hsetnx(bshootId,counterType.getType(),String.valueOf(num));
                     redisService.expire(bshootId,1, TimeUnit.DAYS);
                 }
@@ -86,6 +89,49 @@ public class CounterServiceImpl implements CounterServiceI{
         }finally {
             redisLock.unlock("lock_"+bshootId);
         }
+    }
+
+
+    private Integer automicChangeCountRetunInt(String bshootId, CounterType counterType, Integer num, FetchValue fetchValue) throws CounterException {
+        if(null==fetchValue) throw new CounterException("you must implemnts the FetchValue,tell me how to fetch the value!");
+        try {
+            //获得redis锁，并设置拥有时间600ms,等待锁时间1s
+            if(redisLock.lock("lock_"+bshootId,"1",600L,800L)){
+                Object countValue = redisService.getHashValue(bshootId,counterType.getType());
+                //1.先查看指定的count字段是否存在
+                if(null!=countValue){
+                    //count字段与num计算后是否小于0
+                    Integer exceptValue = parseInt(String.valueOf(countValue)) + num;
+                    if(exceptValue<0) {
+                        throw new CounterException("the counter value can not less than 0 after change.[bshootId="+bshootId+",counterType="+counterType.getType()+",num="+num+"]");
+                    }
+                    redisService.hincreby(bshootId, counterType.getType(), num);
+                    num = exceptValue;
+                }else{
+                    //1.1不存在则从数据库中获取值，并设置进去
+                    num = fetchValue.fetchValue(bshootId);
+                    redisService.hsetnx(bshootId,counterType.getType(),String.valueOf(num));
+                    redisService.expire(bshootId,1, TimeUnit.DAYS);
+                }
+                return num;
+            }
+            return null;
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new CounterException("automicChangeCount has occured an exception,"+e.getMessage());
+        }finally {
+            redisLock.unlock("lock_"+bshootId);
+        }
+    }
+
+
+    @Override
+    public boolean automicChangeCount(String bshootId, CounterType counterType, Integer num) throws CounterException {
+        FetchValue fetchValue = fetchValueContext.get(counterType);
+        if(fetchValue!=null){
+            return automicChangeCount(bshootId,counterType,num,fetchValue);
+        }
+        return false;
     }
 
     @Override
@@ -127,17 +173,23 @@ public class CounterServiceImpl implements CounterServiceI{
             for(String key:keys){
                 Object c = clazz.newInstance();
                 Map<byte[],byte[]> fieldValues = results.get(key);
-                if(null==fieldValues||fieldValues.size()==0) {
-                    counters.add(c);
-                    continue;
-                }
-                for(Field field:fields){
+
+                for (Field field : fields) {
                     field.setAccessible(true);
-                    if(field.getName().equals("id")) field.set(c,key);
-                    if(field.isAnnotationPresent(Counter.class)){
+                    if (field.getName().equals("id")) field.set(c, key);
+                    if (field.isAnnotationPresent(Counter.class)) {
                         Counter counter = field.getAnnotation(Counter.class);
-                        if(null!=fieldValues.get(counter.value().getType()))
-                            field.set(c,Integer.parseInt(String.valueOf(fieldValues.get(counter.value().getType()))));
+                        if (null == fieldValues || fieldValues.size() == 0) {
+                            FetchValue fetchValue = fetchValueContext.get(counter.value());
+                            if(fetchValue!=null){
+                                Integer num = automicChangeCountRetunInt(key, counter.value(), 0, fetchValue);
+                                if(num!=null)
+                                    field.set(c,num);
+                            }
+                        } else {
+                            if (null != fieldValues.get(counter.value().getType()))
+                                field.set(c, parseInt(String.valueOf(fieldValues.get(counter.value().getType()))));
+                        }
                     }
                 }
                 counters.add(c);
@@ -149,18 +201,39 @@ public class CounterServiceImpl implements CounterServiceI{
         }
     }
 
+    private int parseInt(String str){
+        try{
+            str = "null".equals(str)?"0":str;
+            return Integer.parseInt(str);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     private <T> void  fillField(String key,T c){
         try{
             Map<Object,Object> fieldValues = redisService.getHash(key);
-            if(null!=fieldValues&&fieldValues.size()>0){
-                Field[] fields = c.getClass().getDeclaredFields();
-                for(Field field:fields){
-                    field.setAccessible(true);
-                    if(field.isAnnotationPresent(Counter.class)){
-                        Counter counter = field.getAnnotation(Counter.class);
-                        if(null!=fieldValues.get(counter.value().getType()))
-                            field.set(c,Integer.parseInt(String.valueOf(fieldValues.get(counter.value().getType()))));
+
+            Field[] fields = c.getClass().getDeclaredFields();
+            for(Field field:fields){
+                field.setAccessible(true);
+                if(field.isAnnotationPresent(Counter.class)){
+                    Counter counter = field.getAnnotation(Counter.class);
+                    if(null!=fieldValues&&fieldValues.size()>0) {
+                        if (null != fieldValues.get(counter.value().getType()))
+                            field.set(c, parseInt(String.valueOf(fieldValues.get(counter.value().getType()))));
+                    }else{
+                        FetchValue fetchValue = fetchValueContext.get(counter.value());
+                        if(fetchValue!=null){
+                            Integer num = automicChangeCountRetunInt(key, counter.value(), 0, fetchValue);
+                            if(num!=null)
+                            field.set(c,num);
+                        }
                     }
+                    /*FetchValue fetchValue = fetchValueContext.get(counter.value());
+                    if(fetchValue != null)
+                    fetchValue.fetchValue(key);*/
                 }
             }
         }catch (Exception e){
@@ -199,5 +272,10 @@ public class CounterServiceImpl implements CounterServiceI{
     @Override
     public void set(String countKey, String time) {
         redisService.set(countKey,time);
+    }
+
+    @Override
+    public void registerFetchValue(CounterType counterType, FetchValue fetchValue) {
+        fetchValueContext.put(counterType,fetchValue);
     }
 }

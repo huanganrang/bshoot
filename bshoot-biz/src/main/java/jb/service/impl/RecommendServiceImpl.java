@@ -29,8 +29,8 @@ import java.util.*;
 /**
  * Created by zhou on 2016/1/1.
  */
-@Service
-public class RecommendService extends UserRecommendService implements RecommendServiceI,CommonRecommendServiceI{
+@Service("recommendServiceImpl")
+public class RecommendServiceImpl extends UserRecommendService implements RecommendServiceI,CommonRecommendServiceI{
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 

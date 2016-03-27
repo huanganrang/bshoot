@@ -16,12 +16,10 @@ import jb.model.TbshootPraise;
 import jb.model.Tuser;
 import jb.pageModel.*;
 import jb.service.*;
-import jb.util.Constants;
-import jb.util.MyBeanUtils;
-import jb.util.PathUtil;
-import jb.util.RoundTool;
+import jb.util.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements BshootServiceI {
+public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements BshootServiceI,InitializingBean {
 
 	@Autowired
 	private BshootDaoI bshootDao;
@@ -746,13 +744,7 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		bshootDao.executeSql("update bshoot t set t.bs_play = ifnull(t.bs_play, 0) + "+addNum+" where t.id=:id", params);
-		counterService.automicChangeCount(id, CounterType.PLAY, addNum, new FetchValue() {
-			@Override
-			public Integer fetchValue() {
-				Bshoot bshoot = get(id);
-				return bshoot.getBsPlay();
-			}
-		});
+		counterService.automicChangeCount(id, CounterType.PLAY, addNum);
 	}
 
 	@Override
@@ -852,8 +844,13 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 	public List<Bshoot> getSomeoneBshoot(String userId, Integer fileType, Integer start, int rows) {
 		Map<String,Object> params = new HashMap<>();
 		params.put("userId",userId);
-		params.put("bsFileType",fileType);
-		List<Tbshoot> l = bshootDao.find("from Tbshoot t where t.userId=? and t.bsFileType=?",params,start+1,rows);
+		List<Tbshoot> l;
+		if(!(fileType == null||fileType==-1)) {
+			params.put("bsFileType", fileType);
+			l = bshootDao.find("from Tbshoot t where t.userId=:userId and t.bsFileType=:bsFileType", params, start *rows, rows);
+		}else{
+			l = bshootDao.find("from Tbshoot t where t.userId=:userId", params, start *rows, rows);
+		}
 		List<Bshoot> ol = new ArrayList<>();
 		if (l != null && l.size() > 0) {
 			for (Tbshoot t : l) {
@@ -863,5 +860,41 @@ public class BshootServiceImpl extends BaseServiceImpl<Bshoot> implements Bshoot
 			}
 		}
 		return ol;
+	}
+
+
+
+	public void convertNumber(Bshoot bshoot){
+		BshootCounter bshootCounter = counterService.getCounterByBshoot(bshoot.getId());
+		if(0!=bshootCounter.getCollectCount())
+			bshoot.setBsCollect(bshootCounter.getCollectCount());
+		if(0!=bshootCounter.getCommentCount())
+			bshoot.setBsComment(bshootCounter.getCommentCount());
+		if(0!=bshootCounter.getForwardCount())
+			bshoot.setBsForward(bshootCounter.getForwardCount());
+		if(0!=bshootCounter.getPlayCount())
+			bshoot.setBsPlay(bshootCounter.getPlayCount());
+		if(0!=bshootCounter.getShareCount())
+			bshoot.setBsShare(bshootCounter.getShareCount());
+		if(0!=bshootCounter.getPraiseCount())
+			bshoot.setBsPraise(bshootCounter.getPraiseCount());
+	}
+
+	public void convertNumber(List<Bshoot> bshoots){
+		if(bshoots==null)return;
+		for (Bshoot bshoot : bshoots) {
+			convertNumber(bshoot);
+		}
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		counterService.registerFetchValue(CounterType.PLAY, new FetchValue() {
+			@Override
+			public Integer fetchValue(String key) {
+				Bshoot bshoot = get(key);
+				return bshoot.getBsPlay();
+			}
+		});
 	}
 }

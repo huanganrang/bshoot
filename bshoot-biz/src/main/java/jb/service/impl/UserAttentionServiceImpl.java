@@ -15,6 +15,7 @@ import jb.service.UserAttentionServiceI;
 import jb.util.Constants;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 @Service
-public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> implements UserAttentionServiceI {
+public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> implements UserAttentionServiceI,InitializingBean {
 
 	@Autowired
 	private UserAttentionDaoI userAttentionDao;
@@ -464,19 +465,9 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 
 	private void userAttCount(final String userId, final String attUserId,Integer num){
 		//给用户关注的人计数+1
-		counterService.automicChangeCount(userId, CounterType.ATT,num, new FetchValue() {
-			@Override
-			public Integer fetchValue() {
-				return getAttCount(userId).intValue();
-			}
-		});
+		counterService.automicChangeCount(userId, CounterType.ATT,num);
 		//给被用户关注过人的被关注计数+1
-		counterService.automicChangeCount(attUserId, CounterType.BEATT,num, new FetchValue() {
-			@Override
-			public Integer fetchValue() {
-				return getBeAttCount(attUserId).intValue();
-			}
-		});
+		counterService.automicChangeCount(attUserId, CounterType.BEATT,num);
 	}
 
 	@Override
@@ -516,4 +507,21 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 		return dg;
 	}
 
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		//给用户关注的人计数+1
+		counterService.registerFetchValue(CounterType.ATT,new FetchValue() {
+			@Override
+			public Integer fetchValue(String userId) {
+				return getAttCount(userId).intValue();
+			}
+		});
+		//给被用户关注过人的被关注计数+1
+		counterService.registerFetchValue(CounterType.BEATT,new FetchValue() {
+			@Override
+			public Integer fetchValue(String attUserId) {
+				return getBeAttCount(attUserId).intValue();
+			}
+		});
+	}
 }
