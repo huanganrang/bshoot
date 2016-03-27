@@ -25,10 +25,10 @@ import java.util.Map;
  * 推荐相关功能
  * Created by zhou on 2016/1/1.
  */
-@Api(value = "recommend-api",description = "首页推荐接口", position =1)
+@Api(value = "apiSwgRecommend-api",description = "首页推荐接口", position =1)
 @Controller
-@RequestMapping("/recommend")
-public class RecommendController extends  BaseController{
+@RequestMapping("/apiSwgRecommend")
+public class ApiRecommendController extends  BaseController{
 
     @Autowired
     private RecommendService recommendService;

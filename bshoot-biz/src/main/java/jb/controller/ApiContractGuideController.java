@@ -23,10 +23,10 @@ import java.util.Map;
  * 通讯录引导
  * Created by Zhou Yibing on 2016/1/8.
  */
-@Api(value = "contractGuide-api", description = "通讯录引导页接口", position =3)
+@Api(value = "apiSwgContractGuide-api", description = "通讯录引导页接口", position =3)
 @Controller
-@RequestMapping("/contractGuide")
-public class ContractGuideController extends BaseController{
+@RequestMapping("/apiSwgContractGuide")
+public class ApiContractGuideController extends BaseController{
 
     @Autowired
     private ContractGuideServiceI contractGuideService;

@@ -35,7 +35,7 @@ public class MySwaggerConfig {
     @Bean
     public SwaggerSpringMvcPlugin customImplementation(){
         return new SwaggerSpringMvcPlugin(this.springSwaggerConfig).apiInfo(this.apiInfo())
-                .includePatterns(new String[]{".contractGuide.*?",".hotGuide.*?",".recommend.*?",".userHobbyController.*?",".bshootController.*?"})
+                .includePatterns(new String[]{".apiSwgContractGuide.*?",".apiSwgHotGuide.*?",".apiSwgRecommend.*?",".apiSwgUserHobbyController.*?",".apiSwgBshootController.*?"})
                 .ignoredParameterTypes(BaseController.class)
                 .apiVersion("0.0.1").swaggerGroup("bshoot");
     }

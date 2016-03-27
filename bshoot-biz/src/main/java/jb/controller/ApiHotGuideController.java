@@ -24,10 +24,10 @@ import java.util.Map;
  * 首页热门引导
  * Created by Zhou Yibing on 2015/10/22.
  */
-@Api(value = "hotGuide-api", description = "热门引导页接口", position =2)
+@Api(value = "apiSwgHotGuide-api", description = "热门引导页接口", position =2)
 @Controller
-@RequestMapping("/hotGuide")
-public class HotGuideController extends BaseController{
+@RequestMapping("/apiSwgHotGuide")
+public class ApiHotGuideController extends BaseController{
 
     @Autowired
     private HotGuideServiceI hotGuideServiceImpl;

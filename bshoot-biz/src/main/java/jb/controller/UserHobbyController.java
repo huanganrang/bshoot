@@ -34,7 +34,6 @@ import com.alibaba.fastjson.JSON;
  * @author John
  * 
  */
-@Api(value = "userHobbyController-api",description = "兴趣接口", position =4)
 @Controller
 @RequestMapping("/userHobbyController")
 public class UserHobbyController extends BaseController {
@@ -161,48 +160,4 @@ public class UserHobbyController extends BaseController {
 		return j;
 	}
 
-	@ApiOperation(value = "保存用户兴趣", notes = "保存用户兴趣", position = 2,httpMethod = "POST",response = Json.class,produces = "application/json; charset=utf-8")
-	@RequestMapping("/saveUserHobby")
-	@ResponseBody
-	public Json saveUserHobby(@ApiParam(value = "兴趣列表(逗号分割，如:HO101,HO201,HO301)",required = true) @RequestParam String hobbies,@ApiParam(value="tokenId",required = true) @RequestParam String tokenId,@ApiIgnore HttpServletRequest request){
-		Json j = new Json();
-		SessionInfo sessionInfo = getSessionInfo(request);
-		UserHobby userHobby = new UserHobby();
-		userHobby.setUserId(sessionInfo.getId());
-		userHobby.setHobbyType(hobbies);
-		userHobbyService.saveOrUpdateUserHobby(userHobby);
-		j.setMsg("保存成功");
-		j.setSuccess(true);
-		return j;
-	}
-
-	@ApiOperation(value = "获取兴趣列表", notes = "获取兴趣列表", position =3,httpMethod = "POST",response = BaseData.class,produces = "application/json; charset=utf-8")
-	@RequestMapping("/getHobbyList")
-	@ResponseBody
-	public  Collection<BaseData> getHobbyList(){
-        List<BaseData> hobbies = basedataService.getBaseDatas(HOBBYTYPE);
-		//对兴趣按分类组织
-		Map<String,BaseData> category = new HashMap<String,BaseData>();
-		BaseData parent = null;
-		for(BaseData baseData:hobbies){
-			if(StringUtils.isEmpty(baseData.getPid())){
-				parent = category.get(baseData.getId());
-				if(null!=parent) {
-                    baseData.setChildren(parent.getChildren());
-				}
-				category.put(baseData.getId(),baseData);
-			}else{
-				parent = category.get(baseData.getPid());
-				if(null!=parent) {
-					parent.getChildren().add(baseData);
-				}else{
-					parent = new BaseData();
-					parent.setId(baseData.getPid());
-					parent.getChildren().add(baseData);
-					category.put(baseData.getPid(),parent);
-				}
-			}
-		}
-		return  category.values();
-	}
 }
