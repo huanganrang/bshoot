@@ -395,7 +395,7 @@ public class UserAttentionServiceImpl extends BaseServiceImpl<UserAttention> imp
 			hql +="where u.id = t.userId and t.attUserId = :userId";
 			params.put("userId",userAttention.getAttUserId());
 		}		
-		List<Bshoot> l = dao.find(hql   + orderHql(ph), params, ph.getPage(), ph.getRows());
+		List<Tuser> l = dao.find(hql   + orderHql(ph), params, ph.getPage(), ph.getRows());
 		dg.setTotal(dao.count("select count(*) " + hql.substring(8) , params));
 		dg.setRows(l);
 		return dg;

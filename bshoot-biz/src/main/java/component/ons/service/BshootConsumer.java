@@ -55,7 +55,7 @@ public class BshootConsumer {
         UserAttention userAttention = new UserAttention();
         userAttention.setAttUserId(bshoot.getUserId());
         PageHelper ph = new PageHelper();
-        DataGrid dg = userAttentionService.dataGridMyFriend(userAttention, ph);
+        DataGrid dg = userAttentionService.dataGridUser(userAttention, ph);
         List<User> ls = dg.getRows();//谁关注了我
         if(ls != null){
             for(User user : ls){
