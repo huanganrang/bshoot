@@ -7,31 +7,30 @@ import com.wordnik.swagger.annotations.ApiParam;
 import jb.bizmodel.RecommendUser;
 import jb.pageModel.Bshoot;
 import jb.pageModel.SessionInfo;
-import jb.service.impl.RecommendService;
-import jb.util.ConfigUtil;
+import jb.service.RecommendServiceI;
+import jb.service.impl.RecommendServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
  * 推荐相关功能
  * Created by zhou on 2016/1/1.
  */
-@Api(value = "recommend-api",description = "首页推荐接口", position =1)
+@Api(value = "apiSwgRecommend-api",description = "首页推荐接口", position =1)
 @Controller
-@RequestMapping("/recommend")
-public class RecommendController extends  BaseController{
+@RequestMapping("/apiSwgRecommend")
+public class ApiRecommendController extends  BaseController{
 
-    @Autowired
-    private RecommendService recommendService;
+    @Resource(name="recommendServiceImpl")
+    private RecommendServiceI recommendService;
 
     //热门推荐
     @ApiOperation(value = "首页热门", notes = "首页热门", position = 1,httpMethod = "POST", response = Bshoot.class,produces = "application/json; charset=utf-8")

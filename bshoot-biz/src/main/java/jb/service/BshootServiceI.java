@@ -150,4 +150,12 @@ public interface BshootServiceI {
 
 	List<Bshoot> getSomeoneBshoot(String userId, Integer fileType, Integer start, int rows);
 
+	/**
+	 * 转换资源计数
+	 * @param bshoot
+	 */
+	void convertNumber(Bshoot bshoot);
+	void convertNumber(List<Bshoot> bshoot);
+
+
 }

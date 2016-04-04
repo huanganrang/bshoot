@@ -32,7 +32,6 @@ import java.util.UUID;
  * @author John
  * 
  */
-@Api(value = "bshootController-api",description = "动态相关接口", position =10)
 @Controller
 @RequestMapping("/bshootController")
 public class BshootController extends BaseController {
@@ -216,43 +215,5 @@ public class BshootController extends BaseController {
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
 		return j;
-	}
-
-	/**
-	 * 我的作品
-	 * @param fileType
-	 * @param start
-	 * @param tokenId
-	 * @param request
-	 * @return
-	 */
-	@ApiOperation(value = "我的作品", notes = "我的作品", position = 2,httpMethod = "POST",response = Json.class,produces = "application/json; charset=utf-8")
-    @RequestMapping("/myBshoot")
-	@ResponseBody
-	public Json myBshoot(@ApiParam(value = "只看（-1全部/1图文/2视频/3音乐）",required = true) @RequestParam Integer fileType,@ApiParam(value = "页数(0开始)",required = true) @RequestParam Integer start,@ApiParam(value = "tokenId",required = true) @RequestParam String tokenId,HttpServletRequest request ){
-		SessionInfo sessionInfo = getSessionInfo(request);
-		List<Bshoot> bshoots = bshootService.getSomeoneBshoot( sessionInfo.getId(), fileType,start,15);
-		Json json = new Json();
-		json.setSuccess(true);
-		json.setObj(bshoots);
-		return json;
-	}
-
-	/**
-	 * 别人的作品
-	 * @param userId
-	 * @param fileType
-	 * @param start
-	 * @return
-	 */
-	@ApiOperation(value = "别人的作品", notes = "别人的作品", position = 2,httpMethod = "POST",response = Json.class,produces = "application/json; charset=utf-8")
-	@RequestMapping("/otherBshoot")
-	@ResponseBody
-	public Json otherBshoot(@ApiParam(value = "用户id",required = true) @RequestParam String userId,@ApiParam(value = "只看（-1全部/1图文/2视频/3音乐）",required = true) @RequestParam Integer fileType,@ApiParam(value = "页数(0开始)",required = true) @RequestParam Integer start){
-		List<Bshoot> bshoots = bshootService.getSomeoneBshoot( userId, fileType,start,15);
-		Json json = new Json();
-		json.setSuccess(true);
-		json.setObj(bshoots);
-		return json;
 	}
 }

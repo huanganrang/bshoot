@@ -44,6 +44,7 @@
 		<mvc:interceptor>		
 			<mvc:mapping path="/**" />
 			<mvc:exclude-mapping path="/api/**"/>
+			<mvc:exclude-mapping path="/apiSwg*/**"/>
 			<bean class="jb.interceptors.SecurityInterceptor">
 				<!-- 不需要权限验证的地址 -->
 				<property name="excludeUrls">
@@ -70,9 +71,12 @@
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/api/**" />
-<!--
-			<mvc:exclude-mapping path="/api/**"/>
--->
+			<mvc:mapping path="/apiSwg*/**"/>
+
+
+			<!--
+                        <mvc:exclude-mapping path="/api/**"/>
+            -->
 			<bean class="jb.interceptors.TokenInterceptor">
 				<property name="excludeUrls">
 					<list>
@@ -106,6 +110,8 @@
 						<value>/api/apiUserController/getValidateCode</value><!-- 发送验证码 -->
 						<value>/api/imPlusController/implusauth</value><!-- 容联云通讯回调地址 -->
 						<value>/api/apiUserController/findPwd</value><!-- 找回密码 -->
+						<value>/apiSwgUserHobbyController/getHobbyList</value><!-- 获取用户兴趣 -->
+						<value>/apiSwgBshootController/otherBshoot</value><!-- 别人的作品 -->
 					</list>
 				</property>
 				<property name="tokenManage" ref="tokenManage"/>

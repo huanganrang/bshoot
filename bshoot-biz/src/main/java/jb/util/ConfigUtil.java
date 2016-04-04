@@ -1,5 +1,8 @@
 package jb.util;
 
+import jb.absx.F;
+import jb.listener.Application;
+
 import java.util.ResourceBundle;
 
 /**
@@ -29,6 +32,24 @@ public class ConfigUtil {
 	 */
 	public static final String get(String key) {
 		return bundle.getString(key);
+	}
+
+	/**
+	 * 获取配置中心的数据
+	 * @param code
+	 * @param defaultValue
+	 * @return
+	 */
+	public static String getValue(String code,String defaultValue){
+		String value = Application.getString(code);
+		if(F.empty(value)){
+			value = defaultValue;
+		}
+		return value;
+	}
+
+	public static String getValue(String code) {
+		return getValue(code,"");
 	}
 
 }

@@ -141,7 +141,7 @@ public class BshootDaoImpl extends BaseDaoImpl<Tbshoot> implements BshootDaoI {
 			query.setParameter("fileType", hotShootRequest.getFileType());
 		if(null!=hotShootRequest.getPraiseNum()||0!=hotShootRequest.getPraiseNum())
 		    query.setParameter("praiseNum",hotShootRequest.getPraiseNum());
-		query.setParameter("start",hotShootRequest.getPage());
+		query.setParameter("start",hotShootRequest.getPage()*hotShootRequest.getRows());
 		query.setParameter("rows",hotShootRequest.getRows());
 		List<Tbshoot> l = query.list();
 		return l;

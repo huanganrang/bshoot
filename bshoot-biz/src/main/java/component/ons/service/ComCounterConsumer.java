@@ -38,9 +38,11 @@ public class ComCounterConsumer {
 
     private void initHandler(){
         WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
-        CounterHandler counterHandler = wac.getBean("bshootCommentServiceImpl",CounterHandler.class);
-        handlerMap.put(counterHandler.getCounterType(),counterHandler);
-        //TODO 其他counter处理者的bean可以写这里
+        if(wac!=null) {
+            CounterHandler counterHandler = wac.getBean("bshootCommentServiceImpl", CounterHandler.class);
+            handlerMap.put(counterHandler.getCounterType(), counterHandler);
+            //TODO 其他counter处理者的bean可以写这里
+        }
     }
     private void dispatch(CounterType counterType,String message){
         CounterHandler handler = handlerMap.get(counterType);

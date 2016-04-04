@@ -21,7 +21,7 @@ import java.util.*;
  * Created by Zhou Yibing on 2016/1/8.
  */
 @Service
-public class ContractGuideService extends RecommendService implements ContractGuideServiceI{
+public class ContractGuideService extends RecommendServiceImpl implements ContractGuideServiceI{
 
     @Override
     public Map<Integer,List<RecommendUser>> guideExternalPage(String userId, Integer start, Integer rows) {

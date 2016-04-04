@@ -4,10 +4,13 @@ import com.alibaba.druid.support.json.JSONUtils;
 import com.google.common.collect.Lists;
 import component.redis.model.BshootCounter;
 import component.redis.service.CounterServiceI;
+import jb.absx.F;
 import jb.bizmodel.GuideType;
 import jb.bizmodel.RecommendUser;
+import jb.listener.Application;
 import jb.pageModel.*;
 import jb.service.*;
+import jb.util.ConfigUtil;
 import jb.util.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -26,8 +29,8 @@ import java.util.*;
 /**
  * Created by zhou on 2016/1/1.
  */
-@Service
-public class RecommendService extends UserRecommendService implements RecommendServiceI,CommonRecommendServiceI{
+@Service("recommendServiceImpl")
+public class RecommendServiceImpl extends UserRecommendService implements RecommendServiceI,CommonRecommendServiceI{
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -144,7 +147,9 @@ public class RecommendService extends UserRecommendService implements RecommendS
     @Override
     public List<Bshoot> recommendHot(String userId,Integer start,Integer fileType,Integer interested) {
         //可以使用solr查询，但是在用户帅选同兴趣的情况下，需要solr的core_user和core_bs联合查询，但是在分布式环境下solr联合查询有文档说是可以实现，考虑风险暂且使用库查询 _query_:"{!join fromIndex=core_user from=id to=userId v='hobby:(HO01 OR HO02 HO03)'}"
-        Date oneDayago = DateUtil.stringToDate(DateUtil.getDate(-1, DateUtil.DATETIME_FORMAT),DateUtil.DATETIME_FORMAT);
+        String rhRule = ConfigUtil.getValue("RL0001","-1|200");
+        String[] rules = rhRule.split("[|;]");
+        Date oneDayago = DateUtil.stringToDate(DateUtil.getDate(Integer.parseInt(rules[0]), DateUtil.DATETIME_FORMAT),DateUtil.DATETIME_FORMAT);
         String hobby = null;
         if(interested==1) {
             UserHobby userHobby = userHobbyService.getUserHobby(userId);
@@ -153,7 +158,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
             SystemUtils.combineStr(hobbyType, hobbyType.length, out, "OR");
             hobby = out.get(0);
         }
-        HotShootRequest hotShootRequest = new HotShootRequest(oneDayago,200,start,fileType,hobby,50);
+        HotShootRequest hotShootRequest = new HotShootRequest(oneDayago,Integer.parseInt(rules[1]),start,fileType,hobby,50);
         List<Bshoot> bshoots =  bshootService.getHotBshoots(hotShootRequest);
         return fillBshoot(bshoots);
     }
@@ -187,7 +192,6 @@ public class RecommendService extends UserRecommendService implements RecommendS
                 if(CollectionUtils.isNotEmpty(userEntity.getHobby()))
                 hobbies.addAll(userEntity.getHobby());
             }
-            Map<String,BaseData> baseDatas = basedataService.getBaseDatas(hobbies,Map.class);
             List<String> h;
             //获得各动态的计数
             List<BshootCounter> bshootCounters = counterService.getCounterByBshoots(bshootIds);
@@ -200,8 +204,9 @@ public class RecommendService extends UserRecommendService implements RecommendS
                 bshoot.setMemberV(userEntity.getMember_v());
                 bshoot.setUserHeadImage(userEntity.getHeadImg());
                 h = new ArrayList<String>();
+                if(CollectionUtils.isNotEmpty(userEntity.getHobby()))
                 for(String hob:userEntity.getHobby()){
-                    h.add(baseDatas.get(hob).getName());
+                    h.add(ConfigUtil.getValue(hob));
                 }
                 bshoot.setHobby(h);
                 bshootCounter = bshootCounters.get(i);
@@ -238,7 +243,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
 
         //3.我评论打赏过的人 done
         PraiseCommentRequest praiseCommentRequest = new PraiseCommentRequest(userId,null,rows*start,rows);
-        List<String> comment_praise =super.meCommentPraisedUser(praiseCommentRequest);
+        List<String> comment_praise = meCommentPraisedUser(praiseCommentRequest);
         if(CollectionUtils.isNotEmpty(comment_praise)) {
             bshoots.addAll(getLastBshoot(comment_praise, threeDayAgo, GuideType.ME_COMMENT_PRAISE.getId()));
         }
@@ -413,6 +418,7 @@ public class RecommendService extends UserRecommendService implements RecommendS
 
     protected String recommendNewUser(String userId,Integer fansNum,String loginArea,int start){
         //1.新人推荐
+        fansNum = fansNum ==null?0:fansNum;
         if(null!=fansNum&&fansNum<50) {
             //当前用户粉丝量大于50则不推荐，新人推荐根据用户粉丝量，获取同城用户且当天发布了动态
             String qc = null;
@@ -424,8 +430,9 @@ public class RecommendService extends UserRecommendService implements RecommendS
                 qc="fansNum:[30 TO 49]";
             Criterias criterias = new Criterias();
             criterias.qc(qc);
+            if(!F.empty(loginArea))
             criterias.eq("login_area",loginArea);
-            criterias.ge("lastPublishTime", DateUtil.convert2SolrDate(DateUtil.getDateStart(0)));
+            //criterias.ge("lastPublishTime", DateUtil.convert2SolrDate(DateUtil.getDateStart(0)));
             criterias.ne("id",userId);//不能是自己
             criterias.addField("id");
             criterias.setStart(start*1);
