@@ -35,6 +35,9 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 	@Autowired
 	private UserHobbyServiceI userHobbyService;
 
+	@Autowired
+	private BshootCommentServiceI bshootCommentService;
+
 	@Override
 	public DataGrid dataGrid(UserFriendTime userFriendTime, PageHelper ph) {
 		List<UserFriendTime> ol = new ArrayList<UserFriendTime>();
@@ -163,6 +166,15 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 									}
 									bs.setHobby(hobby);
 								}
+								BshootComment bshootComment = new BshootComment();
+								bshootComment.setBshootId(t.getBsId());
+								PageHelper phl = new PageHelper();
+								phl.setOrder("desc");
+								phl.setSort("commentDatetime");
+								phl.setPage(1);
+								phl.setRows(10);
+								DataGrid comments = bshootCommentService.dataGrid(bshootComment, phl);
+								bs.setComments(comments);//评论
 								o.setBshoot(bs);
 								ol.add(o);
 							}
@@ -192,7 +204,15 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 								}
 								bs.setHobby(hobby);
 							}
-
+							BshootComment bshootComment = new BshootComment();
+							bshootComment.setBshootId(t.getBsId());
+							PageHelper phl = new PageHelper();
+							phl.setOrder("desc");
+							phl.setSort("commentDatetime");
+							phl.setPage(1);
+							phl.setRows(10);
+							DataGrid comments = bshootCommentService.dataGrid(bshootComment, phl);
+							bs.setComments(comments);//评论
 							o.setBshoot(bs);
 							ol.add(o);
 						}
@@ -222,6 +242,15 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 							}
 							bs.setHobby(hobby);
 						}
+						BshootComment bshootComment = new BshootComment();
+						bshootComment.setBshootId(t.getBsId());
+						PageHelper phl = new PageHelper();
+						phl.setOrder("desc");
+						phl.setSort("commentDatetime");
+						phl.setPage(1);
+						phl.setRows(10);
+						DataGrid comments = bshootCommentService.dataGrid(bshootComment, phl);
+						bs.setComments(comments);//评论
 						o.setBshoot(bs);
 						ol.add(o);
 					}
