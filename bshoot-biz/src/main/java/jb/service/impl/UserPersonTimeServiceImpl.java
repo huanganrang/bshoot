@@ -162,41 +162,37 @@ public class UserPersonTimeServiceImpl extends BaseServiceImpl<UserPersonTime> i
 				bs.setComments(comments);//评论
 				o.setBshoot(bs);
 				List<User> uu = new ArrayList<>();//共同的好友或共同的手机通讯录上的人
-				if(t.getPersonType() == 0) {
-					//共同的软件通讯录好友
-					UserAttention ua = new UserAttention();
-					ua.setUserId(t.getUserId());
-					DataGrid da = userAttentionService.dataGridMyFriend(ua, new PageHelper());//我的好友
-					List<User> la = da.getRows();
-					UserPerson up = new UserPerson();
-					up.setAttUserId(us);
-					DataGrid dp = userPersonService.dataGridMyUserPerson(up, new PageHelper());//谁加了资源发布都的人脉圈好友
-					List<User> lp = dp.getRows();
-					if (la != null && la.size() > 0 && lp != null && lp.size() > 0) {
-						for (User aa : la) {
-							for (User pp : lp) {
-								if (aa.getId().equals(pp.getId())) {
-									uu.add(aa);
-								}
+				//共同的软件通讯录好友
+				UserAttention ua = new UserAttention();
+				ua.setUserId(t.getUserId());
+				DataGrid da = userAttentionService.dataGridMyFriend(ua, new PageHelper());//我的好友
+				List<User> la = da.getRows();
+				UserPerson up = new UserPerson();
+				up.setAttUserId(us);
+				DataGrid dp = userPersonService.dataGridMyUserPerson(up, new PageHelper());//谁加了资源发布都的人脉圈好友
+				List<User> lp = dp.getRows();
+				if (la != null && la.size() > 0 && lp != null && lp.size() > 0) {
+					for (User aa : la) {
+						for (User pp : lp) {
+							if (aa.getId().equals(pp.getId())) {
+								uu.add(aa);
 							}
-
 						}
 					}
-				}else if(t.getPersonType() == 1) {
-					//共同的手机通讯录上的人
-					UserMobilePerson um = new UserMobilePerson();
-					um.setUserId(t.getUserId());
-					DataGrid dm = userMobilePersonService.dataGrid(um, new PageHelper());//我的手机通讯录好友
-					um.setUserId(us);
-					DataGrid ds = userMobilePersonService.dataGrid(um, new PageHelper());//我的手机通讯录好友
-					List<User> la = dm.getRows();
-					List<User> lp = ds.getRows();
-					if(la != null && la.size() > 0 && lp != null && lp.size() > 0) {
-						for(User aa : la) {
-							for (User pp : lp) {
-								if(aa.getId().equals(pp.getId())) {
-									uu.add(aa);
-								}
+				}
+				//共同的手机通讯录上的人
+				UserMobilePerson um = new UserMobilePerson();
+				um.setUserId(t.getUserId());
+				DataGrid dm = userMobilePersonService.dataGrid(um, new PageHelper());//我的手机通讯录好友
+				um.setUserId(us);
+				DataGrid ds = userMobilePersonService.dataGrid(um, new PageHelper());//我的手机通讯录好友
+				List<User> laa = dm.getRows();
+				List<User> lpp = ds.getRows();
+				if(laa != null && laa.size() > 0 && lpp != null && lpp.size() > 0) {
+					for(User aa : laa) {
+						for (User pp : lpp) {
+							if(aa.getId().equals(pp.getId())) {
+								uu.add(aa);
 							}
 						}
 					}
