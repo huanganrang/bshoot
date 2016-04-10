@@ -6,9 +6,7 @@ import jb.dao.UserFriendTimeDaoI;
 import jb.model.TuserAttention;
 import jb.model.TuserFriendTime;
 import jb.pageModel.*;
-import jb.service.BshootServiceI;
-import jb.service.UserAttentionServiceI;
-import jb.service.UserFriendTimeServiceI;
+import jb.service.*;
 import jb.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +28,12 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 
 	@Autowired
 	private UserAttentionServiceI userAttentionService;
+
+	@Autowired
+	private UserServiceI userService;
+
+	@Autowired
+	private UserHobbyServiceI userHobbyService;
 
 	@Override
 	public DataGrid dataGrid(UserFriendTime userFriendTime, PageHelper ph) {
@@ -143,6 +147,22 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 							if(userAttention.getAttentionGroup().equals(ua.getAttentionGroup())){
 								UserFriendTime o = new UserFriendTime();
 								BeanUtils.copyProperties(t, o);
+								User user = userService.get(us, true);
+								bs.setUserHeadImage(user.getHeadImage());
+								bs.setUserName(user.getName());
+								UserHobby userHobby_bs = userHobbyService.getUserHobby(us);
+								List<String> hobby_bs = userHobby_bs.getHobbyTypeName();
+								UserHobby userHobby_o = userHobbyService.getUserHobby(o.getUserId());
+								List<String> hobby_o = userHobby_o.getHobbyTypeName();
+								if(hobby_bs != null && hobby_bs.size() > 0 && hobby_o != null && hobby_o.size() > 0) {
+									List<String> hobby = new ArrayList<>();
+									for(String hy : hobby_bs) {
+										if(hobby_o.contains(hy)) {
+											hobby.add(hy);//共同兴趣
+										}
+									}
+									bs.setHobby(hobby);
+								}
 								o.setBshoot(bs);
 								ol.add(o);
 							}
@@ -155,6 +175,24 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 							Bshoot bs = bshootService.get(t.getBsId());
 							UserFriendTime o = new UserFriendTime();
 							BeanUtils.copyProperties(t, o);
+							String us = bs.getUserId();
+							User user = userService.get(us, true);
+							bs.setUserHeadImage(user.getHeadImage());
+							bs.setUserName(user.getName());
+							UserHobby userHobby_bs = userHobbyService.getUserHobby(us);
+							List<String> hobby_bs = userHobby_bs.getHobbyTypeName();
+							UserHobby userHobby_o = userHobbyService.getUserHobby(o.getUserId());
+							List<String> hobby_o = userHobby_o.getHobbyTypeName();
+							if(hobby_bs != null && hobby_bs.size() > 0 && hobby_o != null && hobby_o.size() > 0) {
+								List<String> hobby = new ArrayList<>();
+								for(String hy : hobby_bs) {
+									if(hobby_o.contains(hy)) {
+										hobby.add(hy);//共同兴趣
+									}
+								}
+								bs.setHobby(hobby);
+							}
+
 							o.setBshoot(bs);
 							ol.add(o);
 						}
@@ -167,6 +205,23 @@ public class UserFriendTimeServiceImpl extends BaseServiceImpl<UserFriendTime> i
 						Bshoot bs = bshootService.get(t.getBsId());
 						UserFriendTime o = new UserFriendTime();
 						BeanUtils.copyProperties(t, o);
+						String us = bs.getUserId();
+						User user = userService.get(us, true);
+						bs.setUserHeadImage(user.getHeadImage());
+						bs.setUserName(user.getName());
+						UserHobby userHobby_bs = userHobbyService.getUserHobby(us);
+						List<String> hobby_bs = userHobby_bs.getHobbyTypeName();
+						UserHobby userHobby_o = userHobbyService.getUserHobby(o.getUserId());
+						List<String> hobby_o = userHobby_o.getHobbyTypeName();
+						if(hobby_bs != null && hobby_bs.size() > 0 && hobby_o != null && hobby_o.size() > 0) {
+							List<String> hobby = new ArrayList<>();
+							for(String hy : hobby_bs) {
+								if(hobby_o.contains(hy)) {
+									hobby.add(hy);//共同兴趣
+								}
+							}
+							bs.setHobby(hobby);
+						}
 						o.setBshoot(bs);
 						ol.add(o);
 					}

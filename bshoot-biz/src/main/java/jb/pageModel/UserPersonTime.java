@@ -1,6 +1,7 @@
 package jb.pageModel;
 
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class UserPersonTime implements java.io.Serializable {
@@ -14,9 +15,9 @@ public class UserPersonTime implements java.io.Serializable {
 	private java.lang.Integer isPraise;	
 	private java.lang.Integer isDelete;
 	private java.lang.Integer personType;
+	private List<User> commonFriends;
 	private Date createDatetime;
 	private Bshoot bshoot;
-	
 
 	public void setId(java.lang.String value) {
 		this.id = value;
@@ -84,5 +85,13 @@ public class UserPersonTime implements java.io.Serializable {
 
 	public void setBshoot(Bshoot bshoot) {
 		this.bshoot = bshoot;
+	}
+
+	public List<User> getCommonFriends() {
+		return commonFriends;
+	}
+
+	public void setCommonFriends(List<User> commonFriends) {
+		this.commonFriends = commonFriends;
 	}
 }
